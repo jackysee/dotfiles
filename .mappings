@@ -7,6 +7,7 @@
 ".zshrc" = "~/.zshrc"
 ".Xresources" = "~/.Xresources"
 ".xinitrc" = "~/.xinitrc"
+".urxvt" = "~/.urxvt"
 ".aliases" = "~/.aliases"
 ".profile" = "~/.profile"
 ".bashrc" = "~/.bashrc"
