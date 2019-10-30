@@ -11,3 +11,4 @@
 ".bashrc" = "~/.bashrc"
 ".hgrc" = "~/.hgrc"
 ".gitconfig" = "~/.gitconfig"
+".dir_colors" = "~/.dir_colors"

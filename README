@@ -1,11 +1,26 @@
 ## Require
 
+# zsh
+
+```
+sudo apt install zsh
+chsh -s $(which zsh)
+```
+
 # git, hg
 
 local at .hgrc.local, .gitconfig.local
 
+# fonts
+
+`cp -r ~/.dotfiles/fonts/*.* ~/.local/share/fonts`
+
 # tmux
 
+```
+sudo apt install tmux
+git clone https://github.com/tmux-plugins/tpm ~/.dotfiles/tmux/.tmux/plugins/tpm
+```
 tmux
 tpm to ~/.dotfiles/tmux/.tmux/plugins/tpm
 
