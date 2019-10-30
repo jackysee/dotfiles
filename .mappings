@@ -2,3 +2,5 @@
 "termite/config" = "~/.config/termite/config"
 "vim/.vimrc" = "~/.vimrc"
 "vim/.vim" = "~/.vim"
+"tmux/.tmux.conf" = "~/.tmux.conf"
+"tmux/.tmux" = "~/.tmux"

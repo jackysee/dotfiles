@@ -1,0 +1,4 @@
+## Require
+
+install tmux
+install tpm to ~/.dotfiles/tmux/.tmux/plugins/tpm
