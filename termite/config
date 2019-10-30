@@ -1,0 +1,58 @@
+[options]
+font = Monaco 12
+# font = Input Mono 12
+# font = Inconsolata 12
+# font = Monoid
+scrollback_lines = 10000
+# size_hints = true
+
+
+[colors]
+cursor = #d8dee9
+cursor_foreground = #2e3440
+
+#foreground = #d8dee9
+#foreground_bold = #d8dee9
+#background = #2e3440
+#
+#highlight = #4c566a
+#
+#color0  = #3b4252
+#color1  = #bf616a
+#color2  = #a3be8c
+#color3  = #ebcb8b
+#color4  = #81a1c1
+#color5  = #b48ead
+#color6  = #88c0d0
+#color7  = #e5e9f0
+#color8  = #4c566a
+#color9  = #bf616a
+#color10 = #a3be8c
+#color11 = #ebcb8b
+#color12 = #81a1c1
+#color13 = #b48ead
+#color14 = #8fbcbb
+#color15 = #eceff4
+
+
+foreground = #F8F8F2
+foreground_bold = #F8F8F2
+background = #282A36
+color0 = #000000
+color1 = #FF5555
+color2 = #50FA7B
+color3 = #F1FA8C
+color4 = #BD93F9
+color5 = #FF79C6
+color6 = #8BE9FD
+color7 = #BFBFBF
+color8 = #4D4D4D
+color9 = #FF6E67
+color10 = #5AF78E
+color11 = #F4F99D
+color12 = #CAA9FA
+color13 = #FF92D0
+color14 = #9AEDFE
+color15 = #E6E6E6k
+
+

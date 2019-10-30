@@ -1,0 +1,48 @@
+extends html, javascript, css
+
+snippet ico "ico"
+import $1 from '@/components/$1.vue';
+endsnippet
+
+snippet tt "tt"
+{{\$t('$0')}}
+endsnippet
+
+snippet vvue "vue sfc"
+<style>
+</style>
+
+<template>
+    <div>
+    </div>
+</template>
+
+<script>
+
+export default {
+    ${1}
+};
+</script>
+endsnippet
+
+snippet vpage "vue page"
+<template>
+    <page>
+        <template #breadcrumb>
+            <breadcrumb rootLabel="appMenu.$1" rootPath="/$2" />
+        </template>
+    </page>
+</template>
+
+<script>
+import page from '@/components/page.vue';
+import breadcrumb from '@/components/breadcrumb.vue';
+
+export default {
+    components: {
+        page,
+        breadcrumb
+    }
+};
+</script>
+endsnippet

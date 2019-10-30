@@ -1,0 +1,20 @@
+
+snippet noc "eslint-disable no-console"
+/* eslint-disable no-console */
+console.log($0);
+endsnippet
+
+
+snippet cl "console log"
+console.log($0);
+endsnippet
+
+snippet ce "console error"
+console.error($0);
+endsnippet
+
+snippet set "vuex setter"
+set${1/.*/\u$0/}(state, val) {
+	state.${1} = val;
+}
+endsnippet

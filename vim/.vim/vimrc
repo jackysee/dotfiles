@@ -1,0 +1,784 @@
+" notes for windows the ~/_vimrc
+"
+" need to :
+"   set rtp+=c:/[loc_of_vimfiles]
+"   source c:/[loc_of_vimfiles]el/vimrc
+
+
+" Constants
+" -----------------------------
+let s:is_windows = has('win32') || has('win64')
+let s:is_gui = has("gui_running")
+let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
+
+" shell
+" -----------------------------
+if s:is_windows
+    set shellcmdflag=/D/C
+endif
+if executable('zsh')
+    set shell=/usr/bin/zsh
+endif
+
+
+" Settings
+" -----------------------------
+set nocompatible
+set nowrap
+set textwidth=0
+set hlsearch
+set number
+set relativenumber
+set title
+set showmatch
+set showmode
+set wildchar=<TAB>
+set wildignore=*.o,*.class,*.pyc,*.swp,*.bak,node_modules,elm_stuff
+set wildmenu
+set wildmode=longest:list,full
+set nobackup
+set noswapfile
+set copyindent
+set ignorecase
+set smartcase
+set clipboard=unnamed
+set splitbelow
+set splitright
+set hidden
+set mouse=a
+
+"more characters will be sent to the screen for redrawing
+set ttyfast
+"time waited for key press(es) to complete. It makes for a faster key response
+set ttimeout
+set ttimeoutlen=50
+
+set lazyredraw
+set regexpengine=1
+
+" set block cursor
+if $TERM == "xterm" || $TERM == "xterm-256color"
+    let &t_SI = "\<Esc>[6 q"
+    let &t_SR = "\<Esc>[4 q"
+    let &t_EI = "\<Esc>[2 q"
+endif
+
+" Plugins
+" -----------------------------
+"
+"
+let s:path = expand('<sfile>:p:h')
+call plug#begin(s:path . '/plugged')
+
+"theme
+Plug 'ajh17/spacegray.vim'
+Plug 'whatyouhide/vim-gotham'
+Plug 'junegunn/seoul256.vim'
+Plug 'morhetz/gruvbox'
+Plug 'arcticicestudio/nord-vim'
+" Plug 'fxn/vim-monochrome'
+" Plug 'CallumHoward/vim-neodark'
+" Plug 'owickstrom/vim-colors-paramount'
+" Plug 'Badacadabra/vim-archery'
+Plug 'xero/blaquemagick.vim'
+Plug 'Lokaltog/vim-monotone'
+Plug 'axvr/photon.vim'
+Plug 't184256/vim-boring'
+Plug 'KKPMW/distilled-vim'
+Plug 'zaki/zazen'
+Plug 'lifepillar/vim-solarized8'
+Plug 'kaicataldo/material.vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'pbrisbin/vim-mkdir'
+
+
+"start page
+if s:is_fast
+    Plug 'mhinz/vim-startify'
+endif
+
+"snip
+if s:is_fast
+    Plug 'SirVer/ultisnips'
+endif
+
+"git
+Plug 'tpope/vim-fugitive'
+Plug 'mhinz/vim-signify'
+
+"hg
+Plug 'jlfwong/vim-mercenary'
+" Plug 'ludovicchabant/vim-lawrencium'
+
+" == deoplete ==
+" if s:is_fast
+"     Plug 'Shougo/neco-syntax'
+"     if has('nvim')
+"       Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"     else
+"       Plug 'Shougo/deoplete.nvim'
+"       Plug 'roxma/nvim-yarp'
+"       Plug 'roxma/vim-hug-neovim-rpc'
+"     endif
+"     Plug 'carlitux/deoplete-ternjs'
+" endif
+
+
+" Plug 'prabirshrestha/async.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'lighttiger2505/deoplete-vim-lsp'
+"
+Plug 'elmcast/elm-vim'
+
+" == coc ==
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+
+Plug 'mbbill/undotree'
+Plug 'tomtom/tcomment_vim'
+Plug 'Shougo/context_filetype.vim'
+Plug 'terryma/vim-expand-region'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sensible'
+Plug 'justinmk/vim-sneak'
+Plug 'tpope/vim-surround'
+Plug 'itchyny/lightline.vim'
+Plug 'maximbaz/lightline-ale'
+Plug 'Asheq/close-buffers.vim'
+Plug 'danro/rename.vim'
+Plug 'haya14busa/is.vim'
+Plug 'itchyny/vim-gitbranch'
+Plug 'wellle/targets.vim'
+Plug 'kana/vim-textobj-user'
+Plug 'qpkorr/vim-bufkill'
+Plug 'mileszs/ack.vim'
+if s:is_gui
+    Plug 'TaDaa/vimade'
+endif
+Plug 'christoomey/vim-tmux-navigator'
+
+" file finder
+" Plug 'junegunn/fzf.vim'
+" Plug 'kien/ctrlp.vim'
+" Plug 'Shougo/denite.nvim'
+" Plug 'Shougo/neomru.vim'
+
+if s:is_windows
+    Plug 'Yggdroot/LeaderF', { 'do': './install.bat' }
+else
+    Plug 'junegunn/fzf.vim'
+endif
+
+" js / vue
+" ------
+if s:is_fast
+    Plug 'w0rp/ale', { 'for': ['javascript', 'vue', 'javascript.jsx', 'css', 'scss', 'html', 'json' ]}
+    Plug 'mattn/emmet-vim',  { 'for':['javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' ]}
+    Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html', 'vue'] }
+    Plug 'elzr/vim-json', { 'for': ['json']}
+    " Plug 'prettier/vim-prettier', { 'branch': 'release/1.x', 'for': [ 'javascript', 'css', 'scss', 'markdown', 'vue', 'html', 'yaml'] }
+    Plug 'posva/vim-vue', { 'for': ['vue']}
+    Plug 'sgur/vim-editorconfig'
+    " Plug 'gorodinskiy/vim-coloresque'
+    " Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'sass', 'vue', 'html'] }
+    Plug 'RRethy/vim-hexokinase', { 'for': ['css', 'scss', 'sass', 'vue', 'html'] }
+    Plug 'Raimondi/delimitMate'
+    Plug '1995eaton/vim-better-javascript-completion',  { 'for': [ 'javascript', 'vue' ]}
+endif
+call plug#end()
+
+
+" auto reload vimrc when editing it
+
+if s:is_windows
+    autocmd! bufwritepost vimrc source ~/_vimrc
+else
+    autocmd! bufwritepost vimrc source ~/.vimrc
+endif
+
+set termguicolors
+set background=dark
+
+" colorscheme molokai
+" colorscheme gotham
+
+" let g:material_theme_style = 'dark'
+" colorscheme material
+
+" colorscheme monochrome
+" colorscheme paramount
+" colorscheme neodark
+" colorscheme archery
+" colorscheme blaquemagick
+" colorscheme monotone
+" colorscheme photon
+" colorscheme boring
+" colorscheme distilled
+" colorscheme zazen
+colorscheme onehalfdark
+
+" let g:seoul256_background = 233
+" colorscheme seoul256
+
+" let g:gruvbox_contrast_dark='hard'
+" colorscheme gruvbox
+
+" colorscheme nord
+" colorscheme solarized8_high
+
+" if !has("gui_running")	" running term
+" endif
+"
+"
+highlight Visual guibg=grey guifg=black
+if s:is_fast
+    set cursorline
+    " highlight CursorLine gui=underline cterm=underline
+    " highlight CursorLine guibg=#303000 ctermbg=24 gui=none cterm=none
+    " highlight CursorLine guibg=black guifg=NONE
+    highlight CursorLine guibg=gray9
+    autocmd WinEnter * setlocal cursorline
+    autocmd WinLeave * setlocal nocursorline
+endif
+
+if has('unix')
+    set guifont=Source_Code_Pro:h10,DejaVu_Sans_Mono:h10,Menlo:h10
+    " set guifont=Fira_Code:h10,Source_Code_Pro:h10,DejaVu_Sans_Mono:h10,Menlo:h10
+endif
+
+if s:is_gui	" GUI
+    au GUIEnter * simalt ~x
+    set relativenumber
+    " set guifont=Anonymous_Pro:h11
+    " set guifont=Fira_Code_Medium:h10
+    set guifont=Source_Code_Pro:h10
+    set linespace=1
+    " set t_Co=256          " 256 color mode
+    " set cursorline
+    "highlight CursorLine guibg=#003844 ctermbg=24  gui=none cterm=none
+endif
+
+let g:vimade = {}
+let g:vimade.fadelevel = 0.5
+
+"gui options
+set guioptions-=T
+set guioptions-=m
+set guioptions-=r
+set guioptions-=L
+
+" disable sound on errors
+set noerrorbells
+set novisualbell
+set t_vb=
+set tm=500
+
+" TAB setting{
+    set expandtab        "replace <TAB> with spaces
+"   set noexpandtab        "do not expand <TAB> with spaces
+    set tabstop=4
+    set softtabstop=4
+    set shiftwidth=4
+"   au FileType Makefile set noexpandtab
+"}
+
+" status line {
+set noshowmode
+" set laststatus=2
+" set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \
+" set statusline+=\ \ \ [%{&ff}/%Y]
+" set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\
+" set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
+
+set path+=src/main/java,src/main/test,src/frontend/src
+set inex=substitute(v:fname,'/','src/frontend/src/','')
+set suffixesadd=.js,.vue,.scss
+
+
+function! CurDir()
+    let curdir = substitute(getcwd(), $HOME, "~", "")
+    return curdir
+endfunction
+
+function! HasPaste()
+    if &paste
+        return '[PASTE]'
+    else
+        return ''
+    endif
+endfunction
+
+"}
+
+function! s:list_commits()
+    let git = 'git -C ~/repo'
+    let commits = systemlist(git .' log --oneline | head -n10')
+    let git = 'G'. git[1:]
+    return map(commits, '{"line": matchstr(v:val, "\\s\\zs.*"), "cmd": "'. git .' show ". matchstr(v:val, "^\\x\\+") }')
+endfunction
+
+"startify
+" let g:startify_custom_header = ['']
+let g:startify_change_to_vcs_root = 1
+let g:startify_lists = [
+            \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
+            \ { 'header': ['   MRU'],            'type': 'files' },
+            \ { 'header': ['   Sessions'],       'type': 'sessions' }
+            \ ]
+
+" hg/git gutter
+let g:signify_realtime = 0
+let g:signify_sign_change = '~'
+let g:signify_update_on_focusgained = 1
+
+" Shortcuts
+" -----------------------------
+" set leader to ,
+let mapleader=","
+let g:mapleader=","
+
+
+" search selected text in visual mode
+vnoremap // y/<C-R>"<CR>
+
+" paste on visual mode without chaning original register
+vnoremap p "_dP
+
+" <C-L> turn off search highlight in sensible.vim
+nnoremap <leader>l :nohlsearch<CR>
+
+" keyword for search exclude period
+map <leader>k :set iskeyword=65-90,95,97-122,48-57<CR>
+
+"; :
+nnoremap ; :
+nnoremap > ;
+nnoremap < ,
+
+"space to page down
+" nnoremap <SPACE> <PAGEDOWN>
+" nnoremap <S-SPACE> <PAGEUP>
+
+" indent in visual model
+vnoremap < <gv
+vnoremap > >gv
+
+" list buffer
+"nnoremap <leader>b :b <C-d>
+"nnoremap <leader>b :buffers<CR>:buffer<Space>
+"nnoremap <leader>b :Buffers<CR>
+noremap <left> :bp<CR>
+noremap <right> :bn<CR>
+
+" trim trailing space
+function! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+
+" undotree
+nnoremap <F5> :UndotreeToggle<cr>
+
+"jump between split
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" emmet
+imap <leader>, <C-y>,
+
+" vimdiff
+if &diff
+    nnoremap <leader>1 :diffget LOCAL<cr>
+    nnoremap <leader>2 :diffget BASE<cr>
+    cnoremap <leader>3 :diffget REMOTE<cr>
+endif
+
+" vim-expand-region
+" map K <Plug>(expand_region_expand)
+" map J <Plug>(expand_region_shrink)
+call expand_region#custom_text_objects({
+            \ 'i]':1,
+            \ 'a]':1,
+            \ 'at':1,
+            \ 'ab':1,
+            \ 'aB':1
+            \ })
+" ale fix
+nmap <silent> <leader>af <Plug>(ale_fix)
+nmap <silent> <leader>aj :ALENext<cr>
+nmap <silent> <leader>ak :ALEPrevious<cr>
+
+
+" deoplete
+" -----------------------------
+" if exists('g:deoplete#enable_at_startup')
+"     set completeopt=longest,menuone,preview
+"     let g:deoplete#enable_at_startup = 0
+"     autocmd InsertEnter * call deoplete#enable()
+"     inoremap <expr><C-g>     deoplete#undo_completion()
+"     call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
+"     call deoplete#custom#source('ultisnips', 'rank', 1000)
+"     let g:deoplete#enable_ignore_case = 1
+"     let g:deoplete#enable_smart_case = 1
+"     let g:deoplete#enable_camel_case = 1
+"     let g:deoplete#enable_refresh_always = 1
+"     let g:deoplete#max_abbr_width = 0
+"     let g:deoplete#max_menu_width = 0
+"     call deoplete#custom#var('around', {
+"                 \   'range_above': 15,
+"                 \   'range_below': 15,
+"                 \   'mark_above': '[↑]',
+"                 \   'mark_below': '[↓]',
+"                 \   'mark_changes': '[*]',
+"                 \})
+" endif
+
+" coc
+" -----------------------------
+let g:coc_global_extensions = [
+            \   'coc-css',
+            \   'coc-html',
+            \   'coc-json',
+            \   'coc-java',
+            \   'coc-prettier',
+            \   'coc-pairs'
+            \ ]
+            " \   'coc-tsserver',
+            " \   'coc-eslint'
+            " \   'coc-vetur'
+            " \ ]
+" set cmdheight=2
+set updatetime=300
+set hidden
+set shortmess+=c
+" set signcolumn=yes
+" remap goto
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+" Remap for do codeAction of current line
+nmap <leader>ca  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" autocmd InsertLeave *.js,*.vue CocCommand prettier.formatFile
+
+" Enconding
+" -----------------------------
+set encoding=utf-8
+
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
+
+fun! ViewUTF8()
+    set encoding=utf-8
+    set termencoding=big5
+endfun
+
+fun! UTF8()
+    set encoding=utf-8
+    set termencoding=big5
+    set fileencoding=utf-8
+    set fileencodings=ucs-bom,big5,utf-8,latin1
+endfun
+
+fun! Big5()
+    set encoding=big5
+    set fileencoding=big5
+endfun
+
+" open file
+" -----------------------------
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+map <leader>ew :e %%
+map <leader>es :sp %%
+map <leader>ev :evsp %%
+map <leader>et :tabe %%
+
+" whitespace
+" -----------------------------
+set list listchars=tab:»-,trail:·
+
+"" ctrlp
+" -----------------------------
+" if executable('rg')
+"   set grepprg=rg\ --color=never
+"   let g:ctrlp_fallback_command = 'rg --files --color=never %s'
+" else
+"   if s:is_windows
+"     let g:ctrlp_fallback_command = 'dir %s /-n /b /s /a-d'  " Windows
+"   else
+"     let g:ctrlp_fallback_command = 'find %s -type f'        " MacOSX/Linux
+"   endif
+" endif
+"
+" let g:ctrlp_user_command = {
+" 	\ 'types': {
+" 		\ 1: ['.git', 'cd %s && git ls-tree -r --name-only HEAD'],
+" 		\ 2: ['.hg', 'hg --cwd %s locate -I .'],
+" 		\ },
+" 	\ 'fallback': g:ctrlp_fallback_command
+" 	\ }
+"
+" if s:is_windows
+"     nnoremap <C-P> :CtrlP<cr>
+" else
+"     "fzf is much faster in *nix
+"     set rtp+=~/.fzf
+"     nnoremap <C-P> :FZF<cr>
+" endif
+
+
+" denite
+" -----------------------------
+" call denite#custom#option('_', 'highlight_matched_char', 'Underline')
+" call denite#custom#option('_', 'highlight_preview_line', 'Underline')
+" call denite#custom#option('_', 'highlight_mode_insert', 'WildMenu')
+" call denite#custom#option('_', 'winheight', 15)
+" call denite#custom#source( 'file/rec', 'sorters', ['sorter/sublime'])
+" call denite#custom#source( 'file/rec/hg', 'sorters', ['sorter/sublime'])
+" call denite#custom#source( 'file/rec/git', 'sorters', ['sorter/sublime'])
+" call denite#custom#var('file/rec', 'command',
+" \ ['ag', '--follow', '--nocolor', '--nogroup', '-g', ''])
+"
+" call denite#custom#var('file/rec', 'command',
+"     \ ['rg', '--files', '--glob', '!.git'])
+"
+" call denite#custom#alias('source', 'file/rec/git', 'file/rec')
+" call denite#custom#var('file/rec/git', 'command',
+"     \ ['git', 'ls-tree', '-r' ,'--name-only', 'HEAD'])
+"
+" call denite#custom#alias('source', 'file/rec/hg', 'file/rec')
+" call denite#custom#var('file/rec/hg', 'command', ['hg', 'files'])
+"
+" function! DeniteFileRec()
+"     if finddir('.git', ';') != ''
+"         return 'file/rec/git'
+"     elseif finddir('.hg', ';') != ''
+"         return 'file/rec/hg'
+"     else
+"         return 'file/rec'
+" endfunction
+"
+" nnoremap <silent> <leader>f :<C-u>Denite `DeniteFileRec()` buffer file_mru<CR>
+"
+" call denite#custom#map('insert', '<C-j>', '<denite:move_to_next_line>', 'noremap')
+" call denite#custom#map('insert', '<C-k>', '<denite:move_to_previous_line>', 'noremap')
+
+" leaderF
+" --------------
+if s:is_windows
+    nnoremap <leader>r :LeaderfMru<CR>
+    nnoremap <leader>g :Leaderf rg -e<Space>
+    let g:Lf_WindowHeight = 0.30
+    let g:Lf_MruFileExclude = ['*.so', '*.tmp', '*.bak', '*.exe', '*.dll']
+    let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+else
+    function! s:build_quickfix_list(lines)
+      call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+      copen
+      cc
+    endfunction
+    let $FZF_DEFAULT_OPTS = ' --reverse'
+    let g:fzf_layout = { 'down': '~30%' }
+    let g:fzf_colors =
+                \ { 'fg': ['fg', 'Normal'],
+                \ 'bg': ['bg', 'Normal']}
+    let g:fzf_action = {
+        \ 'ctrl-q': function('s:build_quickfix_list'),
+        \ 'ctrl-t': 'tab split',
+        \ 'ctrl-x': 'split',
+        \ 'ctrl-v': 'vsplit'
+        \ }
+    nnoremap <leader>f :Files<cr>
+    nnoremap <leader>r :History<cr>
+    nnoremap <leader>b :Buffers<cr>
+    let g:fzf_files_options =
+        \ '--preview "(bat {}) 2> /dev/null | head -'.&lines.'"'
+endif
+
+
+"ack.vim
+if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+endif
+
+
+
+" search (fzf)
+" setting on windows :
+"   scoop install fzf
+"   scoop install ripgrep
+"   set FZF_DEFAULT_COMMAND='rg --files'
+" -----------------------------
+" if s:is_windows
+"     set rtp+=/c/Users/jackys/scoop/shims/fzf
+" else
+"     set rtp+=/usr/local/opt/fzf
+" endif
+
+" vim-sneak
+" -----------------------------
+let g:sneak#s_next=1
+let g:sneak#streak=1
+map f <Plug>Sneak_f
+map F <Plug>Sneak_F
+map t <Plug>Sneak_t
+map T <Plug>Sneak_T
+
+" ale
+" -----------------------------
+"let g:ale_sign_column_always = 1
+""
+" let g:ale_sign_error = "◉"
+" let g:ale_sign_warning = "◉"
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '⚠'
+highlight ALEErrorSign guifg=#C30500
+highlight ALEWarningSign guifg=#ED6237
+
+" highlight clear ALEErrorLine "Sign
+" highlight clear ALEWarningLine "Sign
+" let g:ale_sign_error = '✗'
+" let g:ale_sign_warning = '⚠'
+
+" let g:ale_sign_error = '●'
+
+" let s:prettierexec1 = getcwd() . '/src/frontend/node_modules/.bin/prettier'
+" let s:prettierexec2 = getcwd() . '/web/node_modules/.bin/prettier'
+" if filereadable(s:prettierexec1)
+"     let s:prettierexec = s:prettierexec1
+" elseif filereadable(s:prettierexec2)
+"     let s:prettierexec = s:prettierexec2
+" endif
+"
+" if exists('s:prettierexec')
+"     let g:ale_javascript_prettier_executable = s:prettierexec
+"     let g:ale_css_prettier_executable = s:prettierexec
+"     let g:ale_html_prettier_executable = s:prettierexec
+"     let g:ale_json_prettier_executable = s:prettierexec
+"     let g:ale_scss_prettier_executable = s:prettierexec
+"     let g:ale_vue_prettier_executable = s:prettierexec
+" endif
+
+let s:eslintexec1 = getcwd() . '/src/frontend/.eslintrc.js'
+let s:eslintexec2 = getcwd() . '/web/.eslintrc.js'
+if filereadable(s:eslintexec1)
+    let s:eslintdir = getcwd() . '/src/frontend'
+elseif filereadable(s:eslintexec2)
+    let s:eslintdir = getcwd() . '/web'
+else
+    let s:eslintdir = getcwd()
+endif
+let g:ale_javascript_eslint_options = '--resolve-plugins-relative-to ' . s:eslintdir
+" let g:ale_javascript_jshint_executable = getcwd() . '/node_modules/jshint/bin/jshint'
+let g:ale_fixers = {
+            \ 'javascript': ['eslint'],
+            \ 'vue': ['eslint']
+            \}
+
+" let g:ale_fixers = {
+"             \ 'javascript': ['prettier', 'eslint'],
+"             \ 'vue': ['prettier', 'eslint'],
+"             \ 'css': ['prettier'],
+"             \ 'scss': ['prettier'],
+"             \ 'html': ['prettier'],
+"             \ 'json': ['prettier'],
+"             \}
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_on_save = 1
+let g:ale_fix_on_save = 1
+
+
+
+" vim-vue
+" -----------------------------
+au BufNewFile,BufRead *.vue setlocal filetype=vue
+" au BufNewFile,BufRead *.vue setlocal filetype=vue.html.javascript.css
+" let g:vim_vue_plugin_load_full_syntax = 1
+" let g:vim_vue_plugin_debug = 1
+" autocmd FileType vue syntax sync fromstart
+autocmd FileType vue syntax sync fromstart
+let g:vue_disable_pre_processors=1
+
+" vim-json
+" -----------------------------
+let g:vim_json_syntax_conceal = 0
+
+
+" ultisnips
+" -----------------------------
+let g:UltiSnipsEditSplit="vertical"
+"let g:UltiSnipsExpandTrigger="<c-e>"
+"let g:UltiSnipsJumpForwardTrigger="<c-b>"
+"let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
+"lightline
+            " \ 'colorscheme': 'seoul256',
+let g:lightline = {
+            \  'colorscheme': 'wombat',
+            \ 'active': {
+            \   'left': [
+            \       [ 'mode', 'paste' ],
+            \       [ 'fugitive', 'lawrencium', 'filename', 'cocstatus', 'currentfunction' ] ],
+            \   'right': [
+            \       [ 'lineinfo'],
+            \       [ 'percent' ],
+            \       [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]
+            \   ]
+            \ },
+            \ 'component_expand': {
+            \   'linter_checking': 'lightline#ale#checking',
+            \   'linter_warnings': 'lightline#ale#warnings',
+            \   'linter_errors': 'lightline#ale#errors',
+            \   'linter_ok': 'lightline#ale#ok',
+            \ },
+            \ 'component_function': {
+            \   'cocstatus': 'coc#status',
+            \   'currentfunction': 'CocCurrentFunction',
+            \   'fugitive': 'LightlineFugitive',
+            \   'lawrencium': 'LightlineLawrencium',
+            \   'filename': 'LightlineFilename'
+            \ }
+            \ }
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
+function! LightlineModified()
+    return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+function! LightlineReadonly()
+    return &ft !~? 'help' && &readonly ? 'RO' : ''
+endfunction
+function! LightlineFilename()
+    return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+                \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
+                \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+endfunction
+function! LightlineFugitive()
+    return fugitive#head()
+endfunction
+
+function! LightlineLawrencium()
+    return ''
+    " return lawrencium#statusline()
+endfunction
+
+command! LightlineReload call LightlineReload()
+
+function! LightlineReload()
+  call lightline#init()
+  call lightline#colorscheme()
+  call lightline#update()
+endfunction
+
+

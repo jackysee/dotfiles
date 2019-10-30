@@ -1,0 +1,21 @@
+{
+    "prettier.onlyUseLocalVersion": true,
+    "prettier.disableLanguages": [],
+    "prettier.requireConfig": true,
+    "eslint.options": { "resolvePluginsRelativeTo": "src/frontend" },
+    "eslint.filetypes": ["javascript", "vue"],
+    "diagnostic.errorSign": "❌",
+    "vetur.validation.style": false,
+    "vetur.validation.script": false,
+    "vetur.validation.template": false,
+    "coc.preferences.formatOnSaveFiletypes": [
+        "js",
+        "vue",
+        "css",
+        "scss",
+        "json",
+        "html",
+        "markdown",
+        "md"
+    ]
+}
