@@ -17,7 +17,7 @@ URxvt.cursorUnderline: false
 URxvt.scrollBar_right: false
 URxvt.scrollBar: false
 URxvt.urgentOnBell: true
-URxvt.font: xft:dejavu\ sans\ mono-9:antialias=true
+URxvt.font: xft:dejavu\ sans\ mono-9:antialias=true, xft:Noto Sans CJK TC-9
 URxvt.letterSpace: -1
 URxvt*termName: rxvt-unicode-256color
 URxvt.perl-ext-common: font-size
@@ -27,6 +27,7 @@ URxvt.keysym.C-S-Up:   font-size:incglobal
 URxvt.keysym.C-S-Down: font-size:decglobal
 URxvt.keysym.C-equal:  font-size:reset
 URxvt.keysym.C-slash:  font-size:show
+URxvt.intensifyStyles: false
 
 
 ! xterm*faceName: Dejavu Sans Mono

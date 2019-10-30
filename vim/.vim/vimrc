@@ -196,7 +196,7 @@ else
     autocmd! bufwritepost vimrc source ~/.vimrc
 endif
 
-set termguicolors
+" set termguicolor
 set background=dark
 
 " colorscheme molokai
