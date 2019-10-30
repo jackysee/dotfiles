@@ -6,6 +6,7 @@
 "tmux/.tmux" = "~/.tmux"
 ".zshrc" = "~/.zshrc"
 ".Xresources" = "~/.Xresources"
+".xinitrc" = "~/.xinitrc"
 ".aliases" = "~/.aliases"
 ".profile" = "~/.profile"
 ".bashrc" = "~/.bashrc"
