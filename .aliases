@@ -1,0 +1,40 @@
+alias ..='cd ..'
+
+if type exa &> /dev/null; then
+    alias ls="exa"
+    alias l="exa -a"
+    alias ll="exa -lagh"
+    # alias la="exa -lagh"
+    # alias lt="exa -T"
+    alias lg="exa -lagh --git"
+else
+    alias ls='ls --color=auto'
+    alias ll='ls -la'
+fi
+
+
+alias g=git
+
+alias hglog='hg log2'
+alias hgrbt='hg rebase --dest tip'
+
+alias xterm='nohup xterm > /dev/null 2>&1&'
+alias xst='nohup st > /dev/null 2>&1&'
+
+alias mux='tmuxinator'
+
+alias hgd='hg diff --color=always | diff-so-fancy | less -FRX'
+
+killserver() {
+    tmux send-keys -t 2 C-c
+    tmux send-keys -t 3 C-c
+}
+startserver() {
+    tmux send-keys -t 2 './gradlew bootRun -Pskipweb=true' Enter
+    tmux send-keys -t 3 'npm run serve' Enter
+}
+
+
+
+
+

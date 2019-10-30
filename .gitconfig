@@ -1,0 +1,23 @@
+[credential]
+    helper = store
+[core]
+    editor = vim
+    autocrlf = input
+    pager = diff-so-fancy | less --tabs=4 -RFX
+	quotepath = false
+[pull]
+    rebase = true
+[alias]
+    st = status -s
+    l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    ca = !git add -A && git commit -a -v
+[merge]
+    tool = vimdiff
+    confictstyle = diff3
+    prompt = false
+
+[include]
+    path = ~/.gitconfig.local
+
+[diff-so-fancy]
+    stripLeadingSymbols = false

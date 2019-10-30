@@ -1,0 +1,49 @@
+%include ~/.hgrc.local
+
+[ui]
+merge = vimdiff
+
+[merge-tools]
+vimdiff.executable = vimdiff
+vimdiff.args = -d -c "set modifiable" -c "set write" -c "wincmd J"  $output -M $local $base $other
+# vimdiff.args = -d $output -M $local $base $other
+vimdiff.premerge = keep
+
+[extensions]
+color =
+pager =
+graphlog =
+rebase =
+progress =
+purge =
+shelve =
+histedit =
+strip =
+
+[color]
+status.modified = magenta bold
+status.added = green bold
+status.removed = red bold
+status.deleted = cyan bold
+status.unknown = bold
+status.ignored = bold
+custom.rev = red
+custom.decorate = yellow
+custom.date = green
+custom.author = blue bold
+
+[alias]
+show = log --stat --color=always -vpr
+log2 =  log -G --template "{label('custom.rev', rev)} - ({label('custom.decorate', branch)}) {desc|strip|firstline} {label('custom.date', date|age)} {label('custom.author' , author)}"
+
+[pager]
+attend = annotate, cat, diff, export, glog, log, qdiff, slog, dlog, gslog, sglog, df, nlog, outgoing, lg, show, lga, log2
+
+[diff]
+git = True
+
+[experimental]
+graphstyle.parent = |
+graphstyle.grandparent = '
+graphstyle.missing =
+graphshorten = true
