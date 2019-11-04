@@ -10,6 +10,7 @@
 let s:is_windows = has('win32') || has('win64')
 let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
+let s:has_node = executable('node')
 
 " shell
 " -----------------------------
@@ -133,7 +134,9 @@ Plug 'jlfwong/vim-mercenary'
 Plug 'elmcast/elm-vim'
 
 " == coc ==
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+if s:has_node
+    Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+endif
 
 Plug 'mbbill/undotree'
 Plug 'tomtom/tcomment_vim'
@@ -441,38 +444,42 @@ nmap <silent> <leader>ak :ALEPrevious<cr>
 "                 \})
 " endif
 
-" coc
-" -----------------------------
-let g:coc_global_extensions = [
-            \   'coc-css',
-            \   'coc-html',
-            \   'coc-json',
-            \   'coc-java',
-            \   'coc-prettier',
-            \   'coc-pairs'
-            \ ]
-            " \   'coc-tsserver',
-            " \   'coc-eslint'
-            " \   'coc-vetur'
-            " \ ]
-" set cmdheight=2
-set updatetime=300
-set hidden
-set shortmess+=c
-" set signcolumn=yes
-" remap goto
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-" Remap for do codeAction of current line
-nmap <leader>ca  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
 
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-" autocmd InsertLeave *.js,*.vue CocCommand prettier.formatFile
+if s:has_node
+    " coc
+    " -----------------------------
+    let g:coc_global_extensions = [
+                \   'coc-css',
+                \   'coc-html',
+                \   'coc-json',
+                \   'coc-java',
+                \   'coc-prettier',
+                \   'coc-pairs'
+                \ ]
+                " \   'coc-tsserver',
+                " \   'coc-eslint'
+                " \   'coc-vetur'
+                " \ ]
+    " set cmdheight=2
+    set updatetime=300
+    set hidden
+    set shortmess+=c
+    " set signcolumn=yes
+    " remap goto
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
+    " Remap for do codeAction of current line
+    nmap <leader>ca  <Plug>(coc-codeaction)
+    " Fix autofix problem of current line
+    nmap <leader>qf  <Plug>(coc-fix-current)
+
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
+    command! -nargs=0 Prettier :CocCommand prettier.formatFile
+    " autocmd InsertLeave *.js,*.vue CocCommand prettier.formatFile
+endif
+
 
 " Enconding
 " -----------------------------
