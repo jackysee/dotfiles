@@ -76,6 +76,7 @@ Plug 'whatyouhide/vim-gotham'
 Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'arcticicestudio/nord-vim'
+Plug 'liuchengxu/space-vim-dark'
 " Plug 'fxn/vim-monochrome'
 " Plug 'CallumHoward/vim-neodark'
 " Plug 'owickstrom/vim-colors-paramount'
@@ -196,7 +197,7 @@ else
     autocmd! bufwritepost vimrc source ~/.vimrc
 endif
 
-" set termguicolor
+" set termguicolors
 set background=dark
 
 " colorscheme molokai
@@ -215,7 +216,7 @@ set background=dark
 " colorscheme boring
 " colorscheme distilled
 " colorscheme zazen
-colorscheme onehalfdark
+" colorscheme onehalfdark
 
 " let g:seoul256_background = 233
 " colorscheme seoul256
@@ -225,6 +226,8 @@ colorscheme onehalfdark
 
 " colorscheme nord
 " colorscheme solarized8_high
+" colorscheme spacegray
+colorscheme space-vim-dark
 
 " if !has("gui_running")	" running term
 " endif

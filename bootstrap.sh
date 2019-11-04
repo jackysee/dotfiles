@@ -5,7 +5,7 @@ echo "add ppa"
 sudo add-apt-repository ppa:jonathonf/vim -y
 
 echo "install apt packages"
-sudo apt install -qq \
+sudo apt install -q -y \
     build-essential \
     zsh \
     git \

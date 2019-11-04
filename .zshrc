@@ -15,6 +15,9 @@ export GDK_DPI_SCALE=1
 export TERM=xterm-256color
 export PATH="$HOME/.local/bin/:$PATH"
 
+export QT_PLATFORM_PLUGIN=qt5ct
+export QT_QPA_PLATFORMTHEME=qt5ct
+
 stty -ixon
 
 ## nvm
@@ -26,13 +29,15 @@ if [[ ! -d $NVM_DIR ]]; then
   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
   echo "Please modify ${HOME}/.zshrc to remove the line of code that the NVM installer added"
 fi
-if [ "$LAZY_NODE_GLOBAL" != "true" ]; then
-    # echo "Shimming vim with nvm"
-    NODE_GLOBALS+=("vim")
-    for cmd in "${NODE_GLOBALS[@]}"; do
-        eval "${cmd}(){ unset -f ${NODE_GLOBALS}; nvm version; ${cmd} \$@ }"
-    done
-    export LAZY_NODE_GLOBAL=true
+
+if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
+  declare -a NODE_GLOBALS=(`find $HOME/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+  NODE_GLOBALS+=("node")
+  NODE_GLOBALS+=("nvm")
+  NODE_GLOBALS+=("vim")
+  for cmd in "${NODE_GLOBALS[@]}"; do
+    eval "${cmd}(){ unset -f ${NODE_GLOBALS}; source $HOME/.nvm/nvm.sh; ${cmd} \$@ }"
+  done
 fi
 
 
@@ -75,8 +80,8 @@ zplugin light dbkaplun/smart-cd
 zplugin ice wait'0' lucid
 zplugin light zdharma/fast-syntax-highlighting
 
-zplugin ice wait'0'
-zplugin light lukechilds/zsh-nvm
+# zplugin ice wait'0'
+# zplugin light lukechilds/zsh-nvm
 
 zplugin ice wait"0" atload"_zsh_autosuggest_start" lucid
 zplugin light zsh-users/zsh-autosuggestions
@@ -161,6 +166,18 @@ hgshow() {
 }
 # zprof
 
+#vim + ag
+vg() {
+  local file
+  local line
+
+  read -r file line <<<"$(ag --nobreak --noheading $@ | fzf -0 -1 | awk -F: '{print $1, $2}')"
+
+  if [[ -n $file ]]
+  then
+     vim $file +$line
+  fi
+}
 
 # Load local file if it exists (this isn't commited to the dotfiles repo)
 if [[ -f ~/.zshrc.local ]]; then

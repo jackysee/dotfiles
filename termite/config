@@ -1,10 +1,15 @@
 [options]
 font = Monaco 12
+# font = DejaVu Sans Mono for Powerline 10
+# font = Anonymice Nerd Font Mono 11
+# font = Source Code Pro 9
 # font = Input Mono 12
 # font = Inconsolata 12
-# font = Monoid
+# font = Fira Code 12
+# font = Monoid 9
 scrollback_lines = 10000
 # size_hints = true
+# ===
 
 
 [colors]
@@ -35,8 +40,6 @@ cursor_foreground = #2e3440
 #color15 = #eceff4
 
 
-foreground = #F8F8F2
-foreground_bold = #F8F8F2
 background = #282A36
 color0 = #000000
 color1 = #FF5555

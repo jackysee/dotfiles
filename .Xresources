@@ -17,7 +17,13 @@ URxvt.cursorUnderline: false
 URxvt.scrollBar_right: false
 URxvt.scrollBar: false
 URxvt.urgentOnBell: true
-URxvt.font: xft:dejavu\ sans\ mono-9:antialias=true, xft:Noto Sans CJK TC-9
+URxvt*font: xft:DejaVu Sans Mono for Powerline:size=9:antialias=true, xft:Noto Sans CJK TC-9
+! URxvt.font: xft:Monaco:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! URxvt.font: xft:Input Mono:regular:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! URxvt.imFont: xft:Input Mono:regular:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! URxvt.boldFont: xft:Input Mono:bold:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! URxvt.italicFont: xft:Input Mono:italic:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! kRxvt.boldItalicFont: xft:Input Mono:bold:italic:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
 URxvt.letterSpace: -1
 URxvt*termName: rxvt-unicode-256color
 URxvt.perl-ext-common: font-size
