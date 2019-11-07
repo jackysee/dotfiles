@@ -71,8 +71,8 @@ zplugin snippet OMZ::lib/history.zsh
 zplugin snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 
 zplugin light agkozak/zsh-z
-zplugin light dbkaplun/smart-cd
-# # zplugin light bugworm/auto-exa
+# zplugin light dbkaplun/smart-cd
+zplugin light bugworm/auto-exa
 # # zplugin ice wait"0" atinit"zpcompinit; zpcdreplay" lucid
 
 # issue https://github.com/zdharma/fast-syntax-highlighting/issues/146
