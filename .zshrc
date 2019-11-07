@@ -115,7 +115,6 @@ zplugin light zdharma/zsh-diff-so-fancy
 
 zplugin ice pick"async.zsh" src"pure.zsh"
 zplugin light sindresorhus/pure
-# zstyle ':prompt:pure:prompt:*' color default
 
 ### End of Zplugin's installer chunk
 
