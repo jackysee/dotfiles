@@ -93,7 +93,8 @@ Plug 'kaicataldo/material.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'pbrisbin/vim-mkdir'
-
+" Plug 'editorconfig/editorconfig-vim'
+Plug 'sgur/vim-editorconfig'
 
 "start page
 if s:is_fast
