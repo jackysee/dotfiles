@@ -18,6 +18,10 @@ export PATH="$HOME/.local/bin/:$PATH"
 export QT_PLATFORM_PLUGIN=qt5ct
 export QT_QPA_PLATFORMTHEME=qt5ct
 
+# export XMODIFIERS=@im=fcitx
+# export GTK_IM_MODULE=fcitx
+# export QT_IM_MODULE=fcitx
+
 stty -ixon
 
 ## nvm
@@ -26,7 +30,7 @@ export NVM_DIR="${:-$HOME/.}nvm"
 if [[ ! -d $NVM_DIR ]]; then
   echo "Installing NVM"
   mkdir $NVM_DIR
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash
   echo "Please modify ${HOME}/.zshrc to remove the line of code that the NVM installer added"
 fi
 
@@ -56,12 +60,10 @@ if [[ ! -d $ZPLG_HOME ]]; then
   curl -sL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh | bash
 fi
 
+ZSH_DISABLE_COMPFIX=true
 source "${ZPLG_HOME}/bin/zplugin.zsh"
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
-
-# zplugin ice from"gh-r" as"program" mv"exa* -> exa"
-# zplugin light ogham/exa
 
 zplugin snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
 zplugin snippet OMZ::plugins/mercurial/mercurial.plugin.zsh
@@ -101,7 +103,7 @@ zplugin light BurntSushi/ripgrep
 zplugin ice from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat"
 zplugin light sharkdp/bat
 
-zplugin ice lucid  ice from"gh-r" as"program" mv"fd* -> fd" pick"fd/fd"
+zplugin ice from"gh-r" as"program" mv"fd* -> fd" pick"fd/fd" nocompletions
 zplugin light sharkdp/fd
 
 zplugin ice from"gh-r" as"program" mv"exa*->exa" pick"exa"

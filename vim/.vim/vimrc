@@ -182,7 +182,8 @@ if s:is_fast
     Plug 'sgur/vim-editorconfig'
     " Plug 'gorodinskiy/vim-coloresque'
     " Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'sass', 'vue', 'html'] }
-    Plug 'RRethy/vim-hexokinase', { 'for': ['css', 'scss', 'sass', 'vue', 'html'] }
+    " Plug 'RRethy/vim-hexokinase', { 'for': ['js', 'css', 'scss', 'sass', 'vue', 'html'] }
+    Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
     Plug 'Raimondi/delimitMate'
     Plug '1995eaton/vim-better-javascript-completion',  { 'for': [ 'javascript', 'vue' ]}
 endif
@@ -197,7 +198,7 @@ else
     autocmd! bufwritepost vimrc source ~/.vimrc
 endif
 
-" set termguicolors
+set termguicolors
 set background=dark
 
 " colorscheme molokai
@@ -334,6 +335,9 @@ let g:signify_realtime = 0
 let g:signify_sign_change = '~'
 let g:signify_update_on_focusgained = 1
 
+
+let g:Hexokinase_highlighters = ['backgroundfull']
+
 " Shortcuts
 " -----------------------------
 " set leader to ,
@@ -448,10 +452,10 @@ let g:coc_global_extensions = [
             \   'coc-css',
             \   'coc-html',
             \   'coc-json',
-            \   'coc-java',
-            \   'coc-prettier',
             \   'coc-pairs'
             \ ]
+            " \   'coc-java',
+            " \   'coc-prettier',
             " \   'coc-tsserver',
             " \   'coc-eslint'
             " \   'coc-vetur'
@@ -470,9 +474,11 @@ nmap <silent> gr <Plug>(coc-references)
 nmap <leader>ca  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
 nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>ne  <Plug>(coc-diagnostic-next-error)
+nmap <leader>pe  <Plug>(coc-diagnostic-prev-error)
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" command! -nargs=0 Prettier :CocCommand prettier.formatFile
 " autocmd InsertLeave *.js,*.vue CocCommand prettier.formatFile
 
 
@@ -506,7 +512,7 @@ endfun
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
 map <leader>ew :e %%
 map <leader>es :sp %%
-map <leader>ev :evsp %%
+map <leader>ev :vsp %%
 map <leader>et :tabe %%
 
 " whitespace
@@ -635,10 +641,10 @@ endif
 " -----------------------------
 let g:sneak#s_next=1
 let g:sneak#streak=1
-map f <Plug>Sneak_f
-map F <Plug>Sneak_F
-map t <Plug>Sneak_t
-map T <Plug>Sneak_T
+nmap f <Plug>Sneak_f
+nmap F <Plug>Sneak_F
+nmap t <Plug>Sneak_t
+nmap T <Plug>Sneak_T
 
 " ale
 " -----------------------------
@@ -658,22 +664,22 @@ highlight ALEWarningSign guifg=#ED6237
 
 " let g:ale_sign_error = '●'
 
-" let s:prettierexec1 = getcwd() . '/src/frontend/node_modules/.bin/prettier'
-" let s:prettierexec2 = getcwd() . '/web/node_modules/.bin/prettier'
-" if filereadable(s:prettierexec1)
-"     let s:prettierexec = s:prettierexec1
-" elseif filereadable(s:prettierexec2)
-"     let s:prettierexec = s:prettierexec2
-" endif
+let s:prettierexec1 = getcwd() . '/src/frontend/node_modules/.bin/prettier'
+let s:prettierexec2 = getcwd() . '/web/node_modules/.bin/prettier'
+if filereadable(s:prettierexec1)
+    let s:prettierexec = s:prettierexec1
+elseif filereadable(s:prettierexec2)
+    let s:prettierexec = s:prettierexec2
+endif
 "
-" if exists('s:prettierexec')
-"     let g:ale_javascript_prettier_executable = s:prettierexec
-"     let g:ale_css_prettier_executable = s:prettierexec
-"     let g:ale_html_prettier_executable = s:prettierexec
-"     let g:ale_json_prettier_executable = s:prettierexec
-"     let g:ale_scss_prettier_executable = s:prettierexec
-"     let g:ale_vue_prettier_executable = s:prettierexec
-" endif
+if exists('s:prettierexec')
+    let g:ale_javascript_prettier_executable = s:prettierexec
+    let g:ale_css_prettier_executable = s:prettierexec
+    let g:ale_html_prettier_executable = s:prettierexec
+    let g:ale_json_prettier_executable = s:prettierexec
+    let g:ale_scss_prettier_executable = s:prettierexec
+    let g:ale_vue_prettier_executable = s:prettierexec
+endif
 
 let s:eslintexec1 = getcwd() . '/src/frontend/.eslintrc.js'
 let s:eslintexec2 = getcwd() . '/web/.eslintrc.js'
@@ -685,20 +691,20 @@ else
     let s:eslintdir = getcwd()
 endif
 let g:ale_javascript_eslint_options = '--resolve-plugins-relative-to ' . s:eslintdir
-" let g:ale_javascript_jshint_executable = getcwd() . '/node_modules/jshint/bin/jshint'
-let g:ale_fixers = {
-            \ 'javascript': ['eslint'],
-            \ 'vue': ['eslint']
-            \}
-
+let g:ale_javascript_jshint_executable = getcwd() . '/node_modules/jshint/bin/jshint'
 " let g:ale_fixers = {
-"             \ 'javascript': ['prettier', 'eslint'],
-"             \ 'vue': ['prettier', 'eslint'],
-"             \ 'css': ['prettier'],
-"             \ 'scss': ['prettier'],
-"             \ 'html': ['prettier'],
-"             \ 'json': ['prettier'],
+"             \ 'javascript': ['eslint'],
+"             \ 'vue': ['eslint']
 "             \}
+
+let g:ale_fixers = {
+            \ 'javascript': ['prettier', 'eslint'],
+            \ 'vue': ['prettier', 'eslint'],
+            \ 'css': ['prettier'],
+            \ 'scss': ['prettier'],
+            \ 'html': ['prettier'],
+            \ 'json': ['prettier'],
+            \}
 let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 1
