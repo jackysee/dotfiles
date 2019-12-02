@@ -24,25 +24,35 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 
 stty -ixon
 
-## nvm
-export NVM_LAZY_LOAD=true
-export NVM_DIR="${:-$HOME/.}nvm"
-if [[ ! -d $NVM_DIR ]]; then
-  echo "Installing NVM"
-  mkdir $NVM_DIR
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash
-  echo "Please modify ${HOME}/.zshrc to remove the line of code that the NVM installer added"
+## fnm
+export FNM_DIR="${:-$HOME/.}fnm"
+if [[ ! -d $FNM_DIR ]]; then
+  echo "Installing FNM"
+  mkdir $FNM_DIR
+  curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- --skip-shell
 fi
+export PATH=/home/jackys/.fnm:$PATH
+eval "`fnm env --multi`"
 
-if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
-  declare -a NODE_GLOBALS=(`find $HOME/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
-  NODE_GLOBALS+=("node")
-  NODE_GLOBALS+=("nvm")
-  NODE_GLOBALS+=("vim")
-  for cmd in "${NODE_GLOBALS[@]}"; do
-    eval "${cmd}(){ unset -f ${NODE_GLOBALS}; echo 'loading nvm...'; source $HOME/.nvm/nvm.sh; ${cmd} \$@ }"
-  done
-fi
+# ## nvm
+# export NVM_LAZY_LOAD=true
+# export NVM_DIR="${:-$HOME/.}nvm"
+# if [[ ! -d $NVM_DIR ]]; then
+#   echo "Installing NVM"
+#   mkdir $NVM_DIR
+#   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash
+#   echo "Please modify ${HOME}/.zshrc to remove the line of code that the NVM installer added"
+# fi
+#
+# if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
+#   declare -a NODE_GLOBALS=(`find $HOME/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
+#   NODE_GLOBALS+=("node")
+#   NODE_GLOBALS+=("nvm")
+#   NODE_GLOBALS+=("vim")
+#   for cmd in "${NODE_GLOBALS[@]}"; do
+#     eval "${cmd}(){ unset -f ${NODE_GLOBALS}; echo 'loading nvm...'; source $HOME/.nvm/nvm.sh; ${cmd} \$@ }"
+#   done
+# fi
 
 
 export FZF_DEFAULT_COMMAND="([ -d ./.hg ] && ag -l --hidden --ignore .hg) || rg --files --hidden --smart-case --glob '!.git/*'"
@@ -184,3 +194,4 @@ vg() {
 if [[ -f ~/.zshrc.local ]]; then
   source ~/.zshrc.local
 fi
+

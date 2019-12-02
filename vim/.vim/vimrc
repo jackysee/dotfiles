@@ -154,6 +154,7 @@ Plug 'wellle/targets.vim'
 Plug 'kana/vim-textobj-user'
 Plug 'qpkorr/vim-bufkill'
 Plug 'mileszs/ack.vim'
+Plug 'chiedojohn/vim-case-convert'
 if s:is_gui
     Plug 'TaDaa/vimade'
 endif
