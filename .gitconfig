@@ -12,9 +12,11 @@
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     ca = !git add -A && git commit -a -v
 [merge]
-    tool = vimdiff
-    confictstyle = diff3
-    prompt = false
+    tool = diffconflicts
+[mergetool "diffconflicts"]
+    cmd = 'vim -c DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'
+    trustExitCode = true
+    keepBackup = false
 
 [include]
     path = ~/.gitconfig.local

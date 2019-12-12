@@ -1,4 +1,5 @@
 {
+  "html.format.enable": false,
   "prettier.onlyUseLocalVersion": true,
   "prettier.disableLanguages": [],
   "prettier.requireConfig": true,

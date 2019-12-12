@@ -115,6 +115,9 @@ Plug 'mhinz/vim-signify'
 "hg
 Plug 'jlfwong/vim-mercenary'
 " Plug 'ludovicchabant/vim-lawrencium'
+"
+"diff tools
+Plug 'whiteinge/diffconflicts'
 
 " == deoplete ==
 " if s:is_fast
@@ -247,13 +250,13 @@ set background=dark
 " let g:seoul256_background = 233
 " colorscheme seoul256
 
-" let g:gruvbox_contrast_dark='hard'
-" colorscheme gruvbox
+let g:gruvbox_contrast_dark='hard'
+colorscheme gruvbox
 
 " colorscheme nord
 " colorscheme solarized8_high
 " colorscheme spacegray
-colorscheme space-vim-dark
+" colorscheme space-vim-dark
 
 " if !has("gui_running")	" running term
 " endif
@@ -425,9 +428,8 @@ imap <C-K> <C-y>,
 
 " vimdiff
 if &diff
-    nnoremap <leader>1 :diffget LOCAL<cr>
-    nnoremap <leader>2 :diffget BASE<cr>
-    cnoremap <leader>3 :diffget REMOTE<cr>
+    nnoremap <leader>g :diffget<CR>
+    nnoremap <leader>p :diffput<CR>
 endif
 
 " vim-expand-region
@@ -776,7 +778,7 @@ let g:ale_fixers = {
             \ 'vue': ['prettier', 'eslint'],
             \ 'css': ['prettier'],
             \ 'scss': ['prettier'],
-            \ 'html': ['prettier'],
+            \ 'html': ['prettier', 'eslint'],
             \ 'json': ['prettier'],
             \}
 let g:ale_lint_on_text_changed = 'normal'
