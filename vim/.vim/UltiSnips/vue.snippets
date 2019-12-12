@@ -4,7 +4,7 @@ snippet ico "ico"
 import $1 from '@/components/$1.vue';
 endsnippet
 
-snippet tt "tt"
+snippet tt "tt" w
 {{\$t('$0')}}
 endsnippet
 
@@ -45,4 +45,36 @@ export default {
     }
 };
 </script>
+endsnippet
+
+
+snippet met "methods"
+methods: {
+	${1:methodName}(${2:argument}) {
+		${3:body}
+	}
+}
+endsnippet
+
+snippet comp "computed"
+computed: {
+	${1:methodName}(${2:argument}) {
+		${3:body}
+	}
+}
+endsnippet
+
+snippet props "props"
+${1:propName} : { type: ${2:String} }
+endsnippet
+
+snippet vcl "@click"
+@click="${1}"
+endsnippet
+
+
+snippet vfor "v-for (id)"
+<${3:div} v-for="${1:item} in ${2:items}" :key="$1.id">
+	{{ $1 }}
+</$3>
 endsnippet

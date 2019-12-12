@@ -1,9 +1,31 @@
+snippet fs  "function (shorthand)"
+${1:functionName}(${2}) {
+	${3}
+}
+endsnippet
+
+snippet afs  "function (shorthand)"
+async ${1:functionName}(${2}) {
+	${3}
+}
+endsnippet
+
+snippet fun  "function"
+function ${1:functionName}(${2}) {
+	${3}
+}
+endsnippet
+
+snippet afun "async function"
+async function ${1:functionName}(${2}) {
+	${3}
+}
+endsnippet
 
 snippet noc "eslint-disable no-console"
 /* eslint-disable no-console */
 console.log($0);
 endsnippet
-
 
 snippet cl "console log"
 console.log($0);
@@ -117,7 +139,6 @@ snippet asnm "assert not match"
 assert.notMatch($1, $2);
 endsnippet
 
-
 snippet test "create test file"
 import { shallowMount } from '@vue/test-utils';
 import { assert } from 'chai';
@@ -130,3 +151,8 @@ describe('$1', () => {
 
 });
 endsnippet
+
+snippet wait "settimeout wait"
+await new Promise(rs => setTimeout(rs, ${1:1000}));
+endsnippet
+

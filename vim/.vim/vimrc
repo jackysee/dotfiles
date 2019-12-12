@@ -421,7 +421,7 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
 " emmet
-imap <leader>, <C-y>,
+imap <C-K> <C-y>,
 
 " vimdiff
 if &diff
