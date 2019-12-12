@@ -1,0 +1,21 @@
+# Search case-insensitively if pattern is all lowercase
+--smart-case
+
+# Include hidden files
+--hidden
+
+# Always ignore Git directory
+--glob
+!.git/
+
+# Always ignore node_modules
+--glob
+!node_modules/
+
+# Always ignore hg
+--glob
+!.hg/
+
+# Always ignore package-lock.json
+--glob
+!package-lock.json
