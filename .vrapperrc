@@ -1,1 +1,19 @@
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+nnoremap <esc> :noh<CR><esc>
+vnoremap <esc> :noh<CR><esc>
+
 noremap ; :
+noremap : :
+
+let mapleader=","
+
+eclipseaction eclipseopenresource org.eclipse.ui.navigate.openResource
+nnoremap <leader>f :eclipseopenresource<cr>
+
+eclipseuiaction eclipsetypehier org.eclipse.jdt.ui.edit.text.java.open.hierarchy
+nnoremap <leader>t :eclipsetypehier<cr>
+

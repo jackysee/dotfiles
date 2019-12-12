@@ -124,7 +124,7 @@ Plug 'jlfwong/vim-mercenary'
 "       Plug 'roxma/nvim-yarp'
 "       Plug 'roxma/vim-hug-neovim-rpc'
 "     endif
-"     Plug 'carlitux/deoplete-ternjs'
+"     " Plug 'carlitux/deoplete-ternjs'
 " endif
 
 
@@ -132,10 +132,17 @@ Plug 'jlfwong/vim-mercenary'
 " Plug 'prabirshrestha/vim-lsp'
 " Plug 'lighttiger2505/deoplete-vim-lsp'
 "
-Plug 'elmcast/elm-vim'
 
 " == coc ==
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+
+" == asynccomplete ==
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/asyncomplete-buffer.vim'
+" Plug 'prabirshrestha/asyncomplete-file.vim'
+" Plug 'yami-beta/asyncomplete-omni.vim'
+" Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
+
 Plug 'mbbill/undotree'
 Plug 'tomtom/tcomment_vim'
 Plug 'Shougo/context_filetype.vim'
@@ -149,9 +156,16 @@ Plug 'maximbaz/lightline-ale'
 Plug 'Asheq/close-buffers.vim'
 Plug 'danro/rename.vim'
 Plug 'haya14busa/is.vim'
+Plug 'osyo-manga/vim-anzu'
+Plug 'haya14busa/vim-asterisk'
 Plug 'itchyny/vim-gitbranch'
-Plug 'wellle/targets.vim'
+" Plug 'wellle/targets.vim'
 Plug 'kana/vim-textobj-user'
+Plug 'vim-scripts/argtextobj.vim'
+Plug 'michaeljsmith/vim-indent-object'
+Plug 'justinmk/vim-ipmotion'
+Plug 'kana/vim-textobj-function'
+Plug 'michaeljsmith/vim-indent-object'
 Plug 'qpkorr/vim-bufkill'
 Plug 'mileszs/ack.vim'
 Plug 'chiedojohn/vim-case-convert'
@@ -189,6 +203,10 @@ if s:is_fast
     Plug 'Raimondi/delimitMate'
     Plug '1995eaton/vim-better-javascript-completion',  { 'for': [ 'javascript', 'vue' ]}
 endif
+
+
+Plug 'elmcast/elm-vim', { 'for': ['elm']}
+
 call plug#end()
 
 
@@ -422,13 +440,24 @@ nmap <silent> <leader>af <Plug>(ale_fix)
 nmap <silent> <leader>aj :ALENext<cr>
 nmap <silent> <leader>ak :ALEPrevious<cr>
 
+" is.vim/anzu/vim-asterisk
+map n <Plug>(is-nohl)<Plug>(anzu-n-with-echo)
+map N <Plug>(is-nohl)<Plug>(anzu-N-with-echo)
+" map *  <Plug>(asterisk-z*)<Plug>(anzu-star-with-echo)<Plug>(is-nohl-1)
+map *  <Plug>(asterisk-z*)<Plug>(is-nohl-1)
+map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)
+map #  <Plug>(asterisk-z#)<Plug>(is-nohl-1)
+map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)
+nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
 
 " deoplete
 " -----------------------------
+" let g:deoplete#enable_at_startup = 1
 " if exists('g:deoplete#enable_at_startup')
 "     set completeopt=longest,menuone,preview
-"     let g:deoplete#enable_at_startup = 0
-"     autocmd InsertEnter * call deoplete#enable()
+"     let g:deoplete#enable_at_startup = 1
+"     " let g:deoplete#enable_at_startup = 0
+"     " autocmd InsertEnter * call deoplete#enable()
 "     inoremap <expr><C-g>     deoplete#undo_completion()
 "     call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
 "     call deoplete#custom#source('ultisnips', 'rank', 1000)
@@ -464,7 +493,6 @@ let g:coc_global_extensions = [
             " \ ]
 " set cmdheight=2
 set updatetime=300
-set hidden
 set shortmess+=c
 " set signcolumn=yes
 " remap goto
@@ -481,7 +509,44 @@ nmap <leader>pe  <Plug>(coc-diagnostic-prev-error)
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
 " command! -nargs=0 Prettier :CocCommand prettier.formatFile
-" autocmd InsertLeave *.js,*.vue CocCommand prettier.formatFile
+
+" asyncomplete
+" -----------------------------
+" autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+" autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+" autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
+" call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+"     \ 'name': 'buffer',
+"     \ 'whitelist': ['*'],
+"     \ 'completor': function('asyncomplete#sources#buffer#completor'),
+"     \ 'config': {
+"     \    'max_buffer_size': 5000000,
+"     \  },
+"     \ }))
+"
+" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+"     \ 'name': 'file',
+"     \ 'whitelist': ['*'],
+"     \ 'priority': 10,
+"     \ 'completor': function('asyncomplete#sources#file#completor')
+"     \ }))
+"
+"
+" call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+"     \ 'name': 'omni',
+"     \ 'whitelist': ['*'],
+"     \ 'blacklist': ['c', 'cpp', 'html'],
+"     \ 'completor': function('asyncomplete#sources#omni#completor')
+"     \  }))
+"
+" call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
+"     \ 'name': 'ultisnips',
+"     \ 'whitelist': ['*'],
+"     \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
+"     \ }))
 
 
 " Enconding
@@ -516,6 +581,7 @@ map <leader>ew :e %%
 map <leader>es :sp %%
 map <leader>ev :vsp %%
 map <leader>et :tabe %%
+nmap <Space>r :call feedkeys(":Rename " . expand('%@'))<CR>
 
 " whitespace
 " -----------------------------
@@ -596,6 +662,7 @@ if s:is_windows
     let g:Lf_MruFileExclude = ['*.so', '*.tmp', '*.bak', '*.exe', '*.dll']
     let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
 else
+    " fzf
     function! s:build_quickfix_list(lines)
       call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
       copen
@@ -650,15 +717,17 @@ nmap T <Plug>Sneak_T
 
 " ale
 " -----------------------------
-"let g:ale_sign_column_always = 1
+let g:ale_sign_column_always = 1
 ""
 " let g:ale_sign_error = "◉"
 " let g:ale_sign_warning = "◉"
 let g:ale_sign_error = '✗'
-let g:ale_sign_warning = '⚠'
+" let g:ale_sign_warning = '⚠'
+let g:ale_sign_warning = '!'
 highlight ALEErrorSign guifg=#C30500
 highlight ALEWarningSign guifg=#ED6237
-
+highlight clear ALEWarningLine
+" highlight clear ALEWarningSign
 " highlight clear ALEErrorLine "Sign
 " highlight clear ALEWarningLine "Sign
 " let g:ale_sign_error = '✗'
@@ -692,13 +761,11 @@ elseif filereadable(s:eslintexec2)
 else
     let s:eslintdir = getcwd()
 endif
+if executable('eslint_d')
+    let g:ale_javascript_eslint_executable = 'eslint_d'
+endif
 let g:ale_javascript_eslint_options = '--resolve-plugins-relative-to ' . s:eslintdir
 let g:ale_javascript_jshint_executable = getcwd() . '/node_modules/jshint/bin/jshint'
-" let g:ale_fixers = {
-"             \ 'javascript': ['eslint'],
-"             \ 'vue': ['eslint']
-"             \}
-
 let g:ale_fixers = {
             \ 'javascript': ['prettier', 'eslint'],
             \ 'vue': ['prettier', 'eslint'],
@@ -716,10 +783,6 @@ let g:ale_fix_on_save = 1
 " vim-vue
 " -----------------------------
 au BufNewFile,BufRead *.vue setlocal filetype=vue
-" au BufNewFile,BufRead *.vue setlocal filetype=vue.html.javascript.css
-" let g:vim_vue_plugin_load_full_syntax = 1
-" let g:vim_vue_plugin_debug = 1
-" autocmd FileType vue syntax sync fromstart
 autocmd FileType vue syntax sync fromstart
 let g:vue_disable_pre_processors=1
 
@@ -731,7 +794,7 @@ let g:vim_json_syntax_conceal = 0
 " ultisnips
 " -----------------------------
 let g:UltiSnipsEditSplit="vertical"
-"let g:UltiSnipsExpandTrigger="<c-e>"
+let g:UltiSnipsExpandTrigger="<c-e>"
 "let g:UltiSnipsJumpForwardTrigger="<c-b>"
 "let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
@@ -741,8 +804,8 @@ let g:lightline = {
             \  'colorscheme': 'wombat',
             \ 'active': {
             \   'left': [
-            \       [ 'mode', 'paste' ],
-            \       [ 'fugitive', 'lawrencium', 'filename', 'cocstatus', 'currentfunction' ] ],
+            \       [ 'mode', 'paste'],
+            \       [ 'fugitive', 'filename', 'coc_status', 'coc_current_function'] ],
             \   'right': [
             \       [ 'lineinfo'],
             \       [ 'percent' ],
@@ -756,13 +819,14 @@ let g:lightline = {
             \   'linter_ok': 'lightline#ale#ok',
             \ },
             \ 'component_function': {
-            \   'cocstatus': 'coc#status',
-            \   'currentfunction': 'CocCurrentFunction',
             \   'fugitive': 'LightlineFugitive',
-            \   'lawrencium': 'LightlineLawrencium',
-            \   'filename': 'LightlineFilename'
+            \   'filename': 'LightlineFilename',
+            \   'coc_current_function': 'CocCurrentFunction',
+            \   'coc_status': 'coc#status',
+            \   'search_status': 'anzu#search_status'
             \ }
             \ }
+
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
