@@ -25,6 +25,7 @@ purge =
 shelve =
 histedit =
 strip =
+mq =
 
 [color]
 status.modified = magenta bold
@@ -40,7 +41,7 @@ custom.author = blue bold
 
 [alias]
 show = log --stat --color=always -vpr
-log2 =  log -G --template "{label('custom.rev', rev)} - ({label('custom.decorate', branch)}) {desc|strip|firstline} {label('custom.date', date|age)} {label('custom.author' , author)}"
+log2 =  log -G --template "{label('custom.rev', rev)} - ({label('custom.decorate', branch)}{if(tags,',{label('custom.decorate',tags)}','')}) {label('custom.author' , author|user)} {desc|strip|firstline} {label('custom.date', date|age)}"
 
 [pager]
 attend = annotate, cat, diff, export, glog, log, qdiff, slog, dlog, gslog, sglog, df, nlog, outgoing, lg, show, lga, log2

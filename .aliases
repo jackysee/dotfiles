@@ -18,6 +18,8 @@ alias g=git
 alias hglog='hg log2'
 alias hgrbt='hg rebase --dest tip'
 
+alias mvn=/usr/bin/mvn
+
 alias xterm='nohup xterm > /dev/null 2>&1&'
 alias xst='nohup st > /dev/null 2>&1&'
 

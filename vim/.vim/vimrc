@@ -78,23 +78,14 @@ Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
 Plug 'arcticicestudio/nord-vim'
 Plug 'liuchengxu/space-vim-dark'
-" Plug 'fxn/vim-monochrome'
-" Plug 'CallumHoward/vim-neodark'
-" Plug 'owickstrom/vim-colors-paramount'
-" Plug 'Badacadabra/vim-archery'
-Plug 'xero/blaquemagick.vim'
-Plug 'Lokaltog/vim-monotone'
 Plug 'axvr/photon.vim'
-Plug 't184256/vim-boring'
 Plug 'KKPMW/distilled-vim'
-Plug 'zaki/zazen'
 Plug 'lifepillar/vim-solarized8'
 Plug 'kaicataldo/material.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
+
 Plug 'pbrisbin/vim-mkdir'
-" Plug 'editorconfig/editorconfig-vim'
-Plug 'sgur/vim-editorconfig'
 
 "start page
 if s:is_fast
@@ -113,8 +104,9 @@ Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-signify'
 
 "hg
-Plug 'jlfwong/vim-mercenary'
-" Plug 'ludovicchabant/vim-lawrencium'
+" Plug 'jlfwong/vim-mercenary'
+Plug 'ludovicchabant/vim-lawrencium'
+
 "
 "diff tools
 Plug 'whiteinge/diffconflicts'
@@ -161,6 +153,7 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-surround'
 Plug 'itchyny/lightline.vim'
 Plug 'maximbaz/lightline-ale'
+" Plug 'liuchengxu/eleline.vim'
 Plug 'Asheq/close-buffers.vim'
 Plug 'danro/rename.vim'
 Plug 'haya14busa/is.vim'
@@ -169,11 +162,11 @@ Plug 'haya14busa/vim-asterisk'
 Plug 'itchyny/vim-gitbranch'
 Plug 'wellle/targets.vim'
 Plug 'kana/vim-textobj-user'
-Plug 'vim-scripts/argtextobj.vim'
+" Plug 'vim-scripts/argtextobj.vim'
+Plug 'kana/vim-textobj-function'
+Plug 'kana/vim-textobj-line'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'justinmk/vim-ipmotion'
-Plug 'kana/vim-textobj-function'
-Plug 'michaeljsmith/vim-indent-object'
 Plug 'qpkorr/vim-bufkill'
 Plug 'mileszs/ack.vim'
 Plug 'chiedojohn/vim-case-convert'
@@ -193,6 +186,7 @@ if s:is_windows
 else
     Plug 'junegunn/fzf.vim'
 endif
+" Plug 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
 
 " js / vue
 " ------
@@ -204,22 +198,21 @@ if s:is_fast
     " Plug 'prettier/vim-prettier', { 'branch': 'release/1.x', 'for': [ 'javascript', 'css', 'scss', 'markdown', 'vue', 'html', 'yaml'] }
     Plug 'posva/vim-vue', { 'for': ['vue']}
     Plug 'sgur/vim-editorconfig'
-    " Plug 'gorodinskiy/vim-coloresque'
-    " Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'sass', 'vue', 'html'] }
-    " Plug 'RRethy/vim-hexokinase', { 'for': ['js', 'css', 'scss', 'sass', 'vue', 'html'] }
-    Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+    if !s:is_windows
+        Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+    endif
     Plug 'Raimondi/delimitMate'
     Plug '1995eaton/vim-better-javascript-completion',  { 'for': [ 'javascript', 'vue' ]}
 endif
 
 
+" elm
 Plug 'elmcast/elm-vim', { 'for': ['elm']}
 
 call plug#end()
 
 
 " auto reload vimrc when editing it
-
 if s:is_windows
     autocmd! bufwritepost vimrc source ~/_vimrc
 else
@@ -229,38 +222,30 @@ endif
 set termguicolors
 set background=dark
 
-" colorscheme molokai
-" colorscheme gotham
-
 " let g:material_theme_style = 'dark'
 " colorscheme material
-
-" colorscheme monochrome
-" colorscheme paramount
-" colorscheme neodark
-" colorscheme archery
-" colorscheme blaquemagick
-" colorscheme monotone
-" colorscheme photon
-" colorscheme boring
-" colorscheme distilled
-" colorscheme zazen
-" colorscheme onehalfdark
-
+"
 " let g:seoul256_background = 233
 " colorscheme seoul256
+"
+" if !has("gui_running")	" running term
+" endif
+"
 
-let g:gruvbox_contrast_dark='hard'
-colorscheme gruvbox
+" let g:gruvbox_contrast_dark='hard'
+" colorscheme gruvbox
 
+" colorscheme molokai
+colorscheme gotham
+" colorscheme monochrome
+" colorscheme paramount
+" colorscheme photon
+" colorscheme distilled
 " colorscheme nord
 " colorscheme solarized8_high
 " colorscheme spacegray
 " colorscheme space-vim-dark
 
-" if !has("gui_running")	" running term
-" endif
-"
 "
 highlight Visual guibg=grey guifg=black
 if s:is_fast
@@ -268,7 +253,7 @@ if s:is_fast
     " highlight CursorLine gui=underline cterm=underline
     " highlight CursorLine guibg=#303000 ctermbg=24 gui=none cterm=none
     " highlight CursorLine guibg=black guifg=NONE
-    highlight CursorLine guibg=gray9
+    " highlight CursorLine guibg=gray9
     autocmd WinEnter * setlocal cursorline
     autocmd WinLeave * setlocal nocursorline
 endif
@@ -435,13 +420,19 @@ endif
 " vim-expand-region
 " map K <Plug>(expand_region_expand)
 " map J <Plug>(expand_region_shrink)
-call expand_region#custom_text_objects({
-            \ 'i]':1,
-            \ 'a]':1,
-            \ 'at':1,
-            \ 'ab':1,
-            \ 'aB':1
-            \ })
+let g:expand_region_text_objects = {
+      \ 'iw'  :0,
+      \ 'i<'  :0,
+      \ 'iW'  :0,
+      \ 'iq'  :0,
+      \ 'i]'  :1,
+      \ 'i}'  :1,
+      \ 'i)'  :1,
+      \ 'it'  :1,
+      \ 'at'  :1
+      \ }
+
+
 " ale fix
 nmap <silent> <leader>af <Plug>(ale_fix)
 nmap <silent> <leader>aj :ALENext<cr>
@@ -668,6 +659,7 @@ if s:is_windows
     let g:Lf_WindowHeight = 0.30
     let g:Lf_MruFileExclude = ['*.so', '*.tmp', '*.bak', '*.exe', '*.dll']
     let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
+    let g:Lf_CommandMap = { 'C-]': ['C-V'], 'C-J':['C-N'], 'C-K':['C-P'] }
 else
     " fzf
     function! s:build_quickfix_list(lines)
@@ -820,20 +812,61 @@ let g:UltiSnipsExpandTrigger="<tab>"
 " " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 " smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 " \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+"
+
+" raw status line
+" function! ALELinterStatus() abort
+"     if !exists('*ale#statusline#Count')
+"         return ''
+"     endif
+"     let l:counts = ale#statusline#Count(bufnr(''))
+"
+"     let l:all_errors = l:counts.error + l:counts.style_error
+"     let l:all_non_errors = l:counts.total - l:all_errors
+"
+"     return  l:counts.total == 0 ? '[OK]' : printf(
+"     \   '[%dW %dE]',
+"     \   all_non_errors,
+"     \   all_errors
+"     \)
+" endfunction
+" function! CocStatus()
+"     return get(b:, 'coc_current_function', '')
+" endfunction
+" function! s:statusline_expr()
+"   let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
+"   let ro  = "%{&readonly ? '[RO] ' : ''}"
+"   let enc = "%{&fileencoding?&fileencoding:&encoding}"
+"   " let ft  = "%{len(&filetype) ? &filetype : ''}"
+"   let ft  = "%y"
+"   let ff  = "%{&fileformat}"
+"   let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
+"   let sep = ' %= '
+"   let coc = '%{CocStatus()}'
+"   let lin = '%{ALELinterStatus()}'
+"   let pos = ' %-10(%l:%c%V%)%P'
+"   return '[%n] %F %<'.mod.ro.fug.sep.coc.lin.ft.pos
+" endfunction
+" let &statusline = s:statusline_expr()
 
 "lightline
 " -----------------------------
             " \ 'colorscheme': 'seoul256',
 let g:lightline = {
-            \  'colorscheme': 'wombat',
+            \  'colorscheme': 'one',
             \ 'active': {
             \   'left': [
             \       [ 'mode', 'paste'],
-            \       [ 'fugitive', 'filename', 'coc_status', 'coc_current_function'] ],
+            \       [ 'filename', 'fugitive', 'lawrencium', 'vstatus']
+            \   ],
             \   'right': [
             \       [ 'lineinfo'],
             \       [ 'percent' ],
-            \       [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]
+            \       [
+            \        'coc',
+            \        'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok',
+            \        'fileformat', 'fileencoding', 'filetype',
+            \       ],
             \   ]
             \ },
             \ 'component_expand': {
@@ -844,10 +877,11 @@ let g:lightline = {
             \ },
             \ 'component_function': {
             \   'fugitive': 'LightlineFugitive',
+            \   'lawrencium': 'LightlineLawrencium',
             \   'filename': 'LightlineFilename',
-            \   'coc_current_function': 'CocCurrentFunction',
-            \   'coc_status': 'coc#status',
-            \   'search_status': 'anzu#search_status'
+            \   'coc': 'CocLineStatus',
+            \   'search_status': 'anzu#search_status',
+            \   'vstatus': 'VersionStatus'
             \ }
             \ }
 
@@ -868,10 +902,38 @@ endfunction
 function! LightlineFugitive()
     return fugitive#head()
 endfunction
+function! VersionStatus() abort
+  let l:summary = [0, 0, 0]
+  if exists('b:sy')
+    let l:summary = b:sy.stats
+  elseif exists('b:gitgutter.summary')
+    let l:summary = b:gitgutter.summary
+  endif
+  if max(l:summary) > 0
+    return ' +'.l:summary[0].' ~'.l:summary[1].' -'.l:summary[2].' '
+  endif
+  return ''
+endfunction
+function! s:is_tmp_file() abort
+  if !empty(&buftype)
+        \ || index(['startify', 'gitcommit'], &filetype) > -1
+        \ || expand('%:p') =~# '^/tmp'
+    return 1
+  else
+    return 0
+  endif
+endfunction
+function! CocLineStatus() abort
+  if s:is_tmp_file() | return '' | endif
+  if exists('g:coc_status') && get(g:, 'coc_enabled', 0) | return g:coc_status.' ' | endif
+  return ''
+endfunction
 
 function! LightlineLawrencium()
-    return ''
-    " return lawrencium#statusline()
+    if !exists('g:loaded_lawrencium')
+        return ''
+    endif
+    return lawrencium#statusline()
 endfunction
 
 command! LightlineReload call LightlineReload()
@@ -882,4 +944,14 @@ function! LightlineReload()
   call lightline#update()
 endfunction
 
+
+" javacomplete2
+" -------------------
+" let g:JavaComplete_JavaviDebug = 1
+" let g:JavaComplete_JavaviLogfileDirectory = '/home/jackys/works/javavi/'
+" let g:JavaComplete_JavaviLogLevel = 'debug'
+" autocmd FileType java setlocal omnifunc=javacomplete#Complete
+" let g:JavaComplete_SourceExclude = ['src/frontend']
+" let g:JavaComplete_EnableDefaultMappings = 0
+" set completeopt=longest,menuone
 

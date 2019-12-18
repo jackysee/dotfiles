@@ -1,11 +1,13 @@
 {
   "html.format.enable": false,
+  "css.validate": false,
   "prettier.onlyUseLocalVersion": true,
   "prettier.disableLanguages": [],
   "prettier.requireConfig": true,
   "eslint.options": { "resolvePluginsRelativeTo": "src/frontend" },
   "eslint.filetypes": ["javascript", "vue"],
   "diagnostic.errorSign": "❌",
+  "java.import.exclusions": ["**/node_modules"],
   "vetur.validation.style": false,
   "vetur.validation.script": false,
   "vetur.validation.template": false,
