@@ -84,6 +84,14 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'kaicataldo/material.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'Rigellute/rigel'
+Plug 'jacoborus/tender.vim'
+Plug 'jonathanfilip/vim-lucius'
+Plug 'sainnhe/vim-color-forest-night'
+Plug 'tyrannicaltoucan/vim-deep-space'
+Plug 'nightsense/snow'
+Plug 'nightsense/stellarized'
+Plug 'nightsense/cosmic_latte'
 
 Plug 'pbrisbin/vim-mkdir'
 
@@ -145,6 +153,7 @@ Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
 Plug 'mbbill/undotree'
 Plug 'tomtom/tcomment_vim'
+" Plug 'tyru/caw.vim'
 Plug 'Shougo/context_filetype.vim'
 Plug 'terryma/vim-expand-region'
 Plug 'tpope/vim-repeat'
@@ -174,6 +183,7 @@ if s:is_gui
     Plug 'TaDaa/vimade'
 endif
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
 
 " file finder
 " Plug 'junegunn/fzf.vim'
@@ -182,7 +192,7 @@ Plug 'christoomey/vim-tmux-navigator'
 " Plug 'Shougo/neomru.vim'
 
 if s:is_windows
-    Plug 'Yggdroot/LeaderF', { 'do': './install.bat' }
+    Plug 'Yggdroot/ndeLeaderF', { 'do': './install.bat' }
 else
     Plug 'junegunn/fzf.vim'
 endif
@@ -236,7 +246,7 @@ set background=dark
 " colorscheme gruvbox
 
 " colorscheme molokai
-colorscheme gotham
+" colorscheme gotham
 " colorscheme monochrome
 " colorscheme paramount
 " colorscheme photon
@@ -245,6 +255,11 @@ colorscheme gotham
 " colorscheme solarized8_high
 " colorscheme spacegray
 " colorscheme space-vim-dark
+" colorscheme rigel
+" colorscheme tender
+" colorscheme lucius
+" colorscheme forest-night
+colorscheme cosmic_latte
 
 "
 highlight Visual guibg=grey guifg=black
@@ -716,13 +731,19 @@ nmap T <Plug>Sneak_T
 
 " ale
 " -----------------------------
+"
+let g:lightline#ale#indicator_checking = "\uf110"
+let g:lightline#ale#indicator_warnings = "\uf529"
+let g:lightline#ale#indicator_errors = "\uf00d"
+let g:lightline#ale#indicator_ok = "\uf00c"
 let g:ale_sign_column_always = 1
 ""
 " let g:ale_sign_error = "◉"
 " let g:ale_sign_warning = "◉"
-let g:ale_sign_error = '✗'
+" let g:ale_sign_error = '✗'
+let g:ale_sign_error = "\uf00d"
 " let g:ale_sign_warning = '⚠'
-let g:ale_sign_warning = '!'
+let g:ale_sign_warning = "\uf529"
 highlight ALEErrorSign guifg=#C30500
 highlight ALEWarningSign guifg=#ED6237
 highlight clear ALEWarningLine
@@ -797,6 +818,11 @@ let g:UltiSnipsExpandTrigger="<tab>"
 " "let g:UltiSnipsJumpForwardTrigger="<c-b>"
 " "let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
+
+" IndentLines
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+autocmd! User indentLine doautocmd indentLine Syntax
+
 " neosnippet
 " -----------------------------
 " let g:neosnippet#enable_snipmate_compatibility = 1
@@ -851,9 +877,20 @@ let g:UltiSnipsExpandTrigger="<tab>"
 
 "lightline
 " -----------------------------
-            " \ 'colorscheme': 'seoul256',
+let g:lightline#ale#indicator_checking = "\uf110"
+let g:lightline#ale#indicator_warnings = "\uf529"
+let g:lightline#ale#indicator_errors = "\uf00d"
+let g:lightline#ale#indicator_ok = "\uf00c"
 let g:lightline = {
-            \  'colorscheme': 'one',
+            \  'colorscheme': 'rigel',
+            \ 'separator': {
+            \   'left': "\ue0b8",
+            \   'right': "\ue0be"
+            \ },
+            \ 'subseparator': {
+            \   'left': "\ue0b9",
+            \   'right': "\ue0b9"
+            \ },
             \ 'active': {
             \   'left': [
             \       [ 'mode', 'paste'],
@@ -865,9 +902,12 @@ let g:lightline = {
             \       [
             \        'coc',
             \        'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok',
-            \        'fileformat', 'fileencoding', 'filetype',
+            \        'fileformat', 'filetype',
             \       ],
             \   ]
+            \ },
+            \ 'component': {
+            \   'fileformat': '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
             \ },
             \ 'component_expand': {
             \   'linter_checking': 'lightline#ale#checking',
@@ -910,7 +950,7 @@ function! VersionStatus() abort
     let l:summary = b:gitgutter.summary
   endif
   if max(l:summary) > 0
-    return ' +'.l:summary[0].' ~'.l:summary[1].' -'.l:summary[2].' '
+    return ' +'.l:summary[0].' *'.l:summary[1].' -'.l:summary[2].' '
   endif
   return ''
 endfunction

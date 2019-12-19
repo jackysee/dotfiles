@@ -1,7 +1,7 @@
 [options]
-font = Monaco 12
+# font = Monaco 12
 # font = DejaVu Sans Mono for Powerline 10
-# font = Anonymice Nerd Font Mono 11
+font = Anonymice Nerd Font Mono 11
 # font = Source Code Pro 9
 # font = Input Mono 12
 # font = Inconsolata 12
