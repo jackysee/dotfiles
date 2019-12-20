@@ -8,13 +8,17 @@
 --glob
 !.git/
 
+# Always ignore hg
+--glob
+!.hg/
+
 # Always ignore node_modules
 --glob
 !node_modules/
 
-# Always ignore hg
 --glob
-!.hg/
+!.gradle/
+
 
 # Always ignore package-lock.json
 --glob

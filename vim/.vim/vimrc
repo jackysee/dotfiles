@@ -163,6 +163,7 @@ Plug 'tpope/vim-surround'
 Plug 'itchyny/lightline.vim'
 Plug 'maximbaz/lightline-ale'
 " Plug 'liuchengxu/eleline.vim'
+" Plug 'rbong/vim-crystalline'
 Plug 'Asheq/close-buffers.vim'
 Plug 'danro/rename.vim'
 Plug 'haya14busa/is.vim'
@@ -226,7 +227,7 @@ call plug#end()
 if s:is_windows
     autocmd! bufwritepost vimrc source ~/_vimrc
 else
-    autocmd! bufwritepost vimrc source ~/.vimrc
+    autocmd! bufwritepost vimrc source ~/.vimrc | call LightlineReload()
 endif
 
 set termguicolors
@@ -314,33 +315,11 @@ set tm=500
 "   au FileType Makefile set noexpandtab
 "}
 
-" status line {
-set noshowmode
-" set laststatus=2
-" set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \
-" set statusline+=\ \ \ [%{&ff}/%Y]
-" set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\
-" set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
+
 
 set path+=src/main/java,src/main/test,src/frontend/src
 set inex=substitute(v:fname,'/','src/frontend/src/','')
 set suffixesadd=.js,.vue,.scss
-
-
-function! CurDir()
-    let curdir = substitute(getcwd(), $HOME, "~", "")
-    return curdir
-endfunction
-
-function! HasPaste()
-    if &paste
-        return '[PASTE]'
-    else
-        return ''
-    endif
-endfunction
-
-"}
 
 function! s:list_commits()
     let git = 'git -C ~/repo'
@@ -732,10 +711,6 @@ nmap T <Plug>Sneak_T
 " ale
 " -----------------------------
 "
-let g:lightline#ale#indicator_checking = "\uf110"
-let g:lightline#ale#indicator_warnings = "\uf529"
-let g:lightline#ale#indicator_errors = "\uf00d"
-let g:lightline#ale#indicator_ok = "\uf00c"
 let g:ale_sign_column_always = 1
 ""
 " let g:ale_sign_error = "◉"
@@ -839,121 +814,81 @@ autocmd! User indentLine doautocmd indentLine Syntax
 " smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
 " \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 "
-
-" raw status line
-" function! ALELinterStatus() abort
-"     if !exists('*ale#statusline#Count')
-"         return ''
-"     endif
-"     let l:counts = ale#statusline#Count(bufnr(''))
 "
-"     let l:all_errors = l:counts.error + l:counts.style_error
-"     let l:all_non_errors = l:counts.total - l:all_errors
-"
-"     return  l:counts.total == 0 ? '[OK]' : printf(
-"     \   '[%dW %dE]',
-"     \   all_non_errors,
-"     \   all_errors
-"     \)
-" endfunction
-" function! CocStatus()
-"     return get(b:, 'coc_current_function', '')
-" endfunction
-" function! s:statusline_expr()
-"   let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-"   let ro  = "%{&readonly ? '[RO] ' : ''}"
-"   let enc = "%{&fileencoding?&fileencoding:&encoding}"
-"   " let ft  = "%{len(&filetype) ? &filetype : ''}"
-"   let ft  = "%y"
-"   let ff  = "%{&fileformat}"
-"   let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
-"   let sep = ' %= '
-"   let coc = '%{CocStatus()}'
-"   let lin = '%{ALELinterStatus()}'
-"   let pos = ' %-10(%l:%c%V%)%P'
-"   return '[%n] %F %<'.mod.ro.fug.sep.coc.lin.ft.pos
-" endfunction
-" let &statusline = s:statusline_expr()
 
-"lightline
-" -----------------------------
-let g:lightline#ale#indicator_checking = "\uf110"
-let g:lightline#ale#indicator_warnings = "\uf529"
-let g:lightline#ale#indicator_errors = "\uf00d"
-let g:lightline#ale#indicator_ok = "\uf00c"
-let g:lightline = {
-            \  'colorscheme': 'rigel',
-            \ 'separator': {
-            \   'left': "\ue0b8",
-            \   'right': "\ue0be"
-            \ },
-            \ 'subseparator': {
-            \   'left': "\ue0b9",
-            \   'right': "\ue0b9"
-            \ },
-            \ 'active': {
-            \   'left': [
-            \       [ 'mode', 'paste'],
-            \       [ 'filename', 'fugitive', 'lawrencium', 'vstatus']
-            \   ],
-            \   'right': [
-            \       [ 'lineinfo'],
-            \       [ 'percent' ],
-            \       [
-            \        'coc',
-            \        'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok',
-            \        'fileformat', 'filetype',
-            \       ],
-            \   ]
-            \ },
-            \ 'component': {
-            \   'fileformat': '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
-            \ },
-            \ 'component_expand': {
-            \   'linter_checking': 'lightline#ale#checking',
-            \   'linter_warnings': 'lightline#ale#warnings',
-            \   'linter_errors': 'lightline#ale#errors',
-            \   'linter_ok': 'lightline#ale#ok',
-            \ },
-            \ 'component_function': {
-            \   'fugitive': 'LightlineFugitive',
-            \   'lawrencium': 'LightlineLawrencium',
-            \   'filename': 'LightlineFilename',
-            \   'coc': 'CocLineStatus',
-            \   'search_status': 'anzu#search_status',
-            \   'vstatus': 'VersionStatus'
-            \ }
-            \ }
+" statusline {
+set noshowmode
+set laststatus=2
+" set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \
+" set statusline+=\ \ \ [%{&ff}/%Y]
+" set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\
+" set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
 
-function! CocCurrentFunction()
-    return get(b:, 'coc_current_function', '')
+function! CurDir()
+    let curdir = substitute(getcwd(), $HOME, "~", "")
+    return curdir
 endfunction
-function! LightlineModified()
-    return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+
+function! HasPaste()
+    return &paste ? '[P]':''
 endfunction
-function! LightlineReadonly()
-    return &ft !~? 'help' && &readonly ? 'RO' : ''
+
+function! FugitiveStatus() abort
+    if !exists('g:loaded_fugitive')
+        return ''
+    endif
+    let l:status = fugitive#head()
+    return l:status == '' ? '': "\ue725".l:status
 endfunction
-function! LightlineFilename()
-    return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-                \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
-                \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+
+function! LawrenciumStatus() abort
+    if !exists('g:loaded_lawrencium')
+        return ''
+    endif
+    let l:status = lawrencium#statusline()
+    return l:status == '' ? '': "\ue725".l:status
 endfunction
-function! LightlineFugitive()
-    return fugitive#head()
+
+function! ChangedStatus() abort
+    let l:summary = [0, 0, 0]
+    if exists('b:sy')
+        let l:summary = b:sy.stats
+    elseif exists('b:gitgutter.summary')
+        let l:summary = b:gitgutter.summary
+    endif
+    if max(l:summary) > 0
+        return '(+'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].')'
+    endif
+    return ''
 endfunction
-function! VersionStatus() abort
-  let l:summary = [0, 0, 0]
-  if exists('b:sy')
-    let l:summary = b:sy.stats
-  elseif exists('b:gitgutter.summary')
-    let l:summary = b:gitgutter.summary
-  endif
-  if max(l:summary) > 0
-    return ' +'.l:summary[0].' *'.l:summary[1].' -'.l:summary[2].' '
-  endif
-  return ''
+
+function! VcsInfoStatus()
+    return FugitiveStatus() . LawrenciumStatus() . ChangedStatus()
 endfunction
+
+function! ALELinterStatus() abort
+    if !exists('g:loaded_ale')
+        return ''
+    endif
+    if ale#engine#IsCheckingBuffer(bufnr(''))
+        return 'linting...'
+    endif
+    let linted = get(g:, 'ale_enabled', 0) == 1
+        \ && getbufvar(bufnr(''), 'ale_linted', 0) > 0
+        \ && ale#engine#IsCheckingBuffer(bufnr('')) == 0
+    if !linted
+       return ''
+    endif
+    let l:counts = ale#statusline#Count(bufnr(''))
+    if l:counts.total == 0
+        return 'OK'
+    endif
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+    return (all_non_errors > 0 ? printf('%dW', all_non_errors) : '') .
+        \ (all_errors > 0? printf('%dE', all_errors) : '')
+endfunction
+
 function! s:is_tmp_file() abort
   if !empty(&buftype)
         \ || index(['startify', 'gitcommit'], &filetype) > -1
@@ -963,18 +898,129 @@ function! s:is_tmp_file() abort
     return 0
   endif
 endfunction
+
+function! CocCurrentFunction() abort
+    return get(b:, 'coc_current_function', '')
+endfunction
+
 function! CocLineStatus() abort
-  if s:is_tmp_file() | return '' | endif
-  if exists('g:coc_status') && get(g:, 'coc_enabled', 0) | return g:coc_status.' ' | endif
+  if s:is_tmp_file()
+      return ''
+  endif
+  if exists('g:coc_status') && get(g:, 'coc_enabled', 0)
+      return g:coc_status
+  endif
   return ''
 endfunction
 
-function! LightlineLawrencium()
-    if !exists('g:loaded_lawrencium')
-        return ''
-    endif
-    return lawrencium#statusline()
+function! CocStatus() abort
+    let s1 = CocCurrentFunction()
+    let s2 = CocLineStatus()
+    return s1 . (!empty(s1) && !empty(s2) ? ' ':'') . s2
 endfunction
+
+function! ModifiedStatus()
+    return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+function! ReadonlyStatus()
+    return &ft !~? 'help' && &readonly ? '!' : ''
+endfunction
+
+function! FilenameStatus()
+    return ('' != ReadonlyStatus() ? ReadonlyStatus() . ' ' : '') .
+                \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
+                \ ('' != ModifiedStatus() ? ' ' . ModifiedStatus() : '')
+endfunction
+
+function! LineInfoStatus()
+    return '%3l:%c:%P'
+endfunction
+
+function! Statusline()
+  let paste = "%{HasPaste()}"
+  let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
+  let ro  = "%{&readonly ? '[!] ' : ''}"
+  let enc = "%{&fileencoding?&fileencoding:&encoding}"
+  let ft  = "%{len(&filetype) ? &filetype : ''}"
+  let ff  = "%{&fileformat}"
+  let git = "%{FugitiveStatus()}"
+  let hg = "%{LawrenciumStatus()}"
+  let chg = "%{ChangedStatus()}"
+  let vcs = ' '.git.hg.chg
+  let sep = ' %= '
+  let coc = '%{CocStatus()}'
+  let ale = '%{ALELinterStatus()}'
+  let pos = ' %{LineInfoStatus()}'
+  let dir = '%20.30{CurDir()} '
+  return '%{FilenameStatus()}'.mod.paste.ro.sep.vcs.coc.ale.pos
+endfunction
+
+" hi StatusLine guifg=#dddddd ctermfg=254 guibg=#00384d ctermbg=23 gui=NONE cterm=NONE
+" let &statusline = Statusline()
+
+"}
+
+"lightline
+" -----------------------------
+let g:lightline#ale#indicator_checking = "\uf110"
+let g:lightline#ale#indicator_warnings = "\uf529"
+let g:lightline#ale#indicator_errors = "\uf00d"
+let g:lightline#ale#indicator_ok = "\uf00c"
+
+
+let g:lightline = {}
+let g:lightline.colorscheme = 'rigel'
+
+let g:lightline.mode_map = {
+    \ 'n' : 'N',
+    \ 'i' : 'I',
+    \ 'R' : 'R',
+    \ 'v' : 'V',
+    \ 'c' : 'C',
+    \ 's' : 'S'
+    \ }
+
+let g:lightline.separator = {}
+" let g:lightline.separator.left = "\ue0b8"
+" let g:lightline.separator.right = "\ue0be"
+let g:lightline.subseparator = {}
+" let g:lightline.subseparator.left = "\ue0b9"
+" let g:lightline.subseparator.right = "\ue0b9"
+
+let g:lightline.active = {}
+let g:lightline.active.left = [ ['mode', 'paste'], ['folder'], ['filename']]
+let g:lightline.active.right = [
+            \ ['percent'],
+            \ ['coc', 'ale'],
+            \ ['vcsinfo'],
+            \ ]
+            " \ ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok']
+            " \ ]
+
+let g:lightline.inactive = {}
+let g:lightline.inactive.left = [['relativepath']]
+let g:lightline.inactive.right = []
+
+let g:lightline.component_visible_condition = {}
+let g:lightline.component_visible_condition.coc = 'CocStatus() != ""'
+let g:lightline.component_visible_condition.ale = 'ALELinterStatus() != ""'
+
+let g:lightline.component = {}
+let g:lightline.component.lineinfo = LineInfoStatus()
+let g:lightline.component.folder = '%{expand("%:h")}'
+
+let g:lightline.component_expand = {}
+let g:lightline.component_expand.linter_checking = 'lightline#ale#checking'
+let g:lightline.component_expand.linter_warnings = 'lightline#ale#warnings'
+let g:lightline.component_expand.linter_errors = 'lightline#ale#errors'
+let g:lightline.component_expand.linter_ok = 'lightline#ale#ok'
+let g:lightline.component_expand.ale = 'ALELinterStatus'
+let g:lightline.component_expand.coc = 'CocStatus'
+
+let g:lightline.component_function = {}
+let g:lightline.component_function.filename = 'FilenameStatus'
+let g:lightline.component_function.search_status = 'anzu#search_status'
+let g:lightline.component_function.vcsinfo = 'VcsInfoStatus'
 
 command! LightlineReload call LightlineReload()
 
@@ -995,3 +1041,5 @@ endfunction
 " let g:JavaComplete_EnableDefaultMappings = 0
 " set completeopt=longest,menuone
 
+" tmux
+let g:tmux_navigator_disable_when_zoomed = 1

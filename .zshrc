@@ -54,10 +54,11 @@ eval "`fnm env --multi`"
 #   done
 # fi
 
+export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
-# export FZF_DEFAULT_COMMAND="([ -d ./.hg ] && ag -l --hidden --ignore .hg) || rg --files --hidden --smart-case --glob '!.git/*'"
-export FZF_DEFAULT_COMMAND="rg --files --hidden"
-export FZF_CTRL_T_COMMAND="rg --files --hidden"
+# export FZF_DEFAULT_COMMAND="rg --files "
+export FZF_DEFAULT_COMMAND="([ ! -f ./.ignore ] && [ -d ./.hg ] && ag -l --hidden --ignore .hg) || rg --files "
+export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_DEFAULT_OPTS='
     --border --exit-0 --select-1
     --color fg:188,hl:103,fg+:222,bg+:234,hl+:104
