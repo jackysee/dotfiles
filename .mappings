@@ -16,3 +16,18 @@
 ".dir_colors" = "~/.dir_colors"
 ".vrapperrc" = "~/.vrapperrc"
 ".ripgreprc" = "~/.ripgreprc"
+
+[macos]
+"vim/.vimrc" = "~/.vimrc"
+"vim/.vim" = "~/.vim"
+"tmux/.tmux.conf" = "~/.tmux.conf"
+"tmux/.tmux" = "~/.tmux"
+".zshrc" = "~/.zshrc"
+".aliases" = "~/.aliases"
+".profile" = "~/.profile"
+".bashrc" = "~/.bashrc"
+".hgrc" = "~/.hgrc"
+".gitconfig" = "~/.gitconfig"
+".dir_colors" = "~/.dir_colors"
+".vrapperrc" = "~/.vrapperrc"
+".ripgreprc" = "~/.ripgreprc"

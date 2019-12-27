@@ -87,7 +87,6 @@ Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'Rigellute/rigel'
 Plug 'jacoborus/tender.vim'
 Plug 'jonathanfilip/vim-lucius'
-Plug 'sainnhe/vim-color-forest-night'
 Plug 'tyrannicaltoucan/vim-deep-space'
 Plug 'nightsense/snow'
 Plug 'nightsense/stellarized'
@@ -152,16 +151,16 @@ Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 " Plug 'artur-shaik/vim-javacomplete2'
 
 Plug 'mbbill/undotree'
-Plug 'tomtom/tcomment_vim'
-" Plug 'tyru/caw.vim'
+" Plug 'tomtom/tcomment_vim'
 Plug 'Shougo/context_filetype.vim'
+Plug 'tyru/caw.vim'
 Plug 'terryma/vim-expand-region'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sensible'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-surround'
-Plug 'itchyny/lightline.vim'
-Plug 'maximbaz/lightline-ale'
+" Plug 'itchyny/lightline.vim'
+" Plug 'maximbaz/lightline-ale'
 " Plug 'liuchengxu/eleline.vim'
 " Plug 'rbong/vim-crystalline'
 Plug 'Asheq/close-buffers.vim'
@@ -185,6 +184,8 @@ if s:is_gui
 endif
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
+Plug 'dhruvasagar/vim-zoom'
+Plug 'AndrewRadev/splitjoin.vim'
 
 " file finder
 " Plug 'junegunn/fzf.vim'
@@ -227,7 +228,8 @@ call plug#end()
 if s:is_windows
     autocmd! bufwritepost vimrc source ~/_vimrc
 else
-    autocmd! bufwritepost vimrc source ~/.vimrc | call LightlineReload()
+    " autocmd! bufwritepost vimrc source ~/.vimrc | call LightlineReload()
+    autocmd! bufwritepost vimrc source ~/.vimrc
 endif
 
 set termguicolors
@@ -248,8 +250,6 @@ set background=dark
 
 " colorscheme molokai
 " colorscheme gotham
-" colorscheme monochrome
-" colorscheme paramount
 " colorscheme photon
 " colorscheme distilled
 " colorscheme nord
@@ -259,17 +259,13 @@ set background=dark
 " colorscheme rigel
 " colorscheme tender
 " colorscheme lucius
-" colorscheme forest-night
-colorscheme cosmic_latte
+" colorscheme cosmic_latte
+colorscheme deep-space
+" colorscheme snow
+" colorscheme stellarized
 
-"
-highlight Visual guibg=grey guifg=black
 if s:is_fast
     set cursorline
-    " highlight CursorLine gui=underline cterm=underline
-    " highlight CursorLine guibg=#303000 ctermbg=24 gui=none cterm=none
-    " highlight CursorLine guibg=black guifg=NONE
-    " highlight CursorLine guibg=gray9
     autocmd WinEnter * setlocal cursorline
     autocmd WinLeave * setlocal nocursorline
 endif
@@ -287,8 +283,6 @@ if s:is_gui	" GUI
     set guifont=Source_Code_Pro:h10
     set linespace=1
     " set t_Co=256          " 256 color mode
-    " set cursorline
-    "highlight CursorLine guibg=#003844 ctermbg=24  gui=none cterm=none
 endif
 
 let g:vimade = {}
@@ -308,7 +302,6 @@ set tm=500
 
 " TAB setting{
     set expandtab        "replace <TAB> with spaces
-"   set noexpandtab        "do not expand <TAB> with spaces
     set tabstop=4
     set softtabstop=4
     set shiftwidth=4
@@ -316,17 +309,10 @@ set tm=500
 "}
 
 
-
 set path+=src/main/java,src/main/test,src/frontend/src
 set inex=substitute(v:fname,'/','src/frontend/src/','')
 set suffixesadd=.js,.vue,.scss
 
-function! s:list_commits()
-    let git = 'git -C ~/repo'
-    let commits = systemlist(git .' log --oneline | head -n10')
-    let git = 'G'. git[1:]
-    return map(commits, '{"line": matchstr(v:val, "\\s\\zs.*"), "cmd": "'. git .' show ". matchstr(v:val, "^\\x\\+") }')
-endfunction
 
 "startify
 " let g:startify_custom_header = ['']
@@ -369,6 +355,8 @@ nnoremap ; :
 nnoremap > ;
 nnoremap < ,
 
+inoremap jk <ESC>
+
 "space to page down
 " nnoremap <SPACE> <PAGEDOWN>
 " nnoremap <S-SPACE> <PAGEUP>
@@ -402,8 +390,11 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+" Zoom / Restore window.
+nnoremap <leader>z :call zoom#toggle()<cr>
+
 " emmet
-imap <C-K> <C-y>,
+imap <C-E> <C-y>,
 
 " vimdiff
 if &diff
@@ -416,13 +407,12 @@ endif
 " map J <Plug>(expand_region_shrink)
 let g:expand_region_text_objects = {
       \ 'iw'  :0,
-      \ 'i<'  :0,
       \ 'iW'  :0,
       \ 'iq'  :0,
-      \ 'i]'  :1,
-      \ 'i}'  :1,
-      \ 'i)'  :1,
+      \ 'i<'  :0,
+      \ 'ib'  :1,
       \ 'it'  :1,
+      \ 'ii'  :1,
       \ 'at'  :1
       \ }
 
@@ -819,10 +809,6 @@ autocmd! User indentLine doautocmd indentLine Syntax
 " statusline {
 set noshowmode
 set laststatus=2
-" set statusline=\ %{HasPaste()}%<%-15.25(%f%)%m%r%h\ %w\ \
-" set statusline+=\ \ \ [%{&ff}/%Y]
-" set statusline+=\ \ \ %<%20.30(%{hostname()}:%{CurDir()}%)\
-" set statusline+=%=%-10.(%l,%c%V%)\ %p%%/%L
 
 function! CurDir()
     let curdir = substitute(getcwd(), $HOME, "~", "")
@@ -857,7 +843,7 @@ function! ChangedStatus() abort
         let l:summary = b:gitgutter.summary
     endif
     if max(l:summary) > 0
-        return '(+'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].')'
+        return ' +'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].''
     endif
     return ''
 endfunction
@@ -928,15 +914,47 @@ endfunction
 
 function! FilenameStatus()
     return ('' != ReadonlyStatus() ? ReadonlyStatus() . ' ' : '') .
-                \ ('' != expand('%:t') ? expand('%:t') : '[No Name]') .
+                \ ('' != expand('%:t') ? expand('%:p:~') : '[No Name]') .
                 \ ('' != ModifiedStatus() ? ' ' . ModifiedStatus() : '')
 endfunction
 
 function! LineInfoStatus()
-    return '%3l:%c:%P'
+    return '%-10(%3l:%c%)%P'
 endfunction
 
+function! ZoomStatus()
+    if exists('g:loaded_zoom') && zoom#statusline() != ''
+        return ' [Z]'
+    endif
+    return ''
+endfunction
+
+
+let g:currentmode={
+    \ 'n'  : 'N',
+    \ 'no' : 'NO',
+    \ 'v'  : 'V',
+    \ 'V'  : 'V·Line',
+    \ "\<C-v>" : 'V·Block',
+    \ 's'  : 'S',
+    \ 'S'  : 'S·Line',
+    \ "\<C-s>" : 'S·Block',
+    \ 'i'  : 'I',
+    \ 'R'  : 'R',
+    \ 'Rv' : 'V·Replace',
+    \ 'c'  : 'C',
+    \ 'cv' : 'Vim Ex',
+    \ 'ce' : 'Ex',
+    \ 'r'  : 'Prompt',
+    \ 'rm' : 'More',
+    \ 'r?' : 'Confirm',
+    \ '!'  : 'Shell',
+    \ 't'  : 'Terminal'
+    \}
+
 function! Statusline()
+  let mode = '%{toupper(g:currentmode[mode()])} '
+  let file = '%{FilenameStatus()}'
   let paste = "%{HasPaste()}"
   let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
   let ro  = "%{&readonly ? '[!] ' : ''}"
@@ -944,91 +962,98 @@ function! Statusline()
   let ft  = "%{len(&filetype) ? &filetype : ''}"
   let ff  = "%{&fileformat}"
   let git = "%{FugitiveStatus()}"
-  let hg = "%{LawrenciumStatus()}"
+  let hg  = "%{LawrenciumStatus()}"
   let chg = "%{ChangedStatus()}"
   let vcs = ' '.git.hg.chg
   let sep = ' %= '
   let coc = '%{CocStatus()}'
   let ale = '%{ALELinterStatus()}'
-  let pos = ' %{LineInfoStatus()}'
+  let pos = LineInfoStatus()
   let dir = '%20.30{CurDir()} '
-  return '%{FilenameStatus()}'.mod.paste.ro.sep.vcs.coc.ale.pos
+  let zoom = '%{ZoomStatus()}'
+  return mode.paste.file.zoom.sep.coc.ale.vcs
 endfunction
 
+hi StatusLine guifg=#70b3e1 guibg=NONE gui=NONE cterm=NONE
+hi StatusLineNC guifg=#555555 guibg=NONE gui=NONE cterm=NONE
+au InsertLeave * hi StatusLine guifg=#70b3e1 guibg=NONE gui=NONE cterm=NONE
+au InsertEnter * hi StatusLine guifg=#ffcc1a guibg=NONE gui=NONE cterm=NONE
 " hi StatusLine guifg=#dddddd ctermfg=254 guibg=#00384d ctermbg=23 gui=NONE cterm=NONE
-" let &statusline = Statusline()
+" au InsertLeave * hi StatusLine guifg=#dddddd ctermfg=254 guibg=#00384d ctermbg=23 gui=NONE cterm=NONE
+" au InsertEnter * hi StatusLine guifg=#333333 ctermfg=254 guibg=#ffcc1a ctermbg=23 gui=NONE cterm=NONE
+let &statusline = Statusline()
 
 "}
 
 "lightline
 " -----------------------------
-let g:lightline#ale#indicator_checking = "\uf110"
-let g:lightline#ale#indicator_warnings = "\uf529"
-let g:lightline#ale#indicator_errors = "\uf00d"
-let g:lightline#ale#indicator_ok = "\uf00c"
-
-
-let g:lightline = {}
-let g:lightline.colorscheme = 'rigel'
-
-let g:lightline.mode_map = {
-    \ 'n' : 'N',
-    \ 'i' : 'I',
-    \ 'R' : 'R',
-    \ 'v' : 'V',
-    \ 'c' : 'C',
-    \ 's' : 'S'
-    \ }
-
-let g:lightline.separator = {}
-" let g:lightline.separator.left = "\ue0b8"
-" let g:lightline.separator.right = "\ue0be"
-let g:lightline.subseparator = {}
-" let g:lightline.subseparator.left = "\ue0b9"
-" let g:lightline.subseparator.right = "\ue0b9"
-
-let g:lightline.active = {}
-let g:lightline.active.left = [ ['mode', 'paste'], ['folder'], ['filename']]
-let g:lightline.active.right = [
-            \ ['percent'],
-            \ ['coc', 'ale'],
-            \ ['vcsinfo'],
-            \ ]
-            " \ ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok']
-            " \ ]
-
-let g:lightline.inactive = {}
-let g:lightline.inactive.left = [['relativepath']]
-let g:lightline.inactive.right = []
-
-let g:lightline.component_visible_condition = {}
-let g:lightline.component_visible_condition.coc = 'CocStatus() != ""'
-let g:lightline.component_visible_condition.ale = 'ALELinterStatus() != ""'
-
-let g:lightline.component = {}
-let g:lightline.component.lineinfo = LineInfoStatus()
-let g:lightline.component.folder = '%{expand("%:h")}'
-
-let g:lightline.component_expand = {}
-let g:lightline.component_expand.linter_checking = 'lightline#ale#checking'
-let g:lightline.component_expand.linter_warnings = 'lightline#ale#warnings'
-let g:lightline.component_expand.linter_errors = 'lightline#ale#errors'
-let g:lightline.component_expand.linter_ok = 'lightline#ale#ok'
-let g:lightline.component_expand.ale = 'ALELinterStatus'
-let g:lightline.component_expand.coc = 'CocStatus'
-
-let g:lightline.component_function = {}
-let g:lightline.component_function.filename = 'FilenameStatus'
-let g:lightline.component_function.search_status = 'anzu#search_status'
-let g:lightline.component_function.vcsinfo = 'VcsInfoStatus'
-
-command! LightlineReload call LightlineReload()
-
-function! LightlineReload()
-  call lightline#init()
-  call lightline#colorscheme()
-  call lightline#update()
-endfunction
+" let g:lightline#ale#indicator_checking = "\uf110"
+" let g:lightline#ale#indicator_warnings = "\uf529"
+" let g:lightline#ale#indicator_errors = "\uf00d"
+" let g:lightline#ale#indicator_ok = "\uf00c"
+"
+"
+" let g:lightline = {}
+" let g:lightline.colorscheme = 'rigel'
+"
+" let g:lightline.mode_map = {
+"     \ 'n' : 'N',
+"     \ 'i' : 'I',
+"     \ 'R' : 'R',
+"     \ 'v' : 'V',
+"     \ 'c' : 'C',
+"     \ 's' : 'S'
+"     \ }
+"
+" let g:lightline.separator = {}
+" " let g:lightline.separator.left = "\ue0b8"
+" " let g:lightline.separator.right = "\ue0be"
+" let g:lightline.subseparator = {}
+" " let g:lightline.subseparator.left = "\ue0b9"
+" " let g:lightline.subseparator.right = "\ue0b9"
+"
+" let g:lightline.active = {}
+" let g:lightline.active.left = [ ['mode', 'paste'], ['folder'], ['filename']]
+" let g:lightline.active.right = [
+"             \ ['percent'],
+"             \ ['coc', 'ale'],
+"             \ ['vcsinfo'],
+"             \ ]
+"             " \ ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok']
+"             " \ ]
+"
+" let g:lightline.inactive = {}
+" let g:lightline.inactive.left = [['relativepath']]
+" let g:lightline.inactive.right = [[]]
+"
+" let g:lightline.component_visible_condition = {}
+" let g:lightline.component_visible_condition.coc = 'CocStatus() != ""'
+" let g:lightline.component_visible_condition.ale = 'ALELinterStatus() != ""'
+"
+" let g:lightline.component = {}
+" let g:lightline.component.lineinfo = LineInfoStatus()
+" let g:lightline.component.folder = '%{expand("%:h")}'
+"
+" let g:lightline.component_expand = {}
+" let g:lightline.component_expand.linter_checking = 'lightline#ale#checking'
+" let g:lightline.component_expand.linter_warnings = 'lightline#ale#warnings'
+" let g:lightline.component_expand.linter_errors = 'lightline#ale#errors'
+" let g:lightline.component_expand.linter_ok = 'lightline#ale#ok'
+" let g:lightline.component_expand.ale = 'ALELinterStatus'
+" let g:lightline.component_expand.coc = 'CocStatus'
+"
+" let g:lightline.component_function = {}
+" let g:lightline.component_function.filename = 'FilenameStatus'
+" let g:lightline.component_function.search_status = 'anzu#search_status'
+" let g:lightline.component_function.vcsinfo = 'VcsInfoStatus'
+"
+" command! LightlineReload call LightlineReload()
+"
+" function! LightlineReload()
+"   call lightline#init()
+"   call lightline#colorscheme()
+"   call lightline#update()
+" endfunction
 
 
 " javacomplete2
