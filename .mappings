@@ -1,7 +1,6 @@
 [linux]
 "termite/config" = "~/.config/termite/config"
-"vim/.vimrc" = "~/.vimrc"
-"vim/.vim" = "~/.vim"
+"vim" = "~/.vim"
 "tmux/.tmux.conf" = "~/.tmux.conf"
 "tmux/.tmux" = "~/.tmux"
 ".zshrc" = "~/.zshrc"
@@ -18,8 +17,7 @@
 ".ripgreprc" = "~/.ripgreprc"
 
 [macos]
-"vim/.vimrc" = "~/.vimrc"
-"vim/.vim" = "~/.vim"
+"vim" = "~/.vim"
 "tmux/.tmux.conf" = "~/.tmux.conf"
 "tmux/.tmux" = "~/.tmux"
 ".zshrc" = "~/.zshrc"
