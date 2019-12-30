@@ -88,7 +88,6 @@ Plug 'nightsense/snow'
 Plug 'nightsense/stellarized'
 Plug 'nightsense/cosmic_latte'
 
-
 "start page
 if s:is_fast
     Plug 'mhinz/vim-startify'
