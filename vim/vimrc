@@ -75,7 +75,6 @@ Plug 'whatyouhide/vim-gotham'
 Plug 'morhetz/gruvbox'
 Plug 'liuchengxu/space-vim-dark'
 Plug 'axvr/photon.vim'
-Plug 'KKPMW/distilled-vim'
 Plug 'kaicataldo/material.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
@@ -84,6 +83,7 @@ Plug 'joshdick/onedark.vim'
 Plug 'tyrannicaltoucan/vim-deep-space'
 Plug 'nightsense/stellarized'
 Plug 'nightsense/cosmic_latte'
+Plug 'nanotech/jellybeans.vim'
 
 "start page
 if s:is_fast
@@ -109,6 +109,7 @@ Plug 'whiteinge/diffconflicts'
 " coc
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
+" editing
 " Plug 'tomtom/tcomment_vim'
 Plug 'Shougo/context_filetype.vim'
 Plug 'tyru/caw.vim'
@@ -117,7 +118,6 @@ Plug 'tpope/vim-repeat'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
-Plug 'pbrisbin/vim-mkdir'
 Plug 'haya14busa/is.vim'
 Plug 'osyo-manga/vim-anzu'
 Plug 'haya14busa/vim-asterisk'
@@ -129,11 +129,13 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'justinmk/vim-ipmotion'
 Plug 'qpkorr/vim-bufkill'
 Plug 'mileszs/ack.vim'
+Plug 'cohama/lexima.vim'
 Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
 Plug 'dhruvasagar/vim-zoom'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'pbrisbin/vim-mkdir'
 
 " file finder
 if s:is_windows
@@ -179,15 +181,15 @@ set termguicolors
 " colorscheme gruvbox
 
 " colorscheme molokai
-colorscheme gotham
+" colorscheme gotham
 " colorscheme photon
-" colorscheme distilled
 " colorscheme spacegray
 " colorscheme space-vim-dark
 " colorscheme rigel
 " colorscheme cosmic_latte
 " colorscheme deep-space
 " colorscheme stellarized
+colorscheme jellybeans
 
 if s:is_fast
     set cursorline
@@ -282,10 +284,6 @@ vnoremap > >gv
 noremap <left> :bp<CR>
 noremap <right> :bn<CR>
 
-function! CloseAllBuffer()
-    silent! execute "1,100bd"
-endfunction
-
 " Encoding
 set encoding=utf-8
 set termencoding=utf-8
@@ -350,10 +348,10 @@ let g:coc_global_extensions = [
             \   'coc-css',
             \   'coc-html',
             \   'coc-json',
-            \   'coc-pairs',
             \   'coc-emmet',
             \   'coc-ultisnips'
             \ ]
+            "\   'coc-pairs',
 set updatetime=300
 set shortmess+=c
 set signcolumn=yes
@@ -430,14 +428,15 @@ highlight ALEErrorSign guifg=#C30500
 highlight ALEWarningSign guifg=#ED6237
 highlight clear ALEWarningLine
 
-let s:prettierexec1 = getcwd() . '/src/frontend/node_modules/.bin/prettier'
-let s:prettierexec2 = getcwd() . '/web/node_modules/.bin/prettier'
-if filereadable(s:prettierexec1)
-    let s:prettierexec = s:prettierexec1
-elseif filereadable(s:prettierexec2)
-    let s:prettierexec = s:prettierexec2
-endif
-"
+let s:prettierlocations = ['/src/frontend', '/web', '/frontend']
+for l in s:prettierlocations
+    let p = getcwd().l.'/node_modules/.bin/prettier'
+    if filereadable(p)
+        let s:prettierexec = p
+        break
+    endif
+endfor
+
 if exists('s:prettierexec')
     let g:ale_javascript_prettier_executable = s:prettierexec
     let g:ale_css_prettier_executable = s:prettierexec
@@ -447,15 +446,19 @@ if exists('s:prettierexec')
     let g:ale_vue_prettier_executable = s:prettierexec
 endif
 
-let s:eslintexec1 = getcwd() . '/src/frontend/.eslintrc.js'
-let s:eslintexec2 = getcwd() . '/web/.eslintrc.js'
-if filereadable(s:eslintexec1)
-    let s:eslintdir = getcwd() . '/src/frontend'
-elseif filereadable(s:eslintexec2)
-    let s:eslintdir = getcwd() . '/web'
-else
+
+let s:eslintdirs = ['/src/frontend', '/web', '/frontend']
+for l in s:eslintdirs
+    let p = getcwd().l.'/.eslintrc.js'
+    if filereadable(p)
+        let s:eslintdir = p
+        break
+    endif
+endfor
+if !exists('s:eslintdir')
     let s:eslintdir = getcwd()
 endif
+
 if executable('eslint_d')
     let g:ale_javascript_eslint_executable = 'eslint_d'
 endif
@@ -607,8 +610,8 @@ function! FilenameStatus()
 endfunction
 
 function! LineInfoStatus()
-    " return '%-10(%3l:%c%)%P'
-    return '%-4(%P%)'
+    return '%-10(%3l:%c%)%P'
+    " return '%-4(%P%)'
 endfunction
 
 function! ZoomStatus()
@@ -663,9 +666,6 @@ function! Statusline()
   let enc = "%{&fileencoding?&fileencoding:&encoding}"
   let ft  = "%{len(&filetype) ? &filetype : ''}"
   let ff  = "%{&fileformat}"
-  let git = "%{FugitiveStatus()}"
-  let hg  = "%{LawrenciumStatus()}"
-  let chg = "%{ChangedStatus()}"
   let vcs = "%{AddBracket(VcsInfoStatus())}"
   let sep = ' %= '
   let coc = '%{AddSpace(CocStatus())}'
