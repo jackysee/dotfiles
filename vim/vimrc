@@ -255,9 +255,6 @@ let g:Hexokinase_highlighters = ['backgroundfull']
 
 " Shortcuts
 
-" search selected text in visual mode
-vnoremap // y/<C-R>"<CR>
-
 " paste on visual mode without chaning original register
 vnoremap p "_dP
 
@@ -451,7 +448,7 @@ let s:eslintdirs = ['/src/frontend', '/web', '/frontend']
 for l in s:eslintdirs
     let p = getcwd().l.'/.eslintrc.js'
     if filereadable(p)
-        let s:eslintdir = p
+        let s:eslintdir = getcwd().l
         break
     endif
 endfor
@@ -498,7 +495,7 @@ let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 autocmd! User indentLine doautocmd indentLine Syntax
 
 " statusline {
-set noshowmode
+" set noshowmode
 set laststatus=2
 
 function! CurDir()
@@ -673,7 +670,7 @@ function! Statusline()
   let pos = LineInfoStatus()
   let dir = '%20.30{CurDir()} '
   let zoom = '%{ZoomStatus()}'
-  return mode.paste.file.zoom.sep.coc.ale.vcs.pos
+  return paste.file.zoom.sep.coc.ale.vcs.pos
 endfunction
 
 " vanilla statusline
