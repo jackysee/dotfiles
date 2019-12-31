@@ -1,57 +1,54 @@
-" notes for windows the ~/_vimrc
-"
-" need to :
-"   set rtp+=c:/[loc_of_vimfiles]
-"   source c:/[loc_of_vimfiles]el/vimrc
-
+" windows location $HOME/vimfiles/vimrc
 
 " Constants
-" -----------------------------
 let s:is_windows = has('win32') || has('win64')
 let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
 let s:has_node = executable('node')
 
-" shell
-" -----------------------------
-if s:is_windows
-    set shellcmdflag=/D/C
-endif
-if executable('zsh')
-    set shell=/usr/bin/zsh
-endif
-
-
 " Settings
-" -----------------------------
+filetype plugin indent on
+syntax enable
+runtime macros/matchit.vim
+set backspace=indent,eol,start
+set complete-=i
+set smarttab
 set nowrap
-set hlsearch
 set number relativenumber
 set title
-set showmatch
 set wildchar=<TAB>
 set wildmenu
 set wildmode=longest:list,full
 set wildignore=*.o,*.class,*.pyc,*.swp,*.bak,**/node_modules/**,elm_stuff
-set nobackup
-set noswapfile
+set nobackup noswapfile
+set autoread
 set copyindent
+set autoindent
 set ignorecase
 set smartcase
 set clipboard=unnamed
-set splitbelow 
-set splitright
+set splitbelow splitright
 set hidden
 set mouse=a
+set scrolloff=1
+set sidescrolloff=5
+set display+=lastline
 
-"more characters will be sent to the screen for redrawing
 set ttyfast
-"time waited for key press(es) to complete. It makes for a faster key response
 set ttimeout
 set ttimeoutlen=50
-
 set lazyredraw
-set regexpengine=1
+
+set incsearch
+set hlsearch
+" Use <C-L> to clear the highlighting of :set hlsearch.
+nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+
+set list listchars=tab:»-,trail:·,extends:>,precedes:<,nbsp:+
+set formatoptions+=j " Delete comment character when joining commented lines
+
+set history=1000
+set tabpagemax=50
 
 " set block cursor
 if $TERM == "xterm" || $TERM == "xterm-256color"
@@ -60,31 +57,31 @@ if $TERM == "xterm" || $TERM == "xterm-256color"
     let &t_EI = "\<Esc>[2 q"
 endif
 
+" shell
+if s:is_windows
+    set shellcmdflag=/D/C
+endif
+if executable('zsh')
+    set shell=/usr/bin/zsh
+endif
+
 " Plugins
-" -----------------------------
-"
-"
 let s:path = expand('<sfile>:p:h')
 call plug#begin(s:path . '/plugged')
 
 "theme
 Plug 'ajh17/spacegray.vim'
 Plug 'whatyouhide/vim-gotham'
-Plug 'junegunn/seoul256.vim'
 Plug 'morhetz/gruvbox'
-Plug 'arcticicestudio/nord-vim'
 Plug 'liuchengxu/space-vim-dark'
 Plug 'axvr/photon.vim'
 Plug 'KKPMW/distilled-vim'
-Plug 'lifepillar/vim-solarized8'
 Plug 'kaicataldo/material.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'Rigellute/rigel'
-Plug 'jacoborus/tender.vim'
-Plug 'jonathanfilip/vim-lucius'
+Plug 'joshdick/onedark.vim'
 Plug 'tyrannicaltoucan/vim-deep-space'
-Plug 'nightsense/snow'
 Plug 'nightsense/stellarized'
 Plug 'nightsense/cosmic_latte'
 
@@ -93,78 +90,39 @@ if s:is_fast
     Plug 'mhinz/vim-startify'
 endif
 
-"snip
+" snippet
 if s:is_fast
     Plug 'SirVer/ultisnips'
-    " Plug 'Shougo/neosnippet.vim'
     Plug 'honza/vim-snippets'
 endif
 
-"git
+" git
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-signify'
 
-"hg
-" Plug 'jlfwong/vim-mercenary'
+" hg
 Plug 'ludovicchabant/vim-lawrencium'
 
-"
 "diff tools
 Plug 'whiteinge/diffconflicts'
 
-" == deoplete ==
-" if s:is_fast
-"     Plug 'Shougo/neco-syntax'
-"     if has('nvim')
-"       Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"     else
-"       Plug 'Shougo/deoplete.nvim'
-"       Plug 'roxma/nvim-yarp'
-"       Plug 'roxma/vim-hug-neovim-rpc'
-"     endif
-"     " Plug 'carlitux/deoplete-ternjs'
-" endif
-
-
-" Plug 'prabirshrestha/async.vim'
-" Plug 'prabirshrestha/vim-lsp'
-" Plug 'lighttiger2505/deoplete-vim-lsp'
-"
-
-" == coc ==
+" coc
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
-" == asynccomplete ==
-" Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'prabirshrestha/asyncomplete-buffer.vim'
-" Plug 'prabirshrestha/asyncomplete-file.vim'
-" Plug 'yami-beta/asyncomplete-omni.vim'
-" Plug 'prabirshrestha/asyncomplete-ultisnips.vim'
-
-" === javacomplete2 =="
-" Plug 'artur-shaik/vim-javacomplete2'
-
-Plug 'pbrisbin/vim-mkdir'
-Plug 'mbbill/undotree'
 " Plug 'tomtom/tcomment_vim'
 Plug 'Shougo/context_filetype.vim'
 Plug 'tyru/caw.vim'
 Plug 'terryma/vim-expand-region'
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-sensible'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-surround'
-" Plug 'itchyny/lightline.vim'
-" Plug 'maximbaz/lightline-ale'
-Plug 'Asheq/close-buffers.vim'
-Plug 'danro/rename.vim'
+Plug 'tpope/vim-eunuch'
+Plug 'pbrisbin/vim-mkdir'
 Plug 'haya14busa/is.vim'
 Plug 'osyo-manga/vim-anzu'
 Plug 'haya14busa/vim-asterisk'
-Plug 'itchyny/vim-gitbranch'
 Plug 'wellle/targets.vim'
 Plug 'kana/vim-textobj-user'
-" Plug 'vim-scripts/argtextobj.vim'
 Plug 'kana/vim-textobj-function'
 Plug 'kana/vim-textobj-line'
 Plug 'michaeljsmith/vim-indent-object'
@@ -172,40 +130,32 @@ Plug 'justinmk/vim-ipmotion'
 Plug 'qpkorr/vim-bufkill'
 Plug 'mileszs/ack.vim'
 Plug 'chiedojohn/vim-case-convert'
-if s:is_gui
-    Plug 'TaDaa/vimade'
-endif
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
 Plug 'dhruvasagar/vim-zoom'
 Plug 'AndrewRadev/splitjoin.vim'
 
 " file finder
-" Plug 'kien/ctrlp.vim'
-" Plug 'liuchengxu/vim-clap', { 'do': function('clap#helper#build_all') }
 if s:is_windows
     Plug 'Yggdroot/LeaderF', { 'do': './install.bat' }
 else
     Plug 'junegunn/fzf.vim'
 endif
 
+if !s:is_windows
+    Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
+endif
+
 " js / vue
-" ------
 if s:is_fast
     Plug 'w0rp/ale', { 'for': ['javascript', 'vue', 'javascript.jsx', 'css', 'scss', 'html', 'json' ]}
     Plug 'mattn/emmet-vim',  { 'for':['javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' ]}
     Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html', 'vue'] }
     Plug 'elzr/vim-json', { 'for': ['json']}
-    " Plug 'prettier/vim-prettier', { 'branch': 'release/1.x', 'for': [ 'javascript', 'css', 'scss', 'markdown', 'vue', 'html', 'yaml'] }
     Plug 'posva/vim-vue', { 'for': ['vue']}
     Plug 'sgur/vim-editorconfig'
-    if !s:is_windows
-        Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
-    endif
-    " Plug 'Raimondi/delimitMate'
     Plug '1995eaton/vim-better-javascript-completion',  { 'for': [ 'javascript', 'vue' ]}
 endif
-
 
 " elm
 Plug 'elmcast/elm-vim', { 'for': ['elm']}
@@ -221,35 +171,22 @@ else
 endif
 
 set termguicolors
-" set background=dark
 
 " let g:material_theme_style = 'dark'
 " colorscheme material
-"
-" let g:seoul256_background = 233
-" colorscheme seoul256
-"
-" if !has("gui_running")	" running term
-" endif
-"
 
 " let g:gruvbox_contrast_dark='hard'
 " colorscheme gruvbox
 
 " colorscheme molokai
-" colorscheme gotham
+colorscheme gotham
 " colorscheme photon
 " colorscheme distilled
-" colorscheme nord
-" colorscheme solarized8_high
-colorscheme spacegray
+" colorscheme spacegray
 " colorscheme space-vim-dark
 " colorscheme rigel
-" colorscheme tender
-" colorscheme lucius
 " colorscheme cosmic_latte
 " colorscheme deep-space
-" colorscheme snow
 " colorscheme stellarized
 
 if s:is_fast
@@ -271,8 +208,6 @@ if s:is_gui
     " set guifont=Fira_Code_Medium:h10
     set guifont=Source_Code_Pro:h10
     set linespace=1
-    let g:vimade = {}
-    let g:vimade.fadelevel = 0.5
 endif
 
 "gui options
@@ -292,14 +227,12 @@ set tm=500
     set tabstop=4
     set softtabstop=4
     set shiftwidth=4
-"   au FileType Makefile set noexpandtab
 "}
 
 
 set path=.,src/main/java,src/main/test,src/frontend/src,frontend/src
 set includeexpr=substitute(v:fname,'/','src/frontend/src/','')
 set suffixesadd=.js,.vue,.scss
-
 
 "startify
 " let g:startify_custom_header = ['']
@@ -319,11 +252,6 @@ let g:signify_update_on_focusgained = 1
 let g:Hexokinase_highlighters = ['backgroundfull']
 
 " Shortcuts
-" -----------------------------
-" set leader to ,
-let mapleader=","
-let g:mapleader=","
-
 
 " search selected text in visual mode
 vnoremap // y/<C-R>"<CR>
@@ -331,22 +259,18 @@ vnoremap // y/<C-R>"<CR>
 " paste on visual mode without chaning original register
 vnoremap p "_dP
 
-" <C-L> turn off search highlight in sensible.vim
-nnoremap <leader>/ :nohlsearch<CR>
-
 "; :
 nnoremap ; :
 nnoremap > ;
 nnoremap < ,
 
 " beginning / end of line
-nnoremap <leader>h ^
-nnoremap <leader>l $
+nnoremap ,h ^
+nnoremap ,l $
 
 " center search
 nnoremap n nzz
 nnoremap N Nzz
-
 
 inoremap jk <ESC>
 
@@ -358,17 +282,25 @@ vnoremap > >gv
 noremap <left> :bp<CR>
 noremap <right> :bn<CR>
 
-" edit vimrc
-nnoremap <silent> <leader>vv :vsp ~/.vim/vimrc<CR>
+function! CloseAllBuffer()
+    silent! execute "1,100bd"
+endfunction
 
-" " trim trailing space
-" function! <SID>StripTrailingWhitespaces()
-"     let l = line(".")
-"     let c = col(".")
-"     %s/\s\+$//e
-"     call cursor(l, c)
-" endfun
-" autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+" Encoding
+set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
+
+" open file
+cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
+map ,ew :e %%
+map ,es :sp %%
+map ,ev :vsp %%
+map ,et :tabe %%
+
+" edit vimrc
+nnoremap <silent> ,vv :vsp ~/.vim/vimrc<CR>
 
 "jump between split
 nnoremap <C-J> <C-W><C-J>
@@ -378,16 +310,12 @@ nnoremap <C-H> <C-W><C-H>
 
 " vimdiff
 if &diff
-    nnoremap <leader>g :diffget<CR>
-    nnoremap <leader>p :diffput<CR>
+    nnoremap ,g :diffget<CR>
+    nnoremap ,p :diffput<CR>
 endif
 
-" undotree
-nnoremap <F5> :UndotreeToggle<cr>
-
-
 " Zoom / Restore window.
-nnoremap <leader>z :call zoom#toggle()<cr>
+nnoremap ,z :call zoom#toggle()<cr>
 
 " emmet
 imap <C-E> <C-y>,
@@ -406,10 +334,6 @@ let g:expand_region_text_objects = {
       \ 'at'  :1
       \ }
 
-" ale fix
-nmap <silent> <leader>af <Plug>(ale_fix)
-nmap <silent> <leader>aj :ALENext<cr>
-nmap <silent> <leader>ak :ALEPrevious<cr>
 
 " is.vim/anzu/vim-asterisk
 map n <Plug>(is-nohl)<Plug>(anzu-n-with-echo)
@@ -421,48 +345,15 @@ map #  <Plug>(asterisk-z#)<Plug>(is-nohl-1)
 map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)
 nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
 
-" deoplete
-" -----------------------------
-" let g:deoplete#enable_at_startup = 1
-" if exists('g:deoplete#enable_at_startup')
-"     set completeopt=longest,menuone,preview
-"     let g:deoplete#enable_at_startup = 1
-"     " let g:deoplete#enable_at_startup = 0
-"     " autocmd InsertEnter * call deoplete#enable()
-"     inoremap <expr><C-g>     deoplete#undo_completion()
-"     call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
-"     call deoplete#custom#source('ultisnips', 'rank', 1000)
-"     let g:deoplete#enable_ignore_case = 1
-"     let g:deoplete#enable_smart_case = 1
-"     let g:deoplete#enable_camel_case = 1
-"     let g:deoplete#enable_refresh_always = 1
-"     let g:deoplete#max_abbr_width = 0
-"     let g:deoplete#max_menu_width = 0
-"     call deoplete#custom#var('around', {
-"                 \   'range_above': 15,
-"                 \   'range_below': 15,
-"                 \   'mark_above': '[↑]',
-"                 \   'mark_below': '[↓]',
-"                 \   'mark_changes': '[*]',
-"                 \})
-" endif
-
-
 " coc
-" -----------------------------
 let g:coc_global_extensions = [
             \   'coc-css',
             \   'coc-html',
             \   'coc-json',
-            \   'coc-pairs'
+            \   'coc-pairs',
+            \   'coc-emmet',
+            \   'coc-ultisnips'
             \ ]
-            " \   'coc-java',
-            " \   'coc-prettier',
-            " \   'coc-tsserver',
-            " \   'coc-eslint'
-            " \   'coc-vetur'
-            " \ ]
-" set cmdheight=2
 set updatetime=300
 set shortmess+=c
 set signcolumn=yes
@@ -472,127 +363,19 @@ set signcolumn=yes
 " nmap <silent> gi <Plug>(coc-implementation)
 " nmap <silent> gr <Plug>(coc-references)
 " Remap for do codeAction of current line
-nmap <leader>ca  <Plug>(coc-codeaction)
+nmap ,ca  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-nmap <leader>ne  <Plug>(coc-diagnostic-next-error)
-nmap <leader>pe  <Plug>(coc-diagnostic-prev-error)
+nmap ,qf  <Plug>(coc-fix-current)
+nmap ,ne  <Plug>(coc-diagnostic-next-error)
+nmap ,pe  <Plug>(coc-diagnostic-prev-error)
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
-" command! -nargs=0 Prettier :CocCommand prettier.formatFile
-
-" asyncomplete
-" -----------------------------
-" autocmd FileType css set omnifunc=csscomplete#CompleteCSS
-" autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
-" autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
-" inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-" inoremap <expr> <cr>    pumvisible() ? "\<C-y>" : "\<cr>"
-" call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
-"     \ 'name': 'buffer',
-"     \ 'whitelist': ['*'],
-"     \ 'completor': function('asyncomplete#sources#buffer#completor'),
-"     \ 'config': {
-"     \    'max_buffer_size': 5000000,
-"     \  },
-"     \ }))
-"
-" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-"     \ 'name': 'file',
-"     \ 'whitelist': ['*'],
-"     \ 'priority': 10,
-"     \ 'completor': function('asyncomplete#sources#file#completor')
-"     \ }))
-"
-"
-" call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-"     \ 'name': 'omni',
-"     \ 'whitelist': ['*'],
-"     \ 'blacklist': ['c', 'cpp', 'html'],
-"     \ 'completor': function('asyncomplete#sources#omni#completor')
-"     \  }))
-"
-" call asyncomplete#register_source(asyncomplete#sources#ultisnips#get_source_options({
-"     \ 'name': 'ultisnips',
-"     \ 'whitelist': ['*'],
-"     \ 'completor': function('asyncomplete#sources#ultisnips#completor'),
-"     \ }))
-
-
-" Enconding
-" -----------------------------
-set encoding=utf-8
-
-set termencoding=utf-8
-set fileencoding=utf-8
-set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
-
-fun! ViewUTF8()
-    set encoding=utf-8
-    set termencoding=big5
-endfun
-
-fun! UTF8()
-    set encoding=utf-8
-    set termencoding=big5
-    set fileencoding=utf-8
-    set fileencodings=ucs-bom,big5,utf-8,latin1
-endfun
-
-fun! Big5()
-    set encoding=big5
-    set fileencoding=big5
-endfun
-
-" open file
-" -----------------------------
-cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
-map <leader>ew :e %%
-map <leader>es :sp %%
-map <leader>ev :vsp %%
-map <leader>et :tabe %%
-nmap <Space>r :call feedkeys(":Rename " . expand('%@'))<CR>
-
-" whitespace
-" -----------------------------
-set list listchars=tab:»-,trail:·
-
-"" ctrlp
-" -----------------------------
-" if executable('rg')
-"   set grepprg=rg\ --color=never
-"   let g:ctrlp_fallback_command = 'rg --files --color=never %s'
-" else
-"   if s:is_windows
-"     let g:ctrlp_fallback_command = 'dir %s /-n /b /s /a-d'  " Windows
-"   else
-"     let g:ctrlp_fallback_command = 'find %s -type f'        " MacOSX/Linux
-"   endif
-" endif
-"
-" let g:ctrlp_user_command = {
-" 	\ 'types': {
-" 		\ 1: ['.git', 'cd %s && git ls-tree -r --name-only HEAD'],
-" 		\ 2: ['.hg', 'hg --cwd %s locate -I .'],
-" 		\ },
-" 	\ 'fallback': g:ctrlp_fallback_command
-" 	\ }
-"
-" if s:is_windows
-"     nnoremap <C-P> :CtrlP<cr>
-" else
-"     "fzf is much faster in *nix
-"     set rtp+=~/.fzf
-"     nnoremap <C-P> :FZF<cr>
-" endif
 
 
 " leaderF
-" --------------
 if s:is_windows
-    nnoremap <leader>r :LeaderfMru<CR>
-    nnoremap <leader>g :Leaderf rg -e<Space>
+    nnoremap ,r :LeaderfMru<CR>
+    nnoremap ,g :Leaderf rg -e<Space>
     let g:Lf_WindowHeight = 0.30
     let g:Lf_MruFileExclude = ['*.so', '*.tmp', '*.bak', '*.exe', '*.dll']
     let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
@@ -615,9 +398,9 @@ else
         \ 'ctrl-x': 'split',
         \ 'ctrl-v': 'vsplit'
         \ }
-    nnoremap <leader>f :Files<cr>
-    nnoremap <leader>r :History<cr>
-    nnoremap <leader>b :Buffers<cr>
+    nnoremap ,f :Files<cr>
+    nnoremap ,r :History<cr>
+    nnoremap ,b :Buffers<cr>
     let g:fzf_files_options =
         \ '--preview "(bat {}) 2> /dev/null | head -'.&lines.'"'
 endif
@@ -628,22 +411,7 @@ if executable('ag')
     let g:ackprg = 'ag --vimgrep'
 endif
 
-
-
-" search (fzf)
-" setting on windows :
-"   scoop install fzf
-"   scoop install ripgrep
-"   set FZF_DEFAULT_COMMAND='rg --files'
-" -----------------------------
-" if s:is_windows
-"     set rtp+=/c/Users/jackys/scoop/shims/fzf
-" else
-"     set rtp+=/usr/local/opt/fzf
-" endif
-
 " vim-sneak
-" -----------------------------
 let g:sneak#s_next=1
 let g:sneak#streak=1
 nmap f <Plug>Sneak_f
@@ -652,26 +420,15 @@ nmap t <Plug>Sneak_t
 nmap T <Plug>Sneak_T
 
 " ale
-" -----------------------------
-"
+nmap <silent> ,af <Plug>(ale_fix)
+nmap <silent> ,aj :ALENext<cr>
+nmap <silent> ,ak :ALEPrevious<cr>
 let g:ale_sign_column_always = 1
-""
-" let g:ale_sign_error = "◉"
-" let g:ale_sign_warning = "◉"
-" let g:ale_sign_error = '✗'
 let g:ale_sign_error = "\uf00d"
-" let g:ale_sign_warning = '⚠'
 let g:ale_sign_warning = "\uf529"
 highlight ALEErrorSign guifg=#C30500
 highlight ALEWarningSign guifg=#ED6237
 highlight clear ALEWarningLine
-" highlight clear ALEWarningSign
-" highlight clear ALEErrorLine "Sign
-" highlight clear ALEWarningLine "Sign
-" let g:ale_sign_error = '✗'
-" let g:ale_sign_warning = '⚠'
-
-" let g:ale_sign_error = '●'
 
 let s:prettierexec1 = getcwd() . '/src/frontend/node_modules/.bin/prettier'
 let s:prettierexec2 = getcwd() . '/web/node_modules/.bin/prettier'
@@ -717,20 +474,16 @@ let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 1
 
 
-
 " vim-vue
-" -----------------------------
 au BufNewFile,BufRead *.vue setlocal filetype=vue
 autocmd FileType vue syntax sync fromstart
 let g:vue_disable_pre_processors=1
 
 " vim-json
-" -----------------------------
 let g:vim_json_syntax_conceal = 0
 
 
 " ultisnips
-" -----------------------------
 let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsExpandTrigger="<tab>"
 " "let g:UltiSnipsJumpForwardTrigger="<c-b>"
@@ -740,24 +493,6 @@ let g:UltiSnipsExpandTrigger="<tab>"
 " IndentLines
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 autocmd! User indentLine doautocmd indentLine Syntax
-
-" neosnippet
-" -----------------------------
-" let g:neosnippet#enable_snipmate_compatibility = 1
-" let g:neosnippet#snippets_directory='~/.vim/plugged/vim-snippets/snippets'
-" imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-" smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-" xmap <C-k>     <Plug>(neosnippet_expand_target)
-" " SuperTab like snippets behavior.
-" " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
-" "imap <expr><TAB>
-" " \ pumvisible() ? "\<C-n>" :
-" " \ neosnippet#expandable_or_jumpable() ?
-" " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-" smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-" \ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-"
-"
 
 " statusline {
 set noshowmode
@@ -872,12 +607,27 @@ function! FilenameStatus()
 endfunction
 
 function! LineInfoStatus()
-    return '%-10(%3l:%c%)%P'
+    " return '%-10(%3l:%c%)%P'
+    return '%-4(%P%)'
 endfunction
 
 function! ZoomStatus()
     if exists('g:loaded_zoom') && zoom#statusline() != ''
         return ' [Z]'
+    endif
+    return ''
+endfunction
+
+function! AddBracket(s)
+    if exists('a:s')
+        return (a:s == '')? '': ' ['.a:s.'] '
+    endif
+    return ''
+endfunction
+
+function! AddSpace(s)
+    if exists('a:s')
+        return (a:s == '')? '': ' '.a:s.' '
     endif
     return ''
 endfunction
@@ -916,108 +666,19 @@ function! Statusline()
   let git = "%{FugitiveStatus()}"
   let hg  = "%{LawrenciumStatus()}"
   let chg = "%{ChangedStatus()}"
-  let vcs = ' '.git.hg.chg
+  let vcs = "%{AddBracket(VcsInfoStatus())}"
   let sep = ' %= '
-  let coc = '%{CocStatus()}'
-  let ale = '%{ALELinterStatus()}'
+  let coc = '%{AddSpace(CocStatus())}'
+  let ale = '%{AddSpace(ALELinterStatus())}'
   let pos = LineInfoStatus()
   let dir = '%20.30{CurDir()} '
   let zoom = '%{ZoomStatus()}'
-  return mode.paste.file.zoom.sep.coc.ale.vcs
+  return mode.paste.file.zoom.sep.coc.ale.vcs.pos
 endfunction
 
 " vanilla statusline
-" hi StatusLine guifg=#70b3e1 guibg=NONE gui=bold cterm=bold
-" hi StatusLineNC guifg=#555555 guibg=NONE gui=bold cterm=NONE
-" au InsertLeave * hi StatusLine guifg=#70b3e1 guibg=NONE gui=bold cterm=bold
-" au InsertEnter * hi StatusLine guifg=#ffcc1a guibg=NONE gui=bold cterm=bold
-" hi StatusLine guifg=#dddddd ctermfg=254 guibg=#00384d ctermbg=23 gui=NONE cterm=NONE
-" au InsertLeave * hi StatusLine guifg=#dddddd ctermfg=254 guibg=#00384d ctermbg=23 gui=NONE cterm=NONE
-" au InsertEnter * hi StatusLine guifg=#333333 ctermfg=254 guibg=#ffcc1a ctermbg=23 gui=NONE cterm=NONE
 let &statusline = Statusline()
-
 "}
-
-" lightline
-" -----------------------------
-" let g:lightline#ale#indicator_checking = "\uf110"
-" let g:lightline#ale#indicator_warnings = "\uf529"
-" let g:lightline#ale#indicator_errors = "\uf00d"
-" let g:lightline#ale#indicator_ok = "\uf00c"
-"
-"
-" let g:lightline = {}
-" let g:lightline.colorscheme = 'rigel'
-"
-" let g:lightline.mode_map = {
-"     \ 'n' : 'N',
-"     \ 'i' : 'I',
-"     \ 'R' : 'R',
-"     \ 'v' : 'V',
-"     \ 'c' : 'C',
-"     \ 's' : 'S'
-"     \ }
-"
-" let g:lightline.separator = {}
-" " let g:lightline.separator.left = "\ue0b8"
-" " let g:lightline.separator.right = "\ue0be"
-" let g:lightline.subseparator = {}
-" " let g:lightline.subseparator.left = "\ue0b9"
-" " let g:lightline.subseparator.right = "\ue0b9"
-"
-" let g:lightline.active = {}
-" let g:lightline.active.left = [ ['mode', 'paste'], ['folder'], ['filename']]
-" let g:lightline.active.right = [
-"             \ ['percent'],
-"             \ ['coc', 'ale'],
-"             \ ['vcsinfo'],
-"             \ ]
-"             " \ ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok']
-"             " \ ]
-"
-" let g:lightline.inactive = {}
-" let g:lightline.inactive.left = [['relativepath']]
-" let g:lightline.inactive.right = [[]]
-"
-" let g:lightline.component_visible_condition = {}
-" let g:lightline.component_visible_condition.coc = 'CocStatus() != ""'
-" let g:lightline.component_visible_condition.ale = 'ALELinterStatus() != ""'
-"
-" let g:lightline.component = {}
-" let g:lightline.component.lineinfo = LineInfoStatus()
-" let g:lightline.component.folder = '%{expand("%:h")}'
-"
-" let g:lightline.component_expand = {}
-" let g:lightline.component_expand.linter_checking = 'lightline#ale#checking'
-" let g:lightline.component_expand.linter_warnings = 'lightline#ale#warnings'
-" let g:lightline.component_expand.linter_errors = 'lightline#ale#errors'
-" let g:lightline.component_expand.linter_ok = 'lightline#ale#ok'
-" let g:lightline.component_expand.ale = 'ALELinterStatus'
-" let g:lightline.component_expand.coc = 'CocStatus'
-"
-" let g:lightline.component_function = {}
-" let g:lightline.component_function.filename = 'FilenameStatus'
-" let g:lightline.component_function.search_status = 'anzu#search_status'
-" let g:lightline.component_function.vcsinfo = 'VcsInfoStatus'
-"
-" command! LightlineReload call LightlineReload()
-"
-" function! LightlineReload()
-"   call lightline#init()
-"   call lightline#colorscheme()
-"   call lightline#update()
-" endfunction
-
-
-" javacomplete2
-" -------------------
-" let g:JavaComplete_JavaviDebug = 1
-" let g:JavaComplete_JavaviLogfileDirectory = '/home/jackys/works/javavi/'
-" let g:JavaComplete_JavaviLogLevel = 'debug'
-" autocmd FileType java setlocal omnifunc=javacomplete#Complete
-" let g:JavaComplete_SourceExclude = ['src/frontend']
-" let g:JavaComplete_EnableDefaultMappings = 0
-" set completeopt=longest,menuone
 
 " tmux
 let g:tmux_navigator_disable_when_zoomed = 1
