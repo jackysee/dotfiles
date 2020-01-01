@@ -16,7 +16,7 @@
 ".vrapperrc" = "~/.vrapperrc"
 ".ripgreprc" = "~/.ripgreprc"
 
-[macos]
+[darwin]
 "vim" = "~/.vim"
 "tmux/.tmux.conf" = "~/.tmux.conf"
 "tmux/.tmux" = "~/.tmux"

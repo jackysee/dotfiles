@@ -61,9 +61,9 @@ endif
 if s:is_windows
     set shellcmdflag=/D/C
 endif
-if executable('zsh')
-    set shell=/usr/bin/zsh
-endif
+" if executable('zsh')
+"     set shell=/usr/bin/zsh
+" endif
 
 " Plugins
 let s:path = expand('<sfile>:p:h')
