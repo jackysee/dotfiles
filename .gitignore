@@ -1,3 +1,4 @@
-vim/.vim/plugged
-vim/.vim/.netrwhist
+vim/plugged
+vim/.netrwhist
+vim/sessions
 tmux/.tmux/plugins/*

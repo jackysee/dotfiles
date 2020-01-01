@@ -29,9 +29,9 @@ export FNM_DIR="${:-$HOME/.}fnm"
 if [[ ! -d $FNM_DIR ]]; then
   echo "Installing FNM"
   mkdir $FNM_DIR
-  curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- --skip-shell
+  curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- --skip-shell --force-install
 fi
-export PATH=/home/jackys/.fnm:$PATH
+export PATH=$HOME/.fnm:$PATH
 eval "`fnm env --multi`"
 
 # ## nvm
@@ -137,7 +137,9 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 [ -f ~/.aliases ] && source ~/.aliases
 
-[ -f ~/.dir_colors ] && eval `dircolors ~/.dir_colors`
+if command -v dircolors > /dev/null; then
+    dircolors ~/.dir_colors
+fi
 
 # fzf
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
