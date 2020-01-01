@@ -84,6 +84,8 @@ Plug 'tyrannicaltoucan/vim-deep-space'
 Plug 'nightsense/stellarized'
 Plug 'nightsense/cosmic_latte'
 Plug 'nanotech/jellybeans.vim'
+Plug 'Lokaltog/vim-monotone'
+Plug 'arzg/vim-substrata'
 
 "start page
 if s:is_fast
@@ -132,6 +134,7 @@ Plug 'mileszs/ack.vim'
 Plug 'cohama/lexima.vim'
 Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
 Plug 'dhruvasagar/vim-zoom'
 Plug 'AndrewRadev/splitjoin.vim'
@@ -190,6 +193,13 @@ set termguicolors
 " colorscheme deep-space
 " colorscheme stellarized
 colorscheme jellybeans
+" colorscheme substrata
+
+" let g:monotone_color = [120, 100, 70] " Sets theme color to bright green
+" let g:monotone_secondary_hue_offset = 200 " Offset secondary colors by 200 degrees
+" let g:monotone_emphasize_comments = 0 " Emphasize comments
+" colorscheme monotone
+
 
 if s:is_fast
     set cursorline
