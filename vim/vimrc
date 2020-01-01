@@ -144,7 +144,7 @@ else
     Plug 'junegunn/fzf.vim'
 endif
 
-if !s:is_windows
+if !s:is_windows && executable('go')
     Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 endif
 
