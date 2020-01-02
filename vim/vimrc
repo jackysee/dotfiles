@@ -5,6 +5,7 @@ let s:is_windows = has('win32') || has('win64')
 let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
 let s:has_node = executable('node')
+let s:has_go = executable('go')
 
 " Settings
 filetype plugin indent on
@@ -61,9 +62,6 @@ endif
 if s:is_windows
     set shellcmdflag=/D/C
 endif
-" if executable('zsh')
-"     set shell=/usr/bin/zsh
-" endif
 
 " Plugins
 let s:path = expand('<sfile>:p:h')
@@ -84,8 +82,10 @@ Plug 'tyrannicaltoucan/vim-deep-space'
 Plug 'nightsense/stellarized'
 Plug 'nightsense/cosmic_latte'
 Plug 'nanotech/jellybeans.vim'
-Plug 'Lokaltog/vim-monotone'
+Plug 'treycucco/vim-monotonic'
 Plug 'arzg/vim-substrata'
+Plug 'romainl/Apprentice'
+Plug 'kristijanhusak/vim-hybrid-material'
 
 "start page
 if s:is_fast
@@ -147,7 +147,7 @@ else
     Plug 'junegunn/fzf.vim'
 endif
 
-if !s:is_windows && executable('go')
+if !s:is_windows && s:has_go
     Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
 endif
 
@@ -175,7 +175,7 @@ else
     autocmd! bufwritepost vimrc source ~/.vim/vimrc
 endif
 
-set termguicolors
+" set termguicolors
 
 " let g:material_theme_style = 'dark'
 " colorscheme material
@@ -185,20 +185,19 @@ set termguicolors
 
 " colorscheme molokai
 " colorscheme gotham
-" colorscheme photon
+" colorscheme gotham256
+colorscheme photon
 " colorscheme spacegray
 " colorscheme space-vim-dark
 " colorscheme rigel
 " colorscheme cosmic_latte
 " colorscheme deep-space
 " colorscheme stellarized
-colorscheme jellybeans
+" colorscheme jellybeans
 " colorscheme substrata
-
-" let g:monotone_color = [120, 100, 70] " Sets theme color to bright green
-" let g:monotone_secondary_hue_offset = 200 " Offset secondary colors by 200 degrees
-" let g:monotone_emphasize_comments = 0 " Emphasize comments
-" colorscheme monotone
+" colorscheme monotonic
+" colorscheme apprentice
+" colorscheme hybrid_reverse
 
 
 if s:is_fast
@@ -546,7 +545,8 @@ function! FugitiveStatus() abort
         return ''
     endif
     let l:status = fugitive#head()
-    return l:status == '' ? '': "\ue725".l:status
+    return l:status
+    " return l:status == '' ? '': "\ue725".l:status
 endfunction
 
 function! LawrenciumStatus() abort
@@ -554,7 +554,8 @@ function! LawrenciumStatus() abort
         return ''
     endif
     let l:status = lawrencium#statusline()
-    return l:status == '' ? '': "\ue725".l:status
+    return l:status
+    " return l:status == '' ? '': "\ue725".l:status
 endfunction
 
 function! ChangedStatus() abort
@@ -565,7 +566,7 @@ function! ChangedStatus() abort
         let l:summary = b:gitgutter.summary
     endif
     if max(l:summary) > 0
-        return ' +'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].''
+        return ':+'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].''
     endif
     return ''
 endfunction
@@ -690,7 +691,7 @@ let g:currentmode={
 
 function! Statusline()
   let mode = '%{toupper(g:currentmode[mode()])} '
-  let file = '%{FilenameStatus()}'
+  let file = '%{FilenameStatus()} '
   let paste = "%{HasPaste()}"
   let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
   let ro  = "%{&readonly ? '[!] ' : ''}"
@@ -704,7 +705,7 @@ function! Statusline()
   let pos = LineInfoStatus()
   let dir = '%20.30{CurDir()} '
   let zoom = '%{ZoomStatus()}'
-  return paste.file.zoom.sep.coc.ale.vcs.pos
+  return paste.file.zoom.vcs.sep.coc.ale.pos
 endfunction
 
 " vanilla statusline
