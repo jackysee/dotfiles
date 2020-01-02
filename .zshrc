@@ -138,7 +138,7 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 [ -f ~/.aliases ] && source ~/.aliases
 
 if command -v dircolors > /dev/null; then
-    dircolors ~/.dir_colors
+    eval `dircolors ~/.dir_colors`
 fi
 
 # fzf

@@ -72,7 +72,6 @@ Plug 'ajh17/spacegray.vim'
 Plug 'whatyouhide/vim-gotham'
 Plug 'morhetz/gruvbox'
 Plug 'liuchengxu/space-vim-dark'
-Plug 'axvr/photon.vim'
 Plug 'kaicataldo/material.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
@@ -83,7 +82,6 @@ Plug 'nightsense/stellarized'
 Plug 'nightsense/cosmic_latte'
 Plug 'nanotech/jellybeans.vim'
 Plug 'treycucco/vim-monotonic'
-Plug 'arzg/vim-substrata'
 Plug 'romainl/Apprentice'
 Plug 'kristijanhusak/vim-hybrid-material'
 
@@ -116,8 +114,8 @@ Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 Plug 'Shougo/context_filetype.vim'
 Plug 'tyru/caw.vim'
 Plug 'terryma/vim-expand-region'
-Plug 'tpope/vim-repeat'
 Plug 'justinmk/vim-sneak'
+Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
 Plug 'haya14busa/is.vim'
@@ -129,9 +127,9 @@ Plug 'kana/vim-textobj-function'
 Plug 'kana/vim-textobj-line'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'justinmk/vim-ipmotion'
-Plug 'qpkorr/vim-bufkill'
 Plug 'mileszs/ack.vim'
-Plug 'cohama/lexima.vim'
+" Plug 'cohama/lexima.vim'
+Plug 'Raimondi/delimitMate'
 Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -175,28 +173,30 @@ else
     autocmd! bufwritepost vimrc source ~/.vim/vimrc
 endif
 
-" set termguicolors
+set termguicolors
 
 " let g:material_theme_style = 'dark'
 " colorscheme material
 
 " let g:gruvbox_contrast_dark='hard'
 " colorscheme gruvbox
+"
+" colorscheme rigel
+" highlight StatusLineNC guifg=#555555 guibg=#333333 cterm=NONE ctermfg=2 ctermbg=NONE
+
+" set notermguicolors
+" colorscheme monotonic
 
 " colorscheme molokai
 " colorscheme gotham
 " colorscheme gotham256
-colorscheme photon
 " colorscheme spacegray
 " colorscheme space-vim-dark
-" colorscheme rigel
 " colorscheme cosmic_latte
 " colorscheme deep-space
 " colorscheme stellarized
 " colorscheme jellybeans
-" colorscheme substrata
-" colorscheme monotonic
-" colorscheme apprentice
+colorscheme apprentice
 " colorscheme hybrid_reverse
 
 
@@ -289,10 +289,6 @@ vnoremap > >gv
 " list buffer
 noremap <left> :bp<CR>
 noremap <right> :bn<CR>
-
-" Prevent x from overriding what's in the clipboard.
-noremap x "_x
-noremap X "_x
 
 " Encoding
 set encoding=utf-8
@@ -447,6 +443,10 @@ nmap F <Plug>Sneak_F
 nmap t <Plug>Sneak_t
 nmap T <Plug>Sneak_T
 
+" targerts
+" Prefer multiline targets around cursor over distant targets within cursor line:
+let g:targets_seekRanges = 'cc cr cb cB lc ac Ac lr lb ar ab lB Ar aB Ab AB rr ll rb al rB Al bb aa bB Aa BB AA'
+
 " ale
 nmap <silent> ,af <Plug>(ale_fix)
 nmap <silent> ,aj :ALENext<cr>
@@ -519,17 +519,12 @@ let g:vim_json_syntax_conceal = 0
 " ultisnips
 let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsExpandTrigger="<tab>"
-" "let g:UltiSnipsJumpForwardTrigger="<c-b>"
-" "let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
 
 " IndentLines
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 autocmd! User indentLine doautocmd indentLine Syntax
 
 " statusline {
-" set noshowmode
-set laststatus=2
 
 function! CurDir()
     let curdir = substitute(getcwd(), $HOME, "~", "")
@@ -566,7 +561,9 @@ function! ChangedStatus() abort
         let l:summary = b:gitgutter.summary
     endif
     if max(l:summary) > 0
-        return ':+'.l:summary[0].'~'.l:summary[1].'-'.l:summary[2].''
+	return (summary[0] > 0 ? printf('+%d', summary[0]) : '') .
+	    \ (summary[1] > 0 ? printf('~%d', summary[1]) : '') .
+	    \ (summary[2] > 0 ? printf('-%d', summary[2]) : '')
     endif
     return ''
 endfunction
@@ -636,9 +633,9 @@ function! ReadonlyStatus()
 endfunction
 
 function! FilenameStatus()
-    return ('' != ReadonlyStatus() ? ReadonlyStatus() . ' ' : '') .
-                \ ('' != expand('%:t') ? expand('%:p:.') : '[No Name]') .
-                \ ('' != ModifiedStatus() ? ' ' . ModifiedStatus() : '')
+    return ReadonlyStatus() .
+            \ ('' != expand('%:t') ? expand('%:p:.') : '[No Name]') .
+            \ ('' != ModifiedStatus() ? ModifiedStatus() : '')
 endfunction
 
 function! LineInfoStatus()
@@ -648,7 +645,7 @@ endfunction
 
 function! ZoomStatus()
     if exists('g:loaded_zoom') && zoom#statusline() != ''
-        return ' [Z]'
+        return '[Z]'
     endif
     return ''
 endfunction
@@ -690,26 +687,41 @@ let g:currentmode={
     \}
 
 function! Statusline()
-  let mode = '%{toupper(g:currentmode[mode()])} '
-  let file = '%{FilenameStatus()} '
   let paste = "%{HasPaste()}"
-  let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-  let ro  = "%{&readonly ? '[!] ' : ''}"
-  let enc = "%{&fileencoding?&fileencoding:&encoding}"
-  let ft  = "%{len(&filetype) ? &filetype : ''}"
-  let ff  = "%{&fileformat}"
+  let file = '%{FilenameStatus()}'
+  " let mode = '%{toupper(g:currentmode[mode()])} '
+  " let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
+  " let ro  = "%{&readonly ? '[!] ' : ''}"
+  " let enc = "%{&fileencoding?&fileencoding:&encoding}"
+  " let ft  = "%{len(&filetype) ? &filetype : ''}"
+  " let ff  = "%{&fileformat}"
   let vcs = "%{AddBracket(VcsInfoStatus())}"
   let sep = ' %= '
   let coc = '%{AddSpace(CocStatus())}'
   let ale = '%{AddSpace(ALELinterStatus())}'
   let pos = LineInfoStatus()
-  let dir = '%20.30{CurDir()} '
+  " let dir = '%20.30{CurDir()} '
   let zoom = '%{ZoomStatus()}'
   return paste.file.zoom.vcs.sep.coc.ale.pos
 endfunction
 
+function! RefreshStatusline()
+    call setwinvar(winnr(), '&statusline', Statusline())
+endfunction
+
 " vanilla statusline
+" set noshowmode
+set laststatus=2
 let &statusline = Statusline()
+
+augroup ALEStatus
+  autocmd!
+  autocmd User ALEJobStarted call RefreshStatusline()
+  autocmd User ALELintPost call RefreshStatusline()
+  autocmd User ALEFixPost call RefreshStatusline()
+augroup END
+
+
 "}
 
 " tmux
