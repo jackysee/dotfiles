@@ -67,7 +67,7 @@ endif
 let s:path = expand('<sfile>:p:h')
 call plug#begin(s:path . '/plugged')
 
-"theme
+" colorscheme
 Plug 'ajh17/spacegray.vim'
 Plug 'whatyouhide/vim-gotham'
 Plug 'morhetz/gruvbox'
@@ -81,9 +81,8 @@ Plug 'tyrannicaltoucan/vim-deep-space'
 Plug 'nightsense/stellarized'
 Plug 'nightsense/cosmic_latte'
 Plug 'nanotech/jellybeans.vim'
-Plug 'treycucco/vim-monotonic'
 Plug 'romainl/Apprentice'
-Plug 'kristijanhusak/vim-hybrid-material'
+Plug 'jpo/vim-railscasts-theme'
 
 "start page
 if s:is_fast
@@ -137,6 +136,7 @@ Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
 Plug 'dhruvasagar/vim-zoom'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'pbrisbin/vim-mkdir'
+Plug 'svermeulen/vim-yoink'
 
 " file finder
 if s:is_windows
@@ -180,12 +180,9 @@ set termguicolors
 
 " let g:gruvbox_contrast_dark='hard'
 " colorscheme gruvbox
-"
+
 " colorscheme rigel
 " highlight StatusLineNC guifg=#555555 guibg=#333333 cterm=NONE ctermfg=2 ctermbg=NONE
-
-" set notermguicolors
-" colorscheme monotonic
 
 " colorscheme molokai
 " colorscheme gotham
@@ -196,9 +193,9 @@ set termguicolors
 " colorscheme deep-space
 " colorscheme stellarized
 " colorscheme jellybeans
-colorscheme apprentice
-" colorscheme hybrid_reverse
-
+" colorscheme apprentice
+" colorscheme onehalfdark
+colorscheme railscasts
 
 if s:is_fast
     set cursorline
@@ -343,6 +340,9 @@ nnoremap ,z :call zoom#toggle()<cr>
 
 " emmet
 imap <C-E> <C-y>,
+
+" Add semi colon at end of line
+noremap ,; g_a;<Esc>
 
 " vim-expand-region
 " map K <Plug>(expand_region_expand)
@@ -524,7 +524,17 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 autocmd! User indentLine doautocmd indentLine Syntax
 
-" statusline {
+" tmux
+let g:tmux_navigator_disable_when_zoomed = 1
+
+" yoink
+nmap <c-n> <plug>(YoinkPostPasteSwapBack)
+nmap <c-p> <plug>(YoinkPostPasteSwapForward)
+
+nmap p <plug>(YoinkPaste_p)
+nmap P <plug>(YoinkPaste_P)
+
+" statusline {{
 
 function! CurDir()
     let curdir = substitute(getcwd(), $HOME, "~", "")
@@ -561,15 +571,16 @@ function! ChangedStatus() abort
         let l:summary = b:gitgutter.summary
     endif
     if max(l:summary) > 0
-	return (summary[0] > 0 ? printf('+%d', summary[0]) : '') .
-	    \ (summary[1] > 0 ? printf('~%d', summary[1]) : '') .
-	    \ (summary[2] > 0 ? printf('-%d', summary[2]) : '')
+        return (summary[0] > 0 ? printf('+%d', summary[0]) : '') .
+            \  (summary[1] > 0 ? printf('~%d', summary[1]) : '') .
+            \  (summary[2] > 0 ? printf('-%d', summary[2]) : '') . 
+            \  ':'
     endif
     return ''
 endfunction
 
 function! VcsInfoStatus()
-    return FugitiveStatus() . LawrenciumStatus() . ChangedStatus()
+    return ChangedStatus() . FugitiveStatus() . LawrenciumStatus()
 endfunction
 
 function! ALELinterStatus() abort
@@ -721,8 +732,5 @@ augroup ALEStatus
   autocmd User ALEFixPost call RefreshStatusline()
 augroup END
 
+"}}
 
-"}
-
-" tmux
-let g:tmux_navigator_disable_when_zoomed = 1
