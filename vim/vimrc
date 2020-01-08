@@ -112,7 +112,6 @@ Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 " Plug 'tomtom/tcomment_vim'
 Plug 'Shougo/context_filetype.vim'
 Plug 'tyru/caw.vim'
-Plug 'terryma/vim-expand-region'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
@@ -122,12 +121,10 @@ Plug 'osyo-manga/vim-anzu'
 Plug 'haya14busa/vim-asterisk'
 Plug 'wellle/targets.vim'
 Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-function'
 Plug 'kana/vim-textobj-line'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'justinmk/vim-ipmotion'
 Plug 'mileszs/ack.vim'
-" Plug 'cohama/lexima.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
@@ -201,11 +198,6 @@ if s:is_fast
     set cursorline
     autocmd WinEnter * setlocal cursorline
     autocmd WinLeave * setlocal nocursorline
-endif
-
-if has('unix')
-    set guifont=Source_Code_Pro:h10,DejaVu_Sans_Mono:h10,Menlo:h10
-    " set guifont=Fira_Code:h10,Source_Code_Pro:h10,DejaVu_Sans_Mono:h10,Menlo:h10
 endif
 
 " GUI
@@ -343,21 +335,6 @@ imap <C-E> <C-y>,
 
 " Add semi colon at end of line
 noremap ,; g_a;<Esc>
-
-" vim-expand-region
-" map K <Plug>(expand_region_expand)
-" map J <Plug>(expand_region_shrink)
-let g:expand_region_text_objects = {
-      \ 'iw'  :0,
-      \ 'iW'  :0,
-      \ 'iq'  :0,
-      \ 'i<'  :0,
-      \ 'ib'  :1,
-      \ 'it'  :1,
-      \ 'ii'  :1,
-      \ 'at'  :1
-      \ }
-
 
 " is.vim/anzu/vim-asterisk
 map n <Plug>(is-nohl)<Plug>(anzu-n-with-echo)
@@ -571,16 +548,17 @@ function! ChangedStatus() abort
         let l:summary = b:gitgutter.summary
     endif
     if max(l:summary) > 0
-        return (summary[0] > 0 ? printf('+%d', summary[0]) : '') .
+        return '' . 
+            \  (summary[0] > 0 ? printf('+%d', summary[0]) : '') .
             \  (summary[1] > 0 ? printf('~%d', summary[1]) : '') .
             \  (summary[2] > 0 ? printf('-%d', summary[2]) : '') . 
-            \  ':'
+            \  ''
     endif
     return ''
 endfunction
 
-function! VcsInfoStatus()
-    return ChangedStatus() . FugitiveStatus() . LawrenciumStatus()
+function! VcsInfoStatus() abort
+    return FugitiveStatus(). LawrenciumStatus(). ChangedStatus()
 endfunction
 
 function! ALELinterStatus() abort
@@ -713,7 +691,7 @@ function! Statusline()
   let pos = LineInfoStatus()
   " let dir = '%20.30{CurDir()} '
   let zoom = '%{ZoomStatus()}'
-  return paste.file.zoom.vcs.sep.coc.ale.pos
+  return paste.vcs.file.zoom.sep.coc.ale.pos
 endfunction
 
 function! RefreshStatusline()

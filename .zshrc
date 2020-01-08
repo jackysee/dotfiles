@@ -18,9 +18,11 @@ export PATH="$HOME/.local/bin/:$PATH"
 export QT_PLATFORM_PLUGIN=qt5ct
 export QT_QPA_PLATFORMTHEME=qt5ct
 
-# export XMODIFIERS=@im=fcitx
-# export GTK_IM_MODULE=fcitx
-# export QT_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export GTK_IM_MODULE=fcitx
+export XMODIFIERS=@im=fcitx
+export DefaultIMModule=fcitx
+# fcitx-autostart &> /dev/null
 
 stty -ixon
 
@@ -179,6 +181,11 @@ hgshow() {
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
       --bind "ctrl-m:execute: $_hgshowdiff"
+}
+
+j() {
+  [ $# -gt 0 ] && z "$*" && return
+  cd "$(z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
 }
 # zprof
 
