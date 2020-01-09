@@ -1,7 +1,7 @@
 [credential]
     helper = store
 [core]
-    editor = vim
+    editor = vim -u ~/.vim/minivimrc
     autocrlf = input
     pager = diff-so-fancy | less --tabs=4 -RFX
 	quotepath = false

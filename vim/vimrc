@@ -42,8 +42,7 @@ set lazyredraw
 
 set incsearch
 set hlsearch
-" Use <C-L> to clear the highlighting of :set hlsearch.
-nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <silent> ,/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 set list listchars=tab:»-,trail:·,extends:>,precedes:<,nbsp:+
 set formatoptions+=j " Delete comment character when joining commented lines
@@ -119,6 +118,7 @@ Plug 'tpope/vim-eunuch'
 Plug 'haya14busa/is.vim'
 Plug 'osyo-manga/vim-anzu'
 Plug 'haya14busa/vim-asterisk'
+Plug 'osyo-manga/vim-over'
 Plug 'wellle/targets.vim'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-line'
@@ -189,10 +189,12 @@ set termguicolors
 " colorscheme cosmic_latte
 " colorscheme deep-space
 " colorscheme stellarized
-" colorscheme jellybeans
+colorscheme jellybeans
 " colorscheme apprentice
 " colorscheme onehalfdark
-colorscheme railscasts
+" colorscheme onedark
+" colorscheme railscasts
+" colorscheme material
 
 if s:is_fast
     set cursorline
@@ -301,11 +303,16 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+"textobj for bracket function like block (linewise) 
+xnoremap <silent> af :<c-u>normal! g_v%V<cr>
+onoremap <silent> af :<c-u>normal! g_v%V<cr>
+
+" paste line below
+nnoremap ,p :pu<cr>
+
 " vimdiff
-if &diff
-    nnoremap ,g :diffget<CR>
-    nnoremap ,p :diffput<CR>
-endif
+nnoremap ,dg :diffget<CR>
+nnoremap ,dp :diffput<CR>
 
 " Auto-resize splits when Vim gets resized.
 autocmd VimResized * wincmd =
@@ -510,6 +517,10 @@ nmap <c-p> <plug>(YoinkPostPasteSwapForward)
 
 nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
+
+" vim-over
+nnoremap ,s :OverCommandLine<cr>%s/
+xnoremap ,s :OverCommandLine<cr>s/
 
 " statusline {{
 

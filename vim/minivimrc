@@ -1,0 +1,36 @@
+filetype plugin indent on
+syntax on
+runtime macros/matchit.vim
+set nocompatible
+set autoindent
+set backspace=indent,eol,start
+set hidden
+set incsearch
+set path=.,**
+set ruler
+set wildmenu
+set clipboard=unnamed
+set nobackup noswapfile
+
+" set block cursor
+if $TERM == "xterm" || $TERM == "xterm-256color"
+    let &t_SI = "\<Esc>[6 q"
+    let &t_SR = "\<Esc>[4 q"
+    let &t_EI = "\<Esc>[2 q"
+endif
+
+" TAB setting{
+    set expandtab        "replace <TAB> with spaces
+    set tabstop=4
+    set softtabstop=4
+    set shiftwidth=4
+"}
+
+colorscheme molokai
+
+nnoremap ; :
+
+" various adjustments of the default colorscheme
+hi ModeMsg      ctermbg=green     ctermfg=black cterm=NONE
+hi StatusLineNC ctermbg=darkgrey                cterm=bold
+hi Visual       ctermbg=lightcyan ctermfg=black cterm=bold
