@@ -2,6 +2,7 @@
 
 [ui]
 merge = diffconflicts
+editor = vim -u ~/.vim/minivimrc
 
 [merge-tools]
 diffconflicts.executable=vim
