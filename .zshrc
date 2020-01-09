@@ -24,6 +24,8 @@ export XMODIFIERS=@im=fcitx
 export DefaultIMModule=fcitx
 # fcitx-autostart &> /dev/null
 
+export KEYTIMEOUT=5
+
 stty -ixon
 
 ## fnm
