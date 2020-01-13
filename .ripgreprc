@@ -19,6 +19,8 @@
 --glob
 !.gradle/
 
+--glob
+!.svn/
 
 # Always ignore package-lock.json
 --glob
