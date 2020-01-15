@@ -26,7 +26,7 @@ export DefaultIMModule=fcitx
 
 export KEYTIMEOUT=25
 
-stty -ixon
+stty -ixon -ixoff
 
 ## fnm
 export FNM_DIR="${:-$HOME/.}fnm"

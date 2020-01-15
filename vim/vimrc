@@ -407,10 +407,12 @@ else
         \ 'ctrl-v': 'vsplit'
         \ }
     nnoremap ,f :Files<cr>
-    nnoremap ,r :History<cr>
-    nnoremap ,b :Buffers<cr>
     let g:fzf_files_options =
         \ '--preview "(bat {}) 2> /dev/null | head -'.&lines.'"'
+    nnoremap ,r :History<cr>
+    nnoremap ,b :Buffers<cr>
+    nnoremap ,ag :Ag <c-r><c-w><cr>
+    nnoremap ,rg :Rg <c-r><c-w><cr>
 endif
 
 
