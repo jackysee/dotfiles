@@ -1,0 +1,9 @@
+" copy this file to ~/_vimrc
+
+" install python3 using
+set pythonthreedll=~/AppData/Local/Programs/Python/Python37/python37.dll
+set pythonthreehome=~/AppData/Local/Programs/Python/Python37/
+let $PYTHONHOME = '~/AppData/Local/Programs/Python/Python37/'
+set rtp+=c:/settings/dotfiles/vim
+source c:/settings/dotfiles/vim/vimrc
+

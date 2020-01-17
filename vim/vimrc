@@ -1,5 +1,3 @@
-" windows location $HOME/vimfiles/vimrc
-
 " Constants
 let s:is_windows = has('win32') || has('win64')
 let s:is_gui = has("gui_running")
@@ -44,7 +42,7 @@ set incsearch
 set hlsearch
 nnoremap <silent> ,/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
-set list listchars=tab:»-,trail:·,extends:>,precedes:<,nbsp:+
+set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
 set formatoptions+=j " Delete comment character when joining commented lines
 
 set history=1000
@@ -164,11 +162,27 @@ call plug#end()
 
 " auto reload vimrc when editing it
 if s:is_windows
-    autocmd! bufwritepost vimrc source ~/vimfiles/vimrc
+    autocmd! bufwritepost vimrc source c:/settings/dotfiles/vim/vimrc
 else
-    " autocmd! bufwritepost vimrc source ~/.vimrc | call LightlineReload()
     autocmd! bufwritepost vimrc source ~/.vim/vimrc
 endif
+
+" GUI
+if s:is_gui && s:is_windows
+    au GUIEnter * simalt ~x
+    set relativenumber
+    " set guifont=Anonymous_Pro:h11
+    " set guifont=Fira_Code_Medium:h10
+    set guifont=Source_Code_Pro:h10
+    set linespace=1
+    set t_ut=
+endif
+
+"gui options
+set guioptions-=T
+set guioptions-=m
+set guioptions-=r
+set guioptions-=L
 
 set termguicolors
 
@@ -181,7 +195,7 @@ set termguicolors
 " colorscheme rigel
 " highlight StatusLineNC guifg=#555555 guibg=#333333 cterm=NONE ctermfg=2 ctermbg=NONE
 
-" colorscheme molokai
+colorscheme molokai
 " colorscheme gotham
 " colorscheme gotham256
 " colorscheme spacegray
@@ -189,34 +203,22 @@ set termguicolors
 " colorscheme cosmic_latte
 " colorscheme deep-space
 " colorscheme stellarized
-colorscheme jellybeans
+" colorscheme jellybeans
 " colorscheme apprentice
 " colorscheme onehalfdark
 " colorscheme onedark
 " colorscheme railscasts
 " colorscheme material
 
+if s:is_windows
+"    colorscheme molokai
+endif
+
 if s:is_fast
     set cursorline
     autocmd WinEnter * setlocal cursorline
     autocmd WinLeave * setlocal nocursorline
 endif
-
-" GUI
-if s:is_gui
-    au GUIEnter * simalt ~x
-    set relativenumber
-    " set guifont=Anonymous_Pro:h11
-    " set guifont=Fira_Code_Medium:h10
-    set guifont=Source_Code_Pro:h10
-    set linespace=1
-endif
-
-"gui options
-set guioptions-=T
-set guioptions-=m
-set guioptions-=r
-set guioptions-=L
 
 " disable sound on errors
 set noerrorbells
@@ -295,7 +297,12 @@ map ,ev :vsp %%
 map ,et :tabe %%
 
 " edit vimrc
-nnoremap <silent> ,vv :vsp ~/.vim/vimrc<CR>
+if !s:is_windows
+    nnoremap <silent> ,vv :vsp ~/.vim/vimrc<CR>
+endif
+if s:is_windows
+    nnoremap <silent> ,vv :vsp c:/settings/dotfiles/vim/vimrc<CR>
+endif
 
 "jump between split
 nnoremap <C-J> <C-W><C-J>
@@ -382,12 +389,14 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
 
 " leaderF
 if s:is_windows
+    nnoremap ,f :LeaderfFile<CR>
     nnoremap ,r :LeaderfMru<CR>
-    nnoremap ,g :Leaderf rg -e<Space>
+    nnoremap ,rg :Leaderf rg -e<Space>
     let g:Lf_WindowHeight = 0.30
     let g:Lf_MruFileExclude = ['*.so', '*.tmp', '*.bak', '*.exe', '*.dll']
     let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
-    let g:Lf_CommandMap = { 'C-]': ['C-V'], 'C-J':['C-N'], 'C-K':['C-P'] }
+    let g:Lf_CommandMap = { '<C-]>': ['<C-V>'], '<C-J>':['<C-N>'], '<C-K>':['<C-P>'] }
+    let g:Lf_WindowPosition = 'popup'
 else
     " fzf
     function! s:build_quickfix_list(lines)
@@ -724,4 +733,3 @@ augroup ALEStatus
 augroup END
 
 "}}
-
