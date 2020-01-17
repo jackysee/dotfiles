@@ -1,0 +1,126 @@
+
+*saveLines: 16384
+
+Xft*antialias : true
+Xft*hinting   : 1
+Xft*dpi       : 96
+
+! *.font: xft:dejavu sans mono:size=9:antialias=true
+! *.boldFont: xft:dejavu sans mono:bold:size=9:antialias=true
+! *.italicFont: xft:dejavu sans mono:italic:size=9:antialias=true
+! *.boldItalicFont: xft:dejavu sans mono:bold:italic:size=9:antialias=true
+
+URxvt.lineSpace: 0
+URxvt.interalBorder: 24
+URxvt.cursorBlink: true
+URxvt.cursorUnderline: false
+URxvt.scrollBar_right: false
+URxvt.scrollBar: false
+URxvt.urgentOnBell: true
+URxvt*font: xft:DejaVu Sans Mono for Powerline:size=9:antialias=true, xft:Noto Sans CJK TC-9
+! URxvt.font: xft:Monaco:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! URxvt.font: xft:Input Mono:regular:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! URxvt.imFont: xft:Input Mono:regular:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! URxvt.boldFont: xft:Input Mono:bold:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! URxvt.italicFont: xft:Input Mono:italic:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+! kRxvt.boldItalicFont: xft:Input Mono:bold:italic:size=9:antialias=true, xft:Noto Sans CJK TC:pixelsize=9
+URxvt.letterSpace: -1
+URxvt*termName: rxvt-unicode-256color
+URxvt.perl-ext-common: font-size
+URxvt.keysym.C-Up:     font-size:increase
+URxvt.keysym.C-Down:   font-size:decrease
+URxvt.keysym.C-S-Up:   font-size:incglobal
+URxvt.keysym.C-S-Down: font-size:decglobal
+URxvt.keysym.C-equal:  font-size:reset
+URxvt.keysym.C-slash:  font-size:show
+URxvt.intensifyStyles: false
+
+
+! xterm*faceName: Dejavu Sans Mono
+! xterm*faceName: Monaco
+! xterm*faceName: Fira Code
+xterm*faceName: Menlo
+xterm*faceNameDoublesize: Noto Sans CJK TC
+xterm*faceSize: 12
+xterm*faceSize1: 9
+xterm*faceSize2: 11
+xterm*faceSize3: 12
+xterm*faceSize4: 13
+xterm*faceSize5: 16
+xterm*faceSize6: 18
+xterm*vt100*geometry: 120x40
+xterm*cursorBlink: True
+xterm*internalBorder: 0
+xterm*VT100.Translations: #override \
+        Ctrl Shift <Key>V:    insert-selection(CLIPBOARD) \n\
+        Ctrl Shift <Key>C:    copy-selection(CLIPBOARD) \n\
+        Ctrl <Key> minus: smaller-vt-font() \n\
+        Ctrl <Key> plus: larger-vt-font() \n\
+        Ctrl <Key> KP_Subtract: smaller-vt-font() \n\
+        Ctrl <Key> KP_Add: larger-vt-font()
+
+
+! Dracula Xresources palette
+*.foreground: #F8F8F2
+*.background: #282A36
+*.color0:     #000000
+*.color1:     #FF5555
+*.color2:     #50FA7B
+*.color3:     #F1FA8C
+*.color4:     #BD93F9
+*.color5:     #FF79C6
+*.color6:     #8BE9FD
+*.color7:     #BFBFBF
+*.color8:     #4D4D4D
+*.color9:     #FF6E67
+*.color10:    #5AF78E
+*.color11:    #F4F99D
+*.color12:    #CAA9FA
+*.color13:    #FF92D0
+*.color14:    #9AEDFE
+*.color15:    #E6E6E6
+
+
+! #define nord0 #2E3440
+! #define nord1 #3B4252
+! #define nord2 #434C5E
+! #define nord3 #4C566A
+! #define nord4 #D8DEE9
+! #define nord5 #E5E9F0
+! #define nord6 #ECEFF4
+! #define nord7 #8FBCBB
+! #define nord8 #88C0D0
+! #define nord9 #81A1C1
+! #define nord10 #5E81AC
+! #define nord11 #BF616A
+! #define nord12 #D08770
+! #define nord13 #EBCB8B
+! #define nord14 #A3BE8C
+! #define nord15 #B48EAD
+!
+! *.foreground:   nord4
+! *.background:   nord0
+! *.cursorColor:  nord4
+! *fading: 35
+! *fadeColor: nord3
+!
+! *.color0: nord1
+! *.color1: nord11
+! *.color2: nord14
+! *.color3: nord13
+! *.color4: nord9
+! *.color5: nord15
+! *.color6: nord8
+! *.color7: nord5
+! *.color8: nord3
+! *.color9: nord11
+! *.color10: nord14
+! *.color11: nord13
+! *.color12: nord9
+! *.color13: nord15
+! *.color14: nord7
+! *.color15: nord6
+!
+!
+!
+!
