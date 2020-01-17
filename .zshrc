@@ -26,7 +26,7 @@ export DefaultIMModule=fcitx
 
 export KEYTIMEOUT=25
 
-stty -ixon -ixoff
+stty -ixon 
 
 ## fnm
 export FNM_DIR="${:-$HOME/.}fnm"
@@ -82,7 +82,7 @@ source "${ZPLG_HOME}/bin/zplugin.zsh"
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 
-zplugin snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
+# zplugin snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
 zplugin snippet OMZ::plugins/mercurial/mercurial.plugin.zsh
 zplugin snippet OMZ::plugins/git/git.plugin.zsh
 zplugin snippet OMZ::lib/directories.zsh
@@ -98,9 +98,6 @@ zplugin light bugworm/auto-exa
 # zplugin ice wait'0' lucid atload'FAST_HIGHLIGHT[chroma-git]="chroma/-ogit.ch"'
 zplugin ice wait'0' lucid
 zplugin light zdharma/fast-syntax-highlighting
-
-# zplugin ice wait'0'
-# zplugin light lukechilds/zsh-nvm
 
 zplugin ice wait"0" atload"_zsh_autosuggest_start" lucid
 zplugin light zsh-users/zsh-autosuggestions
@@ -132,8 +129,11 @@ zplugin light ubnt-intrepid/dot
 zplugin ice as"program" pick"bin/git-dsf" wait"0" lucid
 zplugin light zdharma/zsh-diff-so-fancy
 
-zplugin ice pick"async.zsh" src"pure.zsh"
-zplugin light sindresorhus/pure
+# zplugin ice pick"async.zsh" src"pure.zsh"
+# zplugin light sindresorhus/pure
+
+zplugin ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
+zplugin light starship/starship
 
 ### End of Zplugin's installer chunk
 
@@ -189,7 +189,6 @@ j() {
   [ $# -gt 0 ] && z "$*" && return
   cd "$(z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
 }
-# zprof
 
 vf() {
   local files
@@ -216,8 +215,17 @@ vg() {
   fi
 }
 
+# wsl unwatch file
+# https://github.com/microsoft/WSL/issues/1529
+# https://github.com/fuzzyTew/wslunpindir
+wslunpin() {
+   LD_PRELOAD=/usr/lib/interceptrename.so  "$@"
+}
+
+
 # Load local file if it exists (this isn't commited to the dotfiles repo)
 if [[ -f ~/.zshrc.local ]]; then
   source ~/.zshrc.local
 fi
 
+# zprof

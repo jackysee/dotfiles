@@ -36,6 +36,9 @@ startserver() {
     tmux send-keys -t 3 'npm run serve' Enter
 }
 
+## windows toast 
+## require: PowerShell admin to install `Install-Module -Name BurntToast`
+alias toast='powershell.exe -command New-BurntToastNotification -Text '
 
 
 

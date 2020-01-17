@@ -18,7 +18,7 @@ set title
 set wildchar=<TAB>
 set wildmenu
 set wildmode=longest:list,full
-set wildignore=*.o,*.class,*.pyc,*.swp,*.bak,**/node_modules/**,elm_stuff
+set wildignore=*.o,*.class,*.pyc,*.swp,*.bak
 set nobackup noswapfile
 set autoread
 set copyindent
@@ -132,6 +132,7 @@ Plug 'dhruvasagar/vim-zoom'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
+Plug 'roxma/vim-window-resize-easy'
 
 " file finder
 if s:is_windows
@@ -255,7 +256,7 @@ let g:signify_update_on_focusgained = 1
 " hexokinase
 let g:Hexokinase_highlighters = ['backgroundfull']
 
-" Shortcuts
+" Shortcuts / mappings
 
 " paste on visual mode without chaning original register
 vnoremap p "_dP
