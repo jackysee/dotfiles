@@ -132,7 +132,7 @@ Plug 'dhruvasagar/vim-zoom'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
-Plug 'roxma/vim-window-resize-easy'
+" Plug 'roxma/vim-window-resize-easy'
 
 " file finder
 if s:is_windows
@@ -324,6 +324,29 @@ nnoremap ,dp :diffput<CR>
 
 " Auto-resize splits when Vim gets resized.
 autocmd VimResized * wincmd =
+
+function! s:startResize()
+  while 1
+    echo '[window resizing ... Enter to quit]'
+    let c = getchar()
+    if c == 104 "h
+        vertical resize  +5
+    elseif c == 106 "j
+        resize +5
+    elseif c == 107 "k
+        resize -5
+    elseif c == 108 "l
+        vertical resize -5
+    elseif c == 13
+      redraw
+      echo "Finished!"
+      break
+    endif
+    redraw
+  endwhile
+endfun
+
+command! -bang Resize call s:startResize()
 
 " Update a buffer's contents on focus if it changed outside of Vim.
 au FocusGained,BufEnter * :checktime
