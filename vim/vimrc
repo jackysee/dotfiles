@@ -325,28 +325,53 @@ nnoremap ,dp :diffput<CR>
 " Auto-resize splits when Vim gets resized.
 autocmd VimResized * wincmd =
 
-function! s:startResize()
-  while 1
-    echo '[window resizing ... Enter to quit]'
-    let c = getchar()
-    if c == 104 "h
-        vertical resize  +5
-    elseif c == 106 "j
-        resize +5
-    elseif c == 107 "k
-        resize -5
-    elseif c == 108 "l
-        vertical resize -5
-    elseif c == 13
-      redraw
-      echo "Finished!"
-      break
-    endif
-    redraw
-  endwhile
+function! s:isEdge(c)
+    let from = winnr()
+    execute "wincmd " . a:c
+    let to = winnr()
+    execute from . "wincmd w"
+    return from == to
+endfunction
+
+function! WinResize()
+    while 1
+        let c = getchar()
+        let from = winnr()
+        echo '[window resizing ... q to quit] c '. c
+        if c == 104 "h
+            let shifted = 0
+            if !s:isEdge('h')
+                wincmd h
+                let shifted = 1
+            endif
+            execute 'vertical resize '. (s:isEdge('l')? '+':'-').'5'
+            if shifted
+                execute from . "wincmd w"
+            endif
+        elseif c == 106 && !(s:isEdge('k') && s:isEdge('j'))
+            execute 'resize ' . (s:isEdge('j')?'-':'+') . '5'
+        elseif c == 107 && !(s:isEdge('k') && s:isEdge('j'))
+            execute 'resize ' . (s:isEdge('j')?'+':'-') . '5'
+        elseif c == 108 "l
+            let shifted = 0
+            if !s:isEdge('h')
+                wincmd h
+                let shifted = 1
+            endif
+            execute 'vertical resize '. (s:isEdge('l')? '-':'+').'5'
+            if shifted
+                execute from . "wincmd w"
+            endif
+        elseif c == 13  || c == 113
+            redraw
+            echo "Finished!"
+            break
+        endif
+        redraw
+    endwhile
 endfun
 
-command! -bang Resize call s:startResize()
+nnoremap ,rw :WinResize<CR>
 
 " Update a buffer's contents on focus if it changed outside of Vim.
 au FocusGained,BufEnter * :checktime
