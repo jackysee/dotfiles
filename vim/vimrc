@@ -333,11 +333,16 @@ function! s:isEdge(c)
     return from == to
 endfunction
 
-function! WinResize()
+function! s:winResize()
     while 1
+        let only = s:isEdge('h') && s:isEdge('j') && s:isEdge('k') && s:isEdge('l')
+        if only
+            echo "[only window, no resize]"
+            break
+        endif
         let c = getchar()
         let from = winnr()
-        echo '[window resizing ... q to quit] c '. c
+        echo '[window resizing ... q to quit]'
         if c == 104 "h
             let shifted = 0
             if !s:isEdge('h')
@@ -371,6 +376,7 @@ function! WinResize()
     endwhile
 endfun
 
+command WinResize call s:winResize()
 nnoremap ,rw :WinResize<CR>
 
 " Update a buffer's contents on focus if it changed outside of Vim.
