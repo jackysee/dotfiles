@@ -325,7 +325,7 @@ nnoremap ,dp :diffput<CR>
 " Auto-resize splits when Vim gets resized.
 autocmd VimResized * wincmd =
 
-function! s:isEdge(c)
+function! s:hasWin(c) abort
     let from = winnr()
     execute "wincmd " . a:c
     let to = winnr()
@@ -333,44 +333,39 @@ function! s:isEdge(c)
     return from == to
 endfunction
 
-function! s:winResize()
+function! s:winResize() abort
     while 1
-        let only = s:isEdge('h') && s:isEdge('j') && s:isEdge('k') && s:isEdge('l')
-        if only
+        if s:hasWin('h') && s:hasWin('j') && s:hasWin('k') && s:hasWin('l') 
             echo "[only window, no resize]"
-            break
+            return
         endif
+        echo '[window resize... <CR> to quit]'
+        if exists('s:winResizeTimer')
+            call timer_stop(s:winResizeTimer)
+        endif
+        let s:winResizeTimer = timer_start(800, {-> feedkeys("\<CR>")})
         let c = getchar()
-        let from = winnr()
-        echo '[window resizing ... q to quit]'
-        if c == 104 "h
-            let shifted = 0
-            if !s:isEdge('h')
-                wincmd h
-                let shifted = 1
-            endif
-            execute 'vertical resize '. (s:isEdge('l')? '+':'-').'5'
-            if shifted
-                execute from . "wincmd w"
-            endif
-        elseif c == 106 && !(s:isEdge('k') && s:isEdge('j'))
-            execute 'resize ' . (s:isEdge('j')?'-':'+') . '5'
-        elseif c == 107 && !(s:isEdge('k') && s:isEdge('j'))
-            execute 'resize ' . (s:isEdge('j')?'+':'-') . '5'
-        elseif c == 108 "l
-            let shifted = 0
-            if !s:isEdge('h')
-                wincmd h
-                let shifted = 1
-            endif
-            execute 'vertical resize '. (s:isEdge('l')? '-':'+').'5'
-            if shifted
-                execute from . "wincmd w"
-            endif
-        elseif c == 13  || c == 113
+        let n = winnr()
+        let shifted = 0
+        if c == char2nr("h")
+            if !s:hasWin('h') | wincmd h | let shifted = 1 | endif
+            execute 'vertical resize '. (s:hasWin('l')? '+':'-').'5'
+        elseif c == char2nr("j") && !(s:hasWin('k') && s:hasWin('j'))
+            execute 'resize ' . (s:hasWin('j')?'-':'+') . '5'
+        elseif c == char2nr("k") && !(s:hasWin('k') && s:hasWin('j'))
+            execute 'resize ' . (s:hasWin('j')?'+':'-') . '5'
+        elseif c == char2nr("l") 
+            if !s:hasWin('h') | wincmd h | let shifted = 1 | endif
+            execute 'vertical resize '. (s:hasWin('l')? '-':'+').'5'
+        elseif c == char2nr('=')
+            execute 'wincmd ='
+        elseif c == 13
             redraw
-            echo "Finished!"
-            break
+            echo "[window resize done]"
+            return
+        endif
+        if shifted 
+            execute n . "wincmd w" 
         endif
         redraw
     endwhile
