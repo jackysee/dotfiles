@@ -23,20 +23,8 @@ sudo apt install -q -y \
     vim-gtk \
     --no-install-recommends \
 
-
-echo "copy fonts"
-if [ ! -f "~/.local/share/fonts" ]
-    mkdir -p ~/.local/share/fonts
-fi
-cp -r ~/.dotfiles/fonts/*.* ~/.local/share/fonts
-
-
-echo "install tpm"
-if [ ! -f "~/.dotfiles/tmux/.tmux/plugins" ]
-    mkdir -p ~/.dotfiles/tmux/.tmux/plugins
-fi
-git clone https://github.com/tmux-plugins/tpm ~/.dotfiles/tmux/.tmux/plugins/tpm
-
+# install-dot.sh
+# install-fonts.sh
 
 echo "install tmuxinator"
 gem install tmuxinator

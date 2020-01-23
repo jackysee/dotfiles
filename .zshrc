@@ -30,13 +30,20 @@ stty -ixon
 
 ## fnm
 export FNM_DIR="${:-$HOME/.}fnm"
-if [[ ! -d $FNM_DIR ]]; then
+if [[ ! -f $FNM_DIR/fnm ]]; then
   echo "Installing FNM"
   mkdir $FNM_DIR
   curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- --skip-shell --force-install
 fi
 export PATH=$HOME/.fnm:$PATH
 eval "`fnm env --multi`"
+
+## tpm
+if [[ ! -d "$HOME/.dotfiles/tmux/.tmux/plugins/tpm" ]]; then
+    echo "install tpm"
+    mkdir -p $HOME/.dotfiles/tmux/.tmux/plugins
+    git clone https://github.com/tmux-plugins/tpm $HOME/.dotfiles/tmux/.tmux/plugins/tpm
+fi
 
 # ## nvm
 # export NVM_LAZY_LOAD=true
@@ -69,18 +76,19 @@ export FZF_DEFAULT_OPTS='
     --color info:183,prompt:110,spinner:107,pointer:167,marker:215'
 export FZF_CTRL_T_OPTS="--preview 'bat {}' --bind '?:toggle-preview'"
 
-### Added by Zplugin's installer
-export ZPLG_HOME="${:-$HOME/.}zplugin"
 
-if [[ ! -d $ZPLG_HOME ]]; then
-  echo "Installing zplugin"
-  curl -sL https://raw.githubusercontent.com/zdharma/zplugin/master/doc/install.sh | bash
+### Added by Zinit's installer
+if [[ ! -f $HOME/.zplugin/bin/zinit.zsh ]]; then
+    print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
+    command mkdir -p "$HOME/.zplugin" && command chmod g-rwX "$HOME/.zplugin"
+    command git clone https://github.com/zdharma/zinit "$HOME/.zplugin/bin" && \
+        print -P "%F{33}▓▒░ %F{34}Installation successful.%f" || \
+        print -P "%F{160}▓▒░ The clone has failed.%f"
 fi
-
-ZSH_DISABLE_COMPFIX=true
-source "${ZPLG_HOME}/bin/zplugin.zsh"
-autoload -Uz _zplugin
-(( ${+_comps} )) && _comps[zplugin]=_zplugin
+source "$HOME/.zplugin/bin/zinit.zsh"
+autoload -Uz _zinit
+(( ${+_comps} )) && _comps[zinit]=_zinit
+### End of Zinit installer's chunk
 
 # zplugin snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
 zplugin snippet OMZ::plugins/mercurial/mercurial.plugin.zsh
@@ -92,10 +100,7 @@ zplugin snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zplugin light agkozak/zsh-z
 # zplugin light dbkaplun/smart-cd
 zplugin light bugworm/auto-exa
-# # zplugin ice wait"0" atinit"zpcompinit; zpcdreplay" lucid
 
-# issue https://github.com/zdharma/fast-syntax-highlighting/issues/146
-# zplugin ice wait'0' lucid atload'FAST_HIGHLIGHT[chroma-git]="chroma/-ogit.ch"'
 zplugin ice wait'0' lucid
 zplugin light zdharma/fast-syntax-highlighting
 
@@ -123,8 +128,8 @@ zplugin light sharkdp/fd
 zplugin ice from"gh-r" as"program" mv"exa*->exa" pick"exa"
 zplugin light ogham/exa
 
-zplugin ice from"gh-r" as"program" pick"dot"
-zplugin light ubnt-intrepid/dot
+# zplugin ice from"gh-r" as"program" pick"dot"
+# zplugin light ubnt-intrepid/dot
 
 zplugin ice as"program" pick"bin/git-dsf" wait"0" lucid
 zplugin light zdharma/zsh-diff-so-fancy
@@ -134,8 +139,6 @@ zplugin light zdharma/zsh-diff-so-fancy
 
 zplugin ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
 zplugin light starship/starship
-
-### End of Zplugin's installer chunk
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
