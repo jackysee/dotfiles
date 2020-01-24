@@ -187,8 +187,8 @@ set guioptions-=L
 
 set termguicolors
 
-" let g:material_theme_style = 'dark'
-" colorscheme material
+let g:material_theme_style = 'dark'
+colorscheme material
 
 " let g:gruvbox_contrast_dark='hard'
 " colorscheme gruvbox
@@ -196,7 +196,7 @@ set termguicolors
 " colorscheme rigel
 " highlight StatusLineNC guifg=#555555 guibg=#333333 cterm=NONE ctermfg=2 ctermbg=NONE
 
-colorscheme molokai
+" colorscheme molokai
 " colorscheme gotham
 " colorscheme gotham256
 " colorscheme spacegray
@@ -725,7 +725,7 @@ function! AddSpace(s)
     return ''
 endfunction
 
-let g:currentmode={
+let g:currentmode = {
     \ 'n'  : 'N',
     \ 'no' : 'NO',
     \ 'v'  : 'V',
@@ -754,7 +754,7 @@ function! Statusline()
   " let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
   " let ro  = "%{&readonly ? '[!] ' : ''}"
   " let enc = "%{&fileencoding?&fileencoding:&encoding}"
-  " let ft  = "%{len(&filetype) ? &filetype : ''}"
+  let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
   " let ff  = "%{&fileformat}"
   let vcs = "%{AddBracket(VcsInfoStatus())}"
   let sep = ' %= '
@@ -763,7 +763,7 @@ function! Statusline()
   let pos = LineInfoStatus()
   " let dir = '%20.30{CurDir()} '
   let zoom = '%{ZoomStatus()}'
-  return paste.vcs.file.zoom.sep.coc.ale.pos
+  return paste.vcs.file.zoom.sep.coc.ale.ft.pos
 endfunction
 
 function! RefreshStatusline()

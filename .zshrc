@@ -188,6 +188,10 @@ hgshow() {
       --bind "ctrl-m:execute: $_hgshowdiff"
 }
 
+hgrevert() {
+    hg status | fzf -m --preview 'bat {}' --bind '?:toggle-preview' | awk "{print $2}" | xargs hg revert
+}
+
 j() {
   [ $# -gt 0 ] && z "$*" && return
   cd "$(z -l 2>&1 | fzf --height 40% --nth 2.. --reverse --inline-info +s --tac --query "${*##-* }" | sed 's/^[0-9,.]* *//')"
