@@ -7,7 +7,6 @@ export LANGUAGE=en_US.UTF-8
 export PAGER=less
 export EDITOR=vim
 
-export DISPLAY=:0
 export LIBGL_ALWAYS_INDIRECT=1
 export GDK_SCALE=0.5
 export GDK_DPI_SCALE=1
@@ -29,6 +28,11 @@ export DefaultIMModule=fcitx
 export KEYTIMEOUT=25
 
 stty -ixon 
+
+
+if [[ $(uname -a) =~ Microsoft ]]; then
+    export DISPLAY=:0
+fi
 
 ## fnm
 export FNM_DIR="${:-$HOME/.}fnm"

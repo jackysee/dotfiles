@@ -113,15 +113,6 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
-Plug 'haya14busa/is.vim'
-Plug 'osyo-manga/vim-anzu'
-Plug 'haya14busa/vim-asterisk'
-Plug 'osyo-manga/vim-over'
-Plug 'wellle/targets.vim'
-Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-line'
-Plug 'michaeljsmith/vim-indent-object'
-Plug 'justinmk/vim-ipmotion'
 Plug 'mileszs/ack.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'chiedojohn/vim-case-convert'
@@ -270,10 +261,6 @@ nnoremap < ,
 nnoremap ,h ^
 nnoremap ,l $
 
-" center search
-nnoremap n nzz
-nnoremap N Nzz
-
 inoremap jk <ESC>
 
 " indent in visual model
@@ -400,15 +387,14 @@ imap <C-E> <C-y>,
 " Add semi colon at end of line
 noremap ,; g_a;<Esc>
 
-" is.vim/anzu/vim-asterisk
-map n <Plug>(is-nohl)<Plug>(anzu-n-with-echo)
-map N <Plug>(is-nohl)<Plug>(anzu-N-with-echo)
-" map *  <Plug>(asterisk-z*)<Plug>(anzu-star-with-echo)<Plug>(is-nohl-1)
-map *  <Plug>(asterisk-z*)<Plug>(is-nohl-1)
-map g* <Plug>(asterisk-gz*)<Plug>(is-nohl-1)
-map #  <Plug>(asterisk-z#)<Plug>(is-nohl-1)
-map g# <Plug>(asterisk-gz#)<Plug>(is-nohl-1)
-nmap <Esc><Esc> <Plug>(anzu-clear-search-status)
+" vim-asterisk
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap <CR> :noh<CR>
+map *  <Plug>(asterisk-z*)
+map g* <Plug>(asterisk-gz*)
+map #  <Plug>(asterisk-z#)
+map g# <Plug>(asterisk-gz#)
 
 " coc
 let g:coc_global_extensions = [
