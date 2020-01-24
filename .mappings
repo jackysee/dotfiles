@@ -6,7 +6,6 @@
 ".zshrc" = "~/.zshrc"
 ".Xresources" = "~/.Xresources"
 ".Xdefaults" = "~/.Xdefaults"
-".xinitrc" = "~/.xinitrc"
 ".urxvt" = "~/.urxvt"
 ".aliases" = "~/.aliases"
 ".profile" = "~/.profile"
