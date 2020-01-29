@@ -123,7 +123,7 @@ Plug 'dhruvasagar/vim-zoom'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
-" Plug 'haya14busa/vim-asterisk'
+Plug 'haya14busa/vim-asterisk'
 " Plug 'roxma/vim-window-resize-easy'
 
 " file finder
@@ -391,12 +391,10 @@ noremap ,; g_a;<Esc>
 " vim-asterisk
 nnoremap n nzz
 nnoremap N Nzz
-" star command stay on current word
-nmap <silent> * :let @/='\<'.expand('<cword>').'\>'<CR> 
-" map *  <Plug>(asterisk-z*)
-" map g* <Plug>(asterisk-zg*)
-" map #  <Plug>(asterisk-z#)
-" map g# <Plug>(asterisk-zg#)
+map *  <Plug>(asterisk-z*)
+map g* <Plug>(asterisk-zg*)
+map #  <Plug>(asterisk-z#)
+map g# <Plug>(asterisk-zg#)
 
 " coc
 let g:coc_global_extensions = [
