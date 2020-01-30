@@ -96,57 +96,60 @@ autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 ### End of Zinit installer's chunk
 
-# zplugin snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
-zplugin snippet OMZ::plugins/mercurial/mercurial.plugin.zsh
-zplugin snippet OMZ::plugins/git/git.plugin.zsh
-zplugin snippet OMZ::lib/directories.zsh
-zplugin snippet OMZ::lib/history.zsh
-zplugin snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
+set promptsubst
 
-zplugin light agkozak/zsh-z
-# zplugin light dbkaplun/smart-cd
-zplugin light bugworm/auto-exa
+# zinit snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
+zinit snippet OMZ::plugins/git/git.plugin.zsh
+zinit snippet OMZ::plugins/mercurial/mercurial.plugin.zsh
+zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
+zinit snippet OMZ::lib/directories.zsh
+zinit snippet OMZ::lib/history.zsh
+zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 
-zplugin ice wait'0' lucid
-zplugin light zdharma/fast-syntax-highlighting
+zinit light agkozak/zsh-z
+# zinit light dbkaplun/smart-cd
+zinit light bugworm/auto-exa
 
-zplugin ice wait"0" atload"_zsh_autosuggest_start" lucid
-zplugin light zsh-users/zsh-autosuggestions
+zinit ice wait"1" lucid atinit"zpcompinit; zpcdreplay"
+zinit light zdharma/fast-syntax-highlighting
 
-zplugin ice wait"0" blockf lucid
-zplugin light zsh-users/zsh-completions
+zinit ice wait"1" lucid atload"!_zsh_autosuggest_start"
+zinit load zsh-users/zsh-autosuggestions
 
-zplugin ice from"gh-r" as"program"
-zplugin light junegunn/fzf-bin
+zinit ice wait"0" blockf lucid
+zinit light zsh-users/zsh-completions
 
-zplugin ice multisrc"shell/{key-bindings,completion}.zsh"
-zplugin light junegunn/fzf
+zinit ice from"gh-r" as"program"
+zinit light junegunn/fzf-bin
 
-zplugin ice from"gh-r" as"program" bpick"*64*linux*" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
-zplugin light BurntSushi/ripgrep
+zinit ice multisrc"shell/{key-bindings,completion}.zsh"
+zinit light junegunn/fzf
 
-zplugin ice from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat"
-zplugin light sharkdp/bat
+zinit ice from"gh-r" as"program" bpick"*64*linux*" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+zinit light BurntSushi/ripgrep
 
-zplugin ice from"gh-r" as"program" mv"fd* -> fd" pick"fd/fd" nocompletions
-zplugin light sharkdp/fd
+zinit ice from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat"
+zinit light sharkdp/bat
 
-zplugin ice from"gh-r" as"program" mv"exa*->exa" pick"exa"
-zplugin light ogham/exa
+zinit ice from"gh-r" as"program" mv"fd* -> fd" pick"fd/fd" nocompletions
+zinit light sharkdp/fd
 
-# zplugin ice from"gh-r" as"program" pick"dot"
-# zplugin light ubnt-intrepid/dot
+zinit ice from"gh-r" as"program" mv"exa*->exa" pick"exa"
+zinit light ogham/exa
 
-zplugin ice as"program" pick"bin/git-dsf" wait"0" lucid
-zplugin light zdharma/zsh-diff-so-fancy
+# zinit ice from"gh-r" as"program" pick"dot"
+# zinit light ubnt-intrepid/dot
 
-# zplugin ice pick"async.zsh" src"pure.zsh"
-# zplugin light sindresorhus/pure
+zinit ice as"program" pick"bin/git-dsf" wait"0" lucid
+zinit light zdharma/zsh-diff-so-fancy
 
-zplugin ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
-zplugin light starship/starship
+# zinit ice pick"async.zsh" src"pure.zsh"
+# zinit light sindresorhus/pure
 
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zinit ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
+zinit light starship/starship
+
+zstyle ':completion:*' menu select matcher-list 'm:{a-z}={A-Za-z}'
 
 [ -f ~/.aliases ] && source ~/.aliases
 
