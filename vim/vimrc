@@ -125,6 +125,8 @@ Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
 " Plug 'roxma/vim-window-resize-easy'
+" Plug 'dstein64/vim-startuptime'
+Plug 'tweekmonster/startuptime.vim'
 
 " file finder
 if s:is_windows
