@@ -109,17 +109,6 @@ zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit light agkozak/zsh-z
 zinit light bugworm/auto-exa
 
-# zinit ice wait"1" lucid atinit"zpcompinit; zpcdreplay"
-zinit ice wait"0" lucid
-zinit light zdharma/fast-syntax-highlighting
-
-# zinit ice wait"1" lucid atload"!_zsh_autosuggest_start"
-zplugin ice wait"0" lucid
-zinit load zsh-users/zsh-autosuggestions
-
-zinit ice wait"0" blockf lucid
-zinit light zsh-users/zsh-completions
-
 zinit ice from"gh-r" as"program"
 zinit light junegunn/fzf-bin
 
@@ -146,6 +135,17 @@ zinit light zdharma/zsh-diff-so-fancy
 
 zinit ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
 zinit light starship/starship
+
+# zinit ice wait"1" lucid atload"!_zsh_autosuggest_start"
+zinit ice wait"0" lucid
+zinit load zsh-users/zsh-autosuggestions
+
+zinit ice wait"0" blockf lucid
+zinit light zsh-users/zsh-completions
+
+# zinit ice wait"0" lucid
+zinit ice wait"1" lucid notify atinit="ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
+zinit light zdharma/fast-syntax-highlighting
 
 zstyle ':completion:*' menu select matcher-list 'm:{a-z}={A-Za-z}'
 
