@@ -107,13 +107,14 @@ zinit snippet OMZ::lib/history.zsh
 zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 
 zinit light agkozak/zsh-z
-# zinit light dbkaplun/smart-cd
 zinit light bugworm/auto-exa
 
-zinit ice wait"1" lucid atinit"zpcompinit; zpcdreplay"
+# zinit ice wait"1" lucid atinit"zpcompinit; zpcdreplay"
+zinit ice wait"0" lucid
 zinit light zdharma/fast-syntax-highlighting
 
-zinit ice wait"1" lucid atload"!_zsh_autosuggest_start"
+# zinit ice wait"1" lucid atload"!_zsh_autosuggest_start"
+zplugin ice wait"0" lucid
 zinit load zsh-users/zsh-autosuggestions
 
 zinit ice wait"0" blockf lucid
@@ -136,9 +137,6 @@ zinit light sharkdp/fd
 
 zinit ice from"gh-r" as"program" mv"exa*->exa" pick"exa"
 zinit light ogham/exa
-
-# zinit ice from"gh-r" as"program" pick"dot"
-# zinit light ubnt-intrepid/dot
 
 zinit ice as"program" pick"bin/git-dsf" wait"0" lucid
 zinit light zdharma/zsh-diff-so-fancy
