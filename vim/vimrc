@@ -120,6 +120,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
 Plug 'dhruvasagar/vim-zoom'
+Plug 'wellle/targets.vim'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
