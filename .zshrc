@@ -101,7 +101,7 @@ set promptsubst
 # zinit snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
 zinit snippet OMZ::plugins/git/git.plugin.zsh
 zinit snippet OMZ::plugins/mercurial/mercurial.plugin.zsh
-zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
+# zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
 zinit snippet OMZ::lib/directories.zsh
 zinit snippet OMZ::lib/history.zsh
 zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
