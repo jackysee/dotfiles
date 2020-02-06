@@ -125,9 +125,11 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
+Plug 'osyo-manga/vim-over'
 " Plug 'roxma/vim-window-resize-easy'
 " Plug 'dstein64/vim-startuptime'
 Plug 'tweekmonster/startuptime.vim'
+
 
 " file finder
 if s:is_windows
@@ -337,17 +339,18 @@ function! s:winResize() abort
         let s:winResizeTimer = timer_start(800, {-> feedkeys("\<CR>")})
         let c = getchar()
         let n = winnr()
+        let step = 3
         let shifted = 0
         if c == char2nr("h")
             if !s:hasWin('h') | wincmd h | let shifted = 1 | endif
-            execute 'vertical resize '. (s:hasWin('l')? '+':'-').'5'
+            execute 'vertical resize '. (s:hasWin('l')? '+':'-'). step
         elseif c == char2nr("j") && !(s:hasWin('k') && s:hasWin('j'))
-            execute 'resize ' . (s:hasWin('j')?'-':'+') . '5'
+            execute 'resize ' . (s:hasWin('j')?'-':'+') . step
         elseif c == char2nr("k") && !(s:hasWin('k') && s:hasWin('j'))
-            execute 'resize ' . (s:hasWin('j')?'+':'-') . '5'
+            execute 'resize ' . (s:hasWin('j')?'+':'-') . step
         elseif c == char2nr("l") 
             if !s:hasWin('h') | wincmd h | let shifted = 1 | endif
-            execute 'vertical resize '. (s:hasWin('l')? '-':'+').'5'
+            execute 'vertical resize '. (s:hasWin('l')? '-':'+'). step
         elseif c == char2nr('=')
             execute 'wincmd ='
         elseif c == 13
@@ -362,8 +365,9 @@ function! s:winResize() abort
     endwhile
 endfun
 
-command WinResize call s:winResize()
+command! WinResize call s:winResize()
 nnoremap ,rw :WinResize<CR>
+
 
 " Update a buffer's contents on focus if it changed outside of Vim.
 au FocusGained,BufEnter * :checktime
@@ -384,6 +388,14 @@ command! -bang Profile call s:profile(<bang>0)
 
 " Zoom / Restore window.
 nnoremap ,z :call zoom#toggle()<cr>
+
+
+fun! TrimWhitespace()
+    let l:save = winsaveview()
+    keeppatterns %s/\s\+$//e
+    call winrestview(l:save)
+endfun
+command! TrimWhitespace call TrimWhitespace()
 
 " emmet
 imap <C-E> <C-y>,
