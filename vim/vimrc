@@ -576,7 +576,6 @@ let g:tmux_navigator_disable_when_zoomed = 1
 " yoink
 nmap <c-n> <plug>(YoinkPostPasteSwapBack)
 nmap <c-p> <plug>(YoinkPostPasteSwapForward)
-
 nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
 

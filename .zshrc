@@ -237,6 +237,21 @@ wslunpin() {
 }
 
 
+fkill() {
+  local pid
+
+  pid="$(
+    ps -ef \
+      | sed 1d \
+      | fzf -m \
+      | awk '{print $2}'
+  )"
+
+  if [[ ! -z $pid ]]; then
+    kill -"${1:-9}" "$pid"
+  fi
+}
+
 # Load local file if it exists (this isn't commited to the dotfiles repo)
 if [[ -f ~/.zshrc.local ]]; then
   source ~/.zshrc.local
