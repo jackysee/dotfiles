@@ -109,10 +109,11 @@ zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 zinit light agkozak/zsh-z
 zinit light bugworm/auto-exa
 
-zinit ice from"gh-r" as"program"
-zinit light junegunn/fzf-bin
+# zinit ice from"gh-r" as"program"
+# zinit light junegunn/fzf-bin
 
-zinit ice multisrc"shell/{key-bindings,completion}.zsh"
+# zplugin ice atclone'./install --xdg --no-update-rc --completion --key-bindings' atpull'%atclone' multisrc"shell/{key-bindings,completion}.zsh"
+zinit ice atclone"./install --xdg --no-update-rc --completion --key-bindings" atpull"%atclone" as"program" pick="bin/fzf" multisrc"shell/{key-bindings,completion}.zsh"
 zinit light junegunn/fzf
 
 zinit ice from"gh-r" as"program" bpick"*64*linux*" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
