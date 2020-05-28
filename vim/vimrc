@@ -105,6 +105,9 @@ Plug 'whiteinge/diffconflicts'
 " coc
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
+" status line
+Plug 'suxpert/vimcaps'
+
 " editing
 " Plug 'tomtom/tcomment_vim'
 Plug 'Shougo/context_filetype.vim'
@@ -185,7 +188,7 @@ set guioptions-=L
 set termguicolors
 
 let g:material_theme_style = 'dark'
-colorscheme material
+colorscheme apprentice
 
 " let g:gruvbox_contrast_dark='hard'
 " colorscheme gruvbox
@@ -447,6 +450,9 @@ nmap ,pe  <Plug>(coc-diagnostic-prev-error)
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
 
+" Move visual selection
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv 
 
 " leaderF
 if s:is_windows
@@ -487,6 +493,7 @@ else
     nnoremap ,b :Buffers<cr>
     nnoremap ,ag :Ag <c-r><c-w><cr>
     nnoremap ,rg :Rg <c-r><c-w><cr>
+    vnoremap ,rg :<BS><BS><BS><BS><BS>Rg <c-r>*<cr>
 endif
 
 
@@ -775,9 +782,10 @@ function! Statusline()
   let coc = '%{AddSpace(CocStatus())}'
   let ale = '%{AddSpace(ALELinterStatus())}'
   let pos = LineInfoStatus()
+  let caps = '%{AddBracket(vimcaps#statusline(1))}'
   " let dir = '%20.30{CurDir()} '
   let zoom = '%{ZoomStatus()}'
-  return paste.vcs.file.zoom.sep.coc.ale.ft.pos
+  return paste.vcs.file.zoom.sep.coc.ale.caps.ft.pos
 endfunction
 
 function! RefreshStatusline()
