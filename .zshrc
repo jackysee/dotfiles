@@ -169,7 +169,7 @@ fi
 
 _gshowdiff="git show --color=always {2} | diff-so-fancy | less --tabs=4 -Rc"
 _gshowdifffile="git show {2} --color=always \{1} | diff-so-fancy |  less --tabs=4 -Rc"
-_gfzfdiff="git show {2} --name-only --pretty=\"format:\" | fzf --ansi --no-sort --reverse --header='{2}' --preview \"$_gshowdifffile\" --bind \"ctrl-m:execute:$_gshowdifffile\""
+_gfzfdiff="git show {2} --name-only --pretty=\"format:\" | fzf --ansi --no-sort --reverse --no-select-1 --header='hash {2}' --preview \"$_gshowdifffile\" --bind \"ctrl-m:execute:$_gshowdifffile\""
 
 gshow() {
   git log $1 --graph --color=always \
@@ -190,7 +190,7 @@ hgdiff() {
 _hgshowdiff="hg log --stat --color=always -vpr {2} | diff-so-fancy | less -R"
 _hgshowdifffile="hg diff -c {2} \{1} --color=always | diff-so-fancy | less -R"
 _hgfzfdiff="hg log -r {2} --template \"{files % \'{file}\n\'}\" | 
-            fzf --ansi --no-sort --reverse --preview \"$_hgshowdifffile\" --header=\"Revision {2}\" --bind \"ctrl-m:execute:$_hgshowdifffile\""
+            fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 --preview \"$_hgshowdifffile\" --header=\"Revision {2}\" --bind \"ctrl-m:execute:$_hgshowdifffile\""
 
 hgshow() {
   hg log2 $1 --color=always |
