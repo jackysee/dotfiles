@@ -162,10 +162,15 @@ fi
 # fzf
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-_gshowdiff="(grep -o '[a-f0-9]\{7\}' | head -1 |
-            xargs -I % sh -c 'git show --color=always % | diff-so-fancy | less --tabs=4 -RX') << 'FZF-EOF'
-            {}
-FZF-EOF"
+# _gshowdiff="(grep -o '[a-f0-9]\{7\}' | head -1 |
+#             xargs -I % sh -c 'git show --color=always % | diff-so-fancy | less --tabs=4 -RX') << 'FZF-EOF'
+#             {}
+# FZF-EOF"
+
+_gshowdiff="git show --color=always {2} | diff-so-fancy | less --tabs=4 -Rc"
+_gshowdifffile="git show {2} --color=always \{1} | diff-so-fancy |  less --tabs=4 -Rc"
+_gfzfdiff="git show {2} --name-only --pretty=\"format:\" | fzf --ansi --no-sort --reverse --header='{2}' --preview \"$_gshowdifffile\" --bind \"ctrl-m:execute:$_gshowdifffile\""
+
 gshow() {
   git log $1 --graph --color=always \
       --format="%C(auto)%h%d %s %C(black)%C(bold)%cr %C(auto)%an" "$@" |
@@ -173,30 +178,28 @@ gshow() {
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
       --preview=$_gshowdiff \
-      --bind "ctrl-m:execute:$_gshowdiff"
+      --bind "ctrl-m:execute:$_gshowdiff" \
+      --bind "ctrl-d:execute:$_gfzfdiff"
 }
 
-# gshow() {
-#   git log $1 --graph --color=always \
-#       --format="%C(auto)%h%d %s %C(black)%C(bold)%cr %C(auto)%an" "$@" |
-#   fzf --ansi --no-sort --reverse --tiebreak=index --bind=ctrl-s:toggle-sort \
-#       --bind "ctrl-m:execute:
-#                 (grep -o '[a-f0-9]\{7\}' | head -1 |
-#                 xargs -I % sh -c 'git show --color=always % | less -R') << 'FZF-EOF'
-#                 {}
-# FZF-EOF"
-# }
-_hgshowdiff="(grep -o '[0-9]\+' | head -1 |
-                xargs -I % sh -c 'hg log --stat --color=always -vpr % | diff-so-fancy | less -R') << 'FZF-EOF'
-                {}
-FZF-EOF"
+hgdiff() {
+    hg log -r $@ --template "{files % '{file}\n'}" | \
+    fzf --ansi --preview "hg diff -c $@ {-1} --color=always | diff-so-fancy | less -R"
+}
+
+_hgshowdiff="hg log --stat --color=always -vpr {2} | diff-so-fancy | less -R"
+_hgshowdifffile="hg diff -c {2} \{1} --color=always | diff-so-fancy | less -R"
+_hgfzfdiff="hg log -r {2} --template \"{files % \'{file}\n\'}\" | 
+            fzf --ansi --no-sort --reverse --preview \"$_hgshowdifffile\" --header=\"Revision {2}\" --bind \"ctrl-m:execute:$_hgshowdifffile\""
+
 hgshow() {
   hg log2 $1 --color=always |
   fzf --ansi --no-sort --reverse --tiebreak=index \
       --preview="$_hgshowdiff" \
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
-      --bind "ctrl-m:execute: $_hgshowdiff"
+      --bind "ctrl-m:execute: $_hgshowdiff" \
+      --bind "ctrl-d:execute: $_hgfzfdiff"
 }
 
 hgrevert() {
