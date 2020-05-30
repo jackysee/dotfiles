@@ -30,8 +30,8 @@ export KEYTIMEOUT=25
 stty -ixon 
 
 
-if [[ $(uname -a) =~ Microsoft ]]; then
-    export DISPLAY=:0
+if [[ $(uname -a) =~ microsoft ]]; then
+    export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0 
 fi
 
 ## fnm
