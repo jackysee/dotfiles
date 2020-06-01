@@ -126,7 +126,7 @@ zinit light sharkdp/bat
 zinit ice from"gh-r" as"program" mv"fd* -> fd" pick"fd/fd" nocompletions
 zinit light sharkdp/fd
 
-zinit ice from"gh-r" as"program" mv"exa*->exa" pick"exa"
+zinit ice from"gh-r" as"program" extract"" mv"exa*->exa" pick"exa"
 zinit light ogham/exa
 
 zinit ice as"program" pick"bin/git-dsf" wait"0" lucid

@@ -14,7 +14,7 @@ curl -s https://api.github.com/repos/ubnt-intrepid/dot/releases/latest \
 | grep "browser_download_url.*x86.*linux-gnu\.tar\.gz" \
 | cut -d ":" -f 2,3 \
 | tr -d \" \
-| wget -i -
+| xargs -I % curl -OL %
 
 tarball="$(find . -name "dot*linux-gnu.tar.gz")"
 tar -xzf $tarball
