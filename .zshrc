@@ -162,12 +162,6 @@ fi
 # fzf
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-# _gshowdiff="(grep -o '[a-f0-9]\{7\}' | head -1 |
-#             xargs -I % sh -c 'git show --color=always % | diff-so-fancy | less --tabs=4 -RX') << 'FZF-EOF'
-#             {}
-# FZF-EOF"
-#
-
 gdiff() {
     local DIFF
     if [ "$@" ]; then
@@ -184,15 +178,15 @@ gdiff() {
     fi
 }
 
-_ggrephash="grep -o '[a-f0-9]\{7\}' | head -1"
-_gshowdiff="($_ggrephash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy | less --tabs=4 -Rc') << 'FZF-EOF'
-    {}
-FZF-EOF"
+_ggrephash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
+_gshowdiff="$_ggrephash | xargs -I % sh -c \
+    'git show --color=always % | diff-so-fancy | less --tabs=4 -Rc'"
 _gshowdifffile="git show % --color=always \{1} | diff-so-fancy |  less --tabs=4 -Rc"
-_gfzfdiff="($_ggrephash | xargs -I % sh -c 'git show % --name-only --pretty=\"format:\" | 
-        fzf --ansi --no-sort --reverse --no-select-1 --header=\"hash %\" --preview \"$_gshowdifffile\" --bind \"ctrl-m:execute:$_gshowdifffile\"') << 'FZF-EOF'
-    {}
-FZF-EOF"
+_gfzfdiff="$_ggrephash | xargs -I % sh -c \
+    'git show % --name-only --pretty=\"format:\" | 
+    fzf --ansi --no-sort --reverse --no-select-1 \
+        --header=\"hash %\" --preview \"$_gshowdifffile\" \
+        --bind \"ctrl-m:execute:$_gshowdifffile\"'"
 
 
 gshow() {
@@ -222,22 +216,15 @@ hgdiff() {
 }
 
 
-_hggrepver="grep -o '[0-9]\+' | head -1 "
-_hgshowdiff="($_hggrepver | xargs -I % sh -c \
-    'hg log --stat --color=always -vpr % | diff-so-fancy | less -R') << 'FZF-EOF' 
-    {} 
-FZF-EOF"
+_hggrepver="echo {} | grep -o '[0-9]\+' | head -1 "
+_hgshowdiff="$_hggrepver | xargs -I % sh -c \
+    'hg log --stat --color=always -vpr % | diff-so-fancy | less -R'"
 _hgshowdifffile="hg diff -c @ \{1} --color=always | diff-so-fancy | less -R"
 _hglogfiles='hg log -r @ --template "{join(files, \"\n\")}"'
-_hgfzfdiff="($_hggrepver | xargs -I @ sh -c '$_hglogfiles |
+_hgfzfdiff="$_hggrepver | xargs -I @ sh -c '$_hglogfiles |
     fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
         --preview \"$_hgshowdifffile\" --header=\"Revision @\" \
-        --bind \"ctrl-m:execute:$_hgshowdifffile\"') << 'FZF-EOF'
-    {}
-FZF-EOF"
-# _hgfzfdiff="($_hggrepver | xargs -I @ sh -c '$_hglogfiles') << 'FZF-EOF'
-#     {}
-# FZF-EOF"
+        --bind \"ctrl-m:execute:$_hgshowdifffile\"'"
 
 hgshow() {
   hg log2 $1 --color=always |
@@ -304,6 +291,13 @@ fkill() {
   if [[ ! -z $pid ]]; then
     kill -"${1:-9}" "$pid"
   fi
+}
+
+# using ripgrep combined with preview
+# find-in-file - usage: fif <searchTerm>
+fif() {
+  if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+  rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
 }
 
 # Load local file if it exists (this isn't commited to the dotfiles repo)
