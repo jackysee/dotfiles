@@ -166,10 +166,34 @@ fi
 #             xargs -I % sh -c 'git show --color=always % | diff-so-fancy | less --tabs=4 -RX') << 'FZF-EOF'
 #             {}
 # FZF-EOF"
+#
 
-_gshowdiff="git show --color=always {2} | diff-so-fancy | less --tabs=4 -Rc"
-_gshowdifffile="git show {2} --color=always \{1} | diff-so-fancy |  less --tabs=4 -Rc"
-_gfzfdiff="git show {2} --name-only --pretty=\"format:\" | fzf --ansi --no-sort --reverse --no-select-1 --header='hash {2}' --preview \"$_gshowdifffile\" --bind \"ctrl-m:execute:$_gshowdifffile\""
+gdiff() {
+    local DIFF
+    if [ "$@" ]; then
+        DIFF="git show --color=always $@ {-1} | diff-so-fancy | less --tabs=4 -Rc"
+        git show $@ --name-only --pretty="format:" | \
+        fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+            --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
+    else
+        DIFF="git diff --color=always {-1} | diff-so-fancy | less --tabs=4 -Rc"
+        git diff --name-only --pretty="format:" |  \
+        fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+            --preview="$DIFF"  \
+            --bind "ctrl-m:execute:$DIFF" 
+    fi
+}
+
+_ggrephash="grep -o '[a-f0-9]\{7\}' | head -1"
+_gshowdiff="($_ggrephash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy | less --tabs=4 -Rc') << 'FZF-EOF'
+    {}
+FZF-EOF"
+_gshowdifffile="git show % --color=always \{1} | diff-so-fancy |  less --tabs=4 -Rc"
+_gfzfdiff="($_ggrephash | xargs -I % sh -c 'git show % --name-only --pretty=\"format:\" | 
+        fzf --ansi --no-sort --reverse --no-select-1 --header=\"hash %\" --preview \"$_gshowdifffile\" --bind \"ctrl-m:execute:$_gshowdifffile\"') << 'FZF-EOF'
+    {}
+FZF-EOF"
+
 
 gshow() {
   git log $1 --graph --color=always \
@@ -183,14 +207,37 @@ gshow() {
 }
 
 hgdiff() {
-    hg log -r $@ --template "{files % '{file}\n'}" | \
-    fzf --ansi --preview "hg diff -c $@ {-1} --color=always | diff-so-fancy | less -R"
+    local DIFF
+    if [ "$@"]; then
+        DIFF="hg diff -c $@ {-1} --color=always | diff-so-fancy | less -R"
+        hg log -r $@ --template "{files % '{file}\n'}" | \
+        fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+            --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
+    else
+        DIFF="hg diff {-1} --color=always | diff-so-fancy | less -R"
+        hg status | \
+        fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+            --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
+    fi
 }
 
-_hgshowdiff="hg log --stat --color=always -vpr {2} | diff-so-fancy | less -R"
-_hgshowdifffile="hg diff -c {2} \{1} --color=always | diff-so-fancy | less -R"
-_hgfzfdiff="hg log -r {2} --template \"{files % \'{file}\n\'}\" | 
-            fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 --preview \"$_hgshowdifffile\" --header=\"Revision {2}\" --bind \"ctrl-m:execute:$_hgshowdifffile\""
+
+_hggrepver="grep -o '[0-9]\+' | head -1 "
+_hgshowdiff="($_hggrepver | xargs -I % sh -c \
+    'hg log --stat --color=always -vpr % | diff-so-fancy | less -R') << 'FZF-EOF' 
+    {} 
+FZF-EOF"
+_hgshowdifffile="hg diff -c @ \{1} --color=always | diff-so-fancy | less -R"
+_hglogfiles='hg log -r @ --template "{join(files, \"\n\")}"'
+_hgfzfdiff="($_hggrepver | xargs -I @ sh -c '$_hglogfiles |
+    fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+        --preview \"$_hgshowdifffile\" --header=\"Revision @\" \
+        --bind \"ctrl-m:execute:$_hgshowdifffile\"') << 'FZF-EOF'
+    {}
+FZF-EOF"
+# _hgfzfdiff="($_hggrepver | xargs -I @ sh -c '$_hglogfiles') << 'FZF-EOF'
+#     {}
+# FZF-EOF"
 
 hgshow() {
   hg log2 $1 --color=always |
