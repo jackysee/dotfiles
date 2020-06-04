@@ -48,6 +48,9 @@ set formatoptions+=j " Delete comment character when joining commented lines
 set history=1000
 set tabpagemax=50
 
+set undofile
+set undodir=~/.vim/undo
+
 " set block cursor
 if $TERM == "xterm" || $TERM == "xterm-256color"
     let &t_SI = "\<Esc>[6 q"
@@ -131,6 +134,7 @@ Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
 Plug 'osyo-manga/vim-over'
 Plug 'tweekmonster/startuptime.vim'
+Plug 'mbbill/undotree'
 
 
 " file finder
@@ -607,6 +611,9 @@ nmap P <plug>(YoinkPaste_P)
 " vim-over
 nnoremap ,s :OverCommandLine<cr>%s/
 xnoremap ,s :OverCommandLine<cr>s/
+
+" undotree
+nnoremap <F5> :UndotreeToggle<cr>
 
 " statusline {{
 

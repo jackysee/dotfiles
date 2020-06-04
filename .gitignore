@@ -2,5 +2,6 @@ vim/plugged
 vim/.netrwhist
 vim/session
 vim/sessions
+vim/undo
 tmux/.tmux/plugins/tpm
 tmux/.tmux/plugins/*
