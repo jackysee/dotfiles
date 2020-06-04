@@ -349,16 +349,17 @@ function! s:winResize() abort
         let s:winResizeTimer = timer_start(800, {-> feedkeys("\<CR>")})
         let c = getchar()
         let n = winnr()
-        let step = 3
+        let isCap = c == char2nr('H') || c == char2nr('J') || c == char2nr('K') || c == char2nr('L')
+        let step = isCap? 10 : 3 
         let shifted = 0
-        if c == char2nr("h")
+        if c == char2nr("h") || c == char2nr("H")
             if !s:hasWin('h') | wincmd h | let shifted = 1 | endif
             execute 'vertical resize '. (s:hasWin('l')? '+':'-'). step
-        elseif c == char2nr("j") && !(s:hasWin('k') && s:hasWin('j'))
+        elseif (c == char2nr("j") || c == char2nr("J")) && !(s:hasWin('k') && s:hasWin('j'))
             execute 'resize ' . (s:hasWin('j')?'-':'+') . step
-        elseif c == char2nr("k") && !(s:hasWin('k') && s:hasWin('j'))
+        elseif ( c == char2nr("k") || c == char2nr("K") ) && !(s:hasWin('k') && s:hasWin('j'))
             execute 'resize ' . (s:hasWin('j')?'+':'-') . step
-        elseif c == char2nr("l") 
+        elseif c == char2nr("l")  || c == char2nr("L")
             if !s:hasWin('h') | wincmd h | let shifted = 1 | endif
             execute 'vertical resize '. (s:hasWin('l')? '-':'+'). step
         elseif c == char2nr('=')
