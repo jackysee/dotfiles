@@ -67,7 +67,8 @@ call plug#begin(s:path . '/plugged')
 " colorscheme
 Plug 'ajh17/spacegray.vim'
 Plug 'whatyouhide/vim-gotham'
-Plug 'morhetz/gruvbox'
+" Plug 'morhetz/gruvbox'
+Plug 'gruvbox-community/gruvbox'
 Plug 'liuchengxu/space-vim-dark'
 Plug 'kaicataldo/material.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
@@ -80,6 +81,7 @@ Plug 'nightsense/cosmic_latte'
 Plug 'nanotech/jellybeans.vim'
 Plug 'romainl/Apprentice'
 Plug 'jpo/vim-railscasts-theme'
+Plug 'https://gitlab.com/protesilaos/tempus-themes-vim.git'
 
 "start page
 if s:is_fast
@@ -122,15 +124,12 @@ Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
-Plug 'dhruvasagar/vim-zoom'
-Plug 'wellle/targets.vim'
+" Plug 'wellle/targets.vim'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
 Plug 'osyo-manga/vim-over'
-" Plug 'roxma/vim-window-resize-easy'
-" Plug 'dstein64/vim-startuptime'
 Plug 'tweekmonster/startuptime.vim'
 
 
@@ -187,11 +186,13 @@ set guioptions-=L
 
 set termguicolors
 
-let g:material_theme_style = 'dark'
-colorscheme apprentice
+" let g:material_theme_style = 'dark'
+" colorscheme apprentice
 
-" let g:gruvbox_contrast_dark='hard'
-" colorscheme gruvbox
+let g:gruvbox_contrast_dark='hard'
+set background=dark
+colorscheme gruvbox
+highlight SpecialKey guifg=#444444 ctermfg=2
 
 " colorscheme rigel
 " highlight StatusLineNC guifg=#555555 guibg=#333333 cterm=NONE ctermfg=2 ctermbg=NONE
@@ -307,6 +308,12 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+" netw
+let g:netrw_browse_split=2
+" let g:netrw_banner=0
+let g:netrw_winresize=25
+nnoremap ,pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 25<CR>
+
 "textobj for bracket function like block (linewise) 
 xnoremap <silent> af :<c-u>normal! g_v%V<cr>
 onoremap <silent> af :<c-u>normal! g_v%V<cr>
@@ -319,7 +326,7 @@ nnoremap ,dg :diffget<CR>
 nnoremap ,dp :diffput<CR>
 
 " Auto-resize splits when Vim gets resized.
-autocmd VimResized * wincmd =
+" autocmd VimResized * wincmd =
 
 function! s:hasWin(c) abort
     let from = winnr()
@@ -389,10 +396,6 @@ endfunction
 
 command! -bang Profile call s:profile(<bang>0)
 
-" Zoom / Restore window.
-nnoremap ,z :call zoom#toggle()<cr>
-
-
 fun! TrimWhitespace()
     let l:save = winsaveview()
     keeppatterns %s/\s\+$//e
@@ -435,6 +438,7 @@ let g:coc_global_extensions = [
             "\   'coc-pairs',
 set updatetime=300
 set shortmess+=c
+" set shortmess-=S
 set signcolumn=yes
 " remap goto
 " nmap <silent> gd <Plug>(coc-definition)
@@ -512,7 +516,7 @@ nmap T <Plug>Sneak_T
 
 " targerts
 " Prefer multiline targets around cursor over distant targets within cursor line:
-let g:targets_seekRanges = 'cc cr cb cB lc ac Ac lr lb ar ab lB Ar aB Ab AB rr ll rb al rB Al bb aa bB Aa BB AA'
+" let g:targets_seekRanges = 'cc cr cb cB lc ac Ac lr lb ar ab lB Ar aB Ab AB rr ll rb al rB Al bb aa bB Aa BB AA'
 
 " ale
 nmap <silent> ,af <Plug>(ale_fix)
@@ -725,13 +729,6 @@ function! LineInfoStatus()
     " return '%-4(%P%)'
 endfunction
 
-function! ZoomStatus()
-    if exists('g:loaded_zoom') && zoom#statusline() != ''
-        return '[Z]'
-    endif
-    return ''
-endfunction
-
 function! AddBracket(s)
     if exists('a:s')
         return (a:s == '')? '': ' ['.a:s.'] '
@@ -784,8 +781,7 @@ function! Statusline()
   let pos = LineInfoStatus()
   let caps = '%{AddBracket(vimcaps#statusline(1))}'
   " let dir = '%20.30{CurDir()} '
-  let zoom = '%{ZoomStatus()}'
-  return paste.vcs.file.zoom.sep.coc.ale.caps.ft.pos
+  return paste.vcs.file.sep.coc.ale.caps.ft.pos
 endfunction
 
 function! RefreshStatusline()
