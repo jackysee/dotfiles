@@ -4,6 +4,7 @@ let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
 let s:has_node = executable('node')
 let s:has_go = executable('go')
+let mapleader = " "
 
 " Settings
 filetype plugin indent on
@@ -40,7 +41,7 @@ set lazyredraw
 
 set incsearch
 set hlsearch
-nnoremap <silent> ,/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
 
 set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
 set formatoptions+=j " Delete comment character when joining commented lines
@@ -272,10 +273,8 @@ nnoremap > ;
 nnoremap < ,
 
 " beginning / end of line
-nnoremap ,h ^
-nnoremap ,l $
-
-inoremap jk <ESC>
+nnoremap <leader>h ^
+nnoremap <leader>l $
 
 " indent in visual model
 vnoremap < <gv
@@ -293,17 +292,17 @@ set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
 
 " open file
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
-map ,ew :e %%
-map ,es :sp %%
-map ,ev :vsp %%
-map ,et :tabe %%
+map <leader>ew :e %%
+map <leader>es :sp %%
+map <leader>ev :vsp %%
+map <leader>et :tabe %%
 
 " edit vimrc
 if !s:is_windows
-    nnoremap <silent> ,vv :vsp ~/.vim/vimrc<CR>
+    nnoremap <silent> <leader>vv :vsp ~/.vim/vimrc<CR>
 endif
 if s:is_windows
-    nnoremap <silent> ,vv :vsp c:/settings/dotfiles/vim/vimrc<CR>
+    nnoremap <silent> <leader>vv :vsp c:/settings/dotfiles/vim/vimrc<CR>
 endif
 
 "jump between split
@@ -316,18 +315,15 @@ nnoremap <C-H> <C-W><C-H>
 let g:netrw_browse_split=2
 " let g:netrw_banner=0
 let g:netrw_winresize=25
-nnoremap ,pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 25<CR>
+nnoremap <leader>pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 25<CR>
 
 "textobj for bracket function like block (linewise) 
 xnoremap <silent> af :<c-u>normal! g_v%V<cr>
 onoremap <silent> af :<c-u>normal! g_v%V<cr>
 
-" paste line below
-nnoremap ,p :pu<cr>
-
 " vimdiff
-nnoremap ,dg :diffget<CR>
-nnoremap ,dp :diffput<CR>
+nnoremap <leader>dg :diffget<CR>
+nnoremap <leader>dp :diffput<CR>
 
 " Auto-resize splits when Vim gets resized.
 " autocmd VimResized * wincmd =
@@ -380,7 +376,7 @@ function! s:winResize() abort
 endfun
 
 command! WinResize call s:winResize()
-nnoremap ,rw :WinResize<CR>
+nnoremap <leader>rw :WinResize<CR>
 
 
 " Update a buffer's contents on focus if it changed outside of Vim.
@@ -421,7 +417,7 @@ endfunction
 imap <C-E> <C-y>,
 
 " Add semi colon at end of line
-noremap ,; g_a;<Esc>
+noremap <leader>; g_a;<Esc>
 
 " vim-asterisk
 nnoremap n nzz
@@ -450,11 +446,11 @@ set signcolumn=yes
 " nmap <silent> gi <Plug>(coc-implementation)
 " nmap <silent> gr <Plug>(coc-references)
 " Remap for do codeAction of current line
-nmap ,ca  <Plug>(coc-codeaction)
+nmap <leader>ca  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
-nmap ,qf  <Plug>(coc-fix-current)
-nmap ,ne  <Plug>(coc-diagnostic-next-error)
-nmap ,pe  <Plug>(coc-diagnostic-prev-error)
+nmap <leader>qf  <Plug>(coc-fix-current)
+nmap <leader>ne  <Plug>(coc-diagnostic-next-error)
+nmap <leader>pe  <Plug>(coc-diagnostic-prev-error)
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
 
@@ -464,9 +460,9 @@ vnoremap K :m '<-2<cr>gv=gv
 
 " leaderF
 if s:is_windows
-    nnoremap ,f :LeaderfFile<CR>
-    nnoremap ,r :LeaderfMru<CR>
-    nnoremap ,rg :Leaderf rg -e<Space>
+    nnoremap <leader>f :LeaderfFile<CR>
+    nnoremap <leader>r :LeaderfMru<CR>
+    nnoremap <leader>rg :Leaderf rg -e<Space>
     let g:Lf_WindowHeight = 0.30
     let g:Lf_MruFileExclude = ['*.so', '*.tmp', '*.bak', '*.exe', '*.dll']
     let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
@@ -481,7 +477,7 @@ else
     endfunction
     let $FZF_DEFAULT_OPTS = ' --reverse'
     if v:version >= 802 && has('patch194')
-        let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.6 } }
+        let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8 } }
     else
         let g:fzf_layout = { 'down': '~30%' }
     endif
@@ -494,14 +490,14 @@ else
         \ 'ctrl-x': 'split',
         \ 'ctrl-v': 'vsplit'
         \ }
-    nnoremap ,f :Files<cr>
+    nnoremap <leader>f :Files<cr>
     let g:fzf_files_options =
         \ '--preview "(bat {}) 2> /dev/null | head -'.&lines.'"'
-    nnoremap ,r :History<cr>
-    nnoremap ,b :Buffers<cr>
-    nnoremap ,ag :Ag <c-r><c-w><cr>
-    nnoremap ,rg :Rg <c-r><c-w><cr>
-    vnoremap ,rg :<BS><BS><BS><BS><BS>Rg <c-r>*<cr>
+    nnoremap <leader>r :History<cr>
+    nnoremap <leader>b :Buffers<cr>
+    nnoremap <leader>ag :Ag <c-r><c-w><cr>
+    nnoremap <leader>rg :Rg <c-r><c-w><cr>
+    vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>*<cr>
 endif
 
 
@@ -523,9 +519,9 @@ nmap T <Plug>Sneak_T
 " let g:targets_seekRanges = 'cc cr cb cB lc ac Ac lr lb ar ab lB Ar aB Ab AB rr ll rb al rB Al bb aa bB Aa BB AA'
 
 " ale
-nmap <silent> ,af <Plug>(ale_fix)
-nmap <silent> ,aj :ALENext<cr>
-nmap <silent> ,ak :ALEPrevious<cr>
+nmap <silent> <leader>af <Plug>(ale_fix)
+nmap <silent> <leader>aj :ALENext<cr>
+nmap <silent> <leader>ak :ALEPrevious<cr>
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = "\uf00d"
 let g:ale_sign_warning = "\uf529"
@@ -609,10 +605,12 @@ nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
 
 " vim-over
-nnoremap ,s :OverCommandLine<cr>%s/
-xnoremap ,s :OverCommandLine<cr>s/
+nnoremap <leader>s :OverCommandLine<cr>%s/
+xnoremap <leader>s :OverCommandLine<cr>s/
 
 " undotree
+let g:undotree_SetFocusWhenToggle = 1
+let g:undotree_ShortIndicators = 1
 nnoremap <F5> :UndotreeToggle<cr>
 
 " statusline {{
