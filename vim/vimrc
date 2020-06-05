@@ -106,12 +106,6 @@ Plug 'whiteinge/diffconflicts'
 " coc
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
-
-if s:is_windows
-    " status line
-    Plug 'suxpert/vimcaps'
-endif
-
 " editing
 " Plug 'tomtom/tcomment_vim'
 Plug 'Shougo/context_filetype.vim'
@@ -785,7 +779,6 @@ function! Statusline()
   let coc = '%{AddSpace(CocStatus())}'
   let ale = '%{AddSpace(ALELinterStatus())}'
   let pos = LineInfoStatus()
-  " let caps = s:is_windows? '':'%{AddBracket(vimcaps#statusline(1))}'
   " let dir = '%20.30{CurDir()} '
   return paste.vcs.file.sep.coc.ale.ft.pos
 endfunction
