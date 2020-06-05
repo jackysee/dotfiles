@@ -790,7 +790,7 @@ function! Statusline()
   let coc = '%{AddSpace(CocStatus())}'
   let ale = '%{AddSpace(ALELinterStatus())}'
   let pos = LineInfoStatus()
-  let caps = s:is_windows? '%{AddBracket(vimcaps#statusline(1))}' : ''
+  let caps = s:is_windows? '':'%{AddBracket(vimcaps#statusline(1))}'
   " let dir = '%20.30{CurDir()} '
   return paste.vcs.file.sep.coc.ale.caps.ft.pos
 endfunction
