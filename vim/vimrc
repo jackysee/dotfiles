@@ -1,5 +1,5 @@
 " Constants
-let s:is_windows = has('win32') || has('win64')
+let s:is_windows = has('win32') || has('win64') || has('win32unix')
 let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
 let s:has_node = executable('node')
@@ -57,11 +57,6 @@ if $TERM == "xterm" || $TERM == "xterm-256color"
     let &t_SI = "\<Esc>[6 q"
     let &t_SR = "\<Esc>[4 q"
     let &t_EI = "\<Esc>[2 q"
-endif
-
-" shell
-if s:is_windows
-    set shellcmdflag=/D/C
 endif
 
 " Plugins
@@ -142,7 +137,7 @@ Plug 'mbbill/undotree'
 
 
 " file finder
-if s:is_windows
+if s:is_windows 
     Plug 'Yggdroot/LeaderF', { 'do': './install.bat' }
 else
     Plug 'junegunn/fzf.vim'
