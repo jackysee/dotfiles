@@ -60,7 +60,7 @@ if $TERM == "xterm" || $TERM == "xterm-256color"
 endif
 
 " shell
-if !s:is_windows
+if s:is_windows
     set shellcmdflag=/D/C
 endif
 
@@ -112,7 +112,7 @@ Plug 'whiteinge/diffconflicts'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
 
-if !s:is_windows
+if s:is_windows
     " status line
     Plug 'suxpert/vimcaps'
 endif
@@ -790,9 +790,9 @@ function! Statusline()
   let coc = '%{AddSpace(CocStatus())}'
   let ale = '%{AddSpace(ALELinterStatus())}'
   let pos = LineInfoStatus()
-  let caps = s:is_windows? '':'%{AddBracket(vimcaps#statusline(1))}'
+  " let caps = s:is_windows? '':'%{AddBracket(vimcaps#statusline(1))}'
   " let dir = '%20.30{CurDir()} '
-  return paste.vcs.file.sep.coc.ale.caps.ft.pos
+  return paste.vcs.file.sep.coc.ale.ft.pos
 endfunction
 
 function! RefreshStatusline()

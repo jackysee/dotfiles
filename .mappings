@@ -15,6 +15,7 @@
 ".dir_colors" = "~/.dir_colors"
 ".vrapperrc" = "~/.vrapperrc"
 ".ripgreprc" = "~/.ripgreprc"
+"nvim/init.vim" = "~/.config/nvim/init.vim"
 
 [darwin]
 "vim" = "~/.vim"

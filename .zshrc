@@ -293,6 +293,11 @@ fkill() {
   fi
 }
 
+installvim() {
+  sudo pacman -U https://archive.archlinux.org/packages/v/vim-runtime/vim-runtime-$1-x86_64.pkg.tar.zst
+  sudo pacman -U https://archive.archlinux.org/packages/v/gvim/gvim-$1-x86_64.pkg.tar.zst
+}
+
 # using ripgrep combined with preview
 # find-in-file - usage: fif <searchTerm>
 fif() {
