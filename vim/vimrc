@@ -469,7 +469,7 @@ else
       cc
     endfunction
     let $FZF_DEFAULT_OPTS = ' --reverse'
-    if v:version >= 802 && has('patch194')
+    if (v:version >= 802 && has('patch194')) || has('nvim')
         let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8 } }
     else
         let g:fzf_layout = { 'down': '~30%' }
