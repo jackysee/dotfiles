@@ -5,7 +5,7 @@
 # font = Anonymice Nerd Font Mono 11
 # font = Source Code Pro 9
 # font = Input Mono 12
-font = Inconsolata 12
+font = Inconsolata 13
 # font = Fira Code 12
 # font = Monoid 9
 scrollback_lines = 10000

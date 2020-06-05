@@ -111,8 +111,11 @@ Plug 'whiteinge/diffconflicts'
 " coc
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 
-" status line
-Plug 'suxpert/vimcaps'
+
+if s:is_windows
+    " status line
+    Plug 'suxpert/vimcaps'
+endif
 
 " editing
 " Plug 'tomtom/tcomment_vim'
@@ -548,6 +551,8 @@ if exists('s:prettierexec')
     let g:ale_vue_prettier_executable = s:prettierexec
 endif
 
+xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
+
 
 let s:eslintdirs = ['/src/frontend', '/web', '/frontend']
 for l in s:eslintdirs
@@ -785,7 +790,7 @@ function! Statusline()
   let coc = '%{AddSpace(CocStatus())}'
   let ale = '%{AddSpace(ALELinterStatus())}'
   let pos = LineInfoStatus()
-  let caps = '%{AddBracket(vimcaps#statusline(1))}'
+  let caps = s:is_windows? '%{AddBracket(vimcaps#statusline(1))}' : ''
   " let dir = '%20.30{CurDir()} '
   return paste.vcs.file.sep.coc.ale.caps.ft.pos
 endfunction
