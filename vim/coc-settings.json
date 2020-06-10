@@ -7,6 +7,7 @@
   "eslint.options": { "resolvePluginsRelativeTo": "src/frontend" },
   "eslint.filetypes": ["javascript", "vue"],
   "diagnostic.errorSign": "❌",
+  "java.enabled": false,
   "java.import.exclusions": ["**/node_modules"],
   "vetur.validation.style": false,
   "vetur.validation.script": false,

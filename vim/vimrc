@@ -3,7 +3,6 @@ let s:is_windows = has('win32') || has('win64') || has('win32unix')
 let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
 let s:has_node = executable('node')
-let s:has_go = executable('go')
 let mapleader = " "
 
 " Settings
@@ -114,19 +113,15 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
-Plug 'mileszs/ack.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
-Plug 'Yggdroot/indentLine', { 'on': 'IndentLinesEnable' }
-" Plug 'wellle/targets.vim'
-Plug 'AndrewRadev/splitjoin.vim'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
 Plug 'osyo-manga/vim-over'
-Plug 'tweekmonster/startuptime.vim'
+" Plug 'tweekmonster/startuptime.vim'
 Plug 'mbbill/undotree'
 
 
@@ -137,9 +132,7 @@ else
     Plug 'junegunn/fzf.vim'
 endif
 
-if !s:is_windows && s:has_go
-    Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
-endif
+Plug 'ap/vim-css-color'
 
 " js / vue
 if s:is_fast
@@ -251,9 +244,6 @@ let g:signify_realtime = 0
 let g:signify_sign_change = '~'
 let g:signify_update_on_focusgained = 1
 
-" hexokinase
-let g:Hexokinase_highlighters = ['backgroundfull']
-
 " Shortcuts / mappings
 
 " paste on visual mode without chaning original register
@@ -271,10 +261,6 @@ nnoremap <leader>l $
 " indent in visual model
 vnoremap < <gv
 vnoremap > >gv
-
-" list buffer
-noremap <left> :bp<CR>
-noremap <right> :bn<CR>
 
 " Encoding
 set encoding=utf-8
@@ -306,8 +292,8 @@ nnoremap <C-H> <C-W><C-H>
 " netw
 let g:netrw_browse_split=2
 " let g:netrw_banner=0
-let g:netrw_winresize=25
-nnoremap <leader>pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 25<CR>
+" let g:netrw_winresize=10
+nnoremap <leader>pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 35<CR>
 
 "textobj for bracket function like block (linewise) 
 xnoremap <silent> af :<c-u>normal! g_v%V<cr>
@@ -431,7 +417,6 @@ let g:coc_global_extensions = [
             "\   'coc-pairs',
 set updatetime=300
 set shortmess+=c
-" set shortmess-=S
 set signcolumn=yes
 " remap goto
 " nmap <silent> gd <Plug>(coc-definition)
@@ -456,7 +441,7 @@ if s:is_windows
     nnoremap <leader>f :LeaderfFile<CR>
     nnoremap <leader>r :LeaderfMru<CR>
     nnoremap <leader>rg :Leaderf rg -e<Space>
-    let g:Lf_WindowHeight = 0.30
+    let g:Lf_WindowHeight = 0.90
     let g:Lf_MruFileExclude = ['*.so', '*.tmp', '*.bak', '*.exe', '*.dll']
     let g:Lf_StlSeparator = { 'left': '', 'right': '', 'font': '' }
     let g:Lf_CommandMap = { '<C-]>': ['<C-V>'], '<C-J>':['<C-N>'], '<C-K>':['<C-P>'] }
@@ -492,24 +477,6 @@ else
     nnoremap <leader>rg :Rg <c-r><c-w><cr>
     vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>*<cr>
 endif
-
-
-"ack.vim
-if executable('ag')
-    let g:ackprg = 'ag --vimgrep'
-endif
-
-" vim-sneak
-let g:sneak#s_next=1
-let g:sneak#streak=1
-nmap f <Plug>Sneak_f
-nmap F <Plug>Sneak_F
-nmap t <Plug>Sneak_t
-nmap T <Plug>Sneak_T
-
-" targerts
-" Prefer multiline targets around cursor over distant targets within cursor line:
-" let g:targets_seekRanges = 'cc cr cb cB lc ac Ac lr lb ar ab lB Ar aB Ab AB rr ll rb al rB Al bb aa bB Aa BB AA'
 
 " ale
 nmap <silent> <leader>af <Plug>(ale_fix)
@@ -585,10 +552,6 @@ let g:vim_json_syntax_conceal = 0
 " ultisnips
 let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsExpandTrigger="<tab>"
-
-" IndentLines
-let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-autocmd! User indentLine doautocmd indentLine Syntax
 
 " tmux
 let g:tmux_navigator_disable_when_zoomed = 1
@@ -726,7 +689,6 @@ endfunction
 
 function! LineInfoStatus()
     return '%-10(%3l:%c%)%P'
-    " return '%-4(%P%)'
 endfunction
 
 function! AddBracket(s)
@@ -743,37 +705,10 @@ function! AddSpace(s)
     return ''
 endfunction
 
-let g:currentmode = {
-    \ 'n'  : 'N',
-    \ 'no' : 'NO',
-    \ 'v'  : 'V',
-    \ 'V'  : 'V·Line',
-    \ "\<C-v>" : 'V·Block',
-    \ 's'  : 'S',
-    \ 'S'  : 'S·Line',
-    \ "\<C-s>" : 'S·Block',
-    \ 'i'  : 'I',
-    \ 'R'  : 'R',
-    \ 'Rv' : 'V·Replace',
-    \ 'c'  : 'C',
-    \ 'cv' : 'Vim Ex',
-    \ 'ce' : 'Ex',
-    \ 'r'  : 'Prompt',
-    \ 'rm' : 'More',
-    \ 'r?' : 'Confirm',
-    \ '!'  : 'Shell',
-    \ 't'  : 'Terminal'
-    \}
-
 function! Statusline()
   let paste = "%{HasPaste()}"
   let file = '%{FilenameStatus()}'
-  " let mode = '%{toupper(g:currentmode[mode()])} '
-  " let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-  " let ro  = "%{&readonly ? '[!] ' : ''}"
-  " let enc = "%{&fileencoding?&fileencoding:&encoding}"
   let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-  " let ff  = "%{&fileformat}"
   let vcs = "%{AddBracket(VcsInfoStatus())}"
   let sep = ' %= '
   let coc = '%{AddSpace(CocStatus())}'
