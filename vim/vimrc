@@ -58,6 +58,12 @@ if $TERM == "xterm" || $TERM == "xterm-256color"
     let &t_EI = "\<Esc>[2 q"
 endif
 
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
+
 " Plugins
 let s:path = expand('<sfile>:p:h')
 call plug#begin(s:path . '/plugged')
