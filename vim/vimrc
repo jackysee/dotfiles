@@ -310,6 +310,9 @@ nnoremap <leader>dp :diffput<CR>
 " ~/.vim/plugin/win_resize.vim
 nnoremap <leader>w :WinResize<CR>
 
+" sudo tee save with w!!
+cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+
 
 " Update a buffer's contents on focus if it changed outside of Vim.
 au FocusGained,BufEnter * :checktime
