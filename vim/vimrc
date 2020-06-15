@@ -307,56 +307,8 @@ onoremap <silent> af :<c-u>normal! g_v%V<cr>
 nnoremap <leader>dg :diffget<CR>
 nnoremap <leader>dp :diffput<CR>
 
-function! s:hasWin(c) abort
-    let from = winnr()
-    execute "wincmd " . a:c
-    let to = winnr()
-    execute from . "wincmd w"
-    return from == to
-endfunction
-
-function! s:winResize() abort
-    while 1
-        if s:hasWin('h') && s:hasWin('j') && s:hasWin('k') && s:hasWin('l') 
-            echo "[only window, no resize]"
-            return
-        endif
-        echo '[window resize... <CR> to quit]'
-        if exists('s:winResizeTimer')
-            call timer_stop(s:winResizeTimer)
-        endif
-        let s:winResizeTimer = timer_start(800, {-> feedkeys("\<CR>")})
-        let c = getchar()
-        let n = winnr()
-        let isCap = c == char2nr('H') || c == char2nr('J') || c == char2nr('K') || c == char2nr('L')
-        let step = isCap? 10 : 3 
-        let shifted = 0
-        if c == char2nr("h") || c == char2nr("H")
-            if !s:hasWin('h') | wincmd h | let shifted = 1 | endif
-            execute 'vertical resize '. (s:hasWin('l')? '+':'-'). step
-        elseif (c == char2nr("j") || c == char2nr("J")) && !(s:hasWin('k') && s:hasWin('j'))
-            execute 'resize ' . (s:hasWin('j')?'-':'+') . step
-        elseif ( c == char2nr("k") || c == char2nr("K") ) && !(s:hasWin('k') && s:hasWin('j'))
-            execute 'resize ' . (s:hasWin('j')?'+':'-') . step
-        elseif c == char2nr("l")  || c == char2nr("L")
-            if !s:hasWin('h') | wincmd h | let shifted = 1 | endif
-            execute 'vertical resize '. (s:hasWin('l')? '-':'+'). step
-        elseif c == char2nr('=')
-            execute 'wincmd ='
-        elseif c == 13
-            redraw
-            echo "[window resize done]"
-            return
-        endif
-        if shifted 
-            execute n . "wincmd w" 
-        endif
-        redraw
-    endwhile
-endfun
-
-command! WinResize call s:winResize()
-nnoremap <leader>rw :WinResize<CR>
+" ~/.vim/plugin/win_resize.vim
+nnoremap <leader>w :WinResize<CR>
 
 
 " Update a buffer's contents on focus if it changed outside of Vim.
