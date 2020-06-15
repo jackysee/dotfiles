@@ -181,7 +181,7 @@ gdiff() {
 _ggrephash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
 _gshowdiff="$_ggrephash | xargs -I % sh -c \
     'git show --color=always % | diff-so-fancy | less --tabs=4 -Rc'"
-_gshowdifffile="git show % --color=always $(git rev-parse --show-toplevel)/\{1} | diff-so-fancy |  less --tabs=4 -Rc"
+_gshowdifffile="git show % --color=always \$(git rev-parse --show-toplevel)/\{1} | diff-so-fancy |  less --tabs=4 -Rc"
 _gfzfdiff="$_ggrephash | xargs -I % sh -c \
     'git show % --name-only --pretty=\"format:\" | 
     fzf --ansi --no-sort --reverse --no-select-1 \
@@ -219,7 +219,7 @@ hgdiff() {
 _hggrepver="echo {} | grep -o '[0-9]\+' | head -1 "
 _hgshowdiff="$_hggrepver | xargs -I % sh -c \
     'hg log --stat --color=always -vpr % | diff-so-fancy | less -R'"
-_hgshowdifffile="hg diff -c @ $(hg root)/\{1} --color=always | diff-so-fancy | less -R"
+_hgshowdifffile="hg diff -c @ \$(hg root)/\{1} --color=always | diff-so-fancy | less -R"
 _hglogfiles='hg log -r @ --template "{join(files, \"\n\")}"'
 _hgfzfdiff="$_hggrepver | xargs -I @ sh -c '$_hglogfiles |
     fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
