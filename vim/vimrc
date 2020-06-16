@@ -392,6 +392,24 @@ inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv 
 
+function! VisualSelection()
+    let old_reg     = getreg('"')
+    let old_regmode = getregtype('"')
+    normal! gvy
+    let selection = @"
+    call setreg('"', old_reg, old_regmode)
+    return selection
+endfunction
+
+function! Escaped(text)
+    call inputsave()
+    let result = escape(a:text, '\\/.*$^~[]')
+    let result = substitute(result, "\n$", "", "")
+    let result = substitute(result, "\n", '\\n', "g")
+    call inputrestore()
+    return result
+endfunction
+
 " leaderF
 if s:is_windows
     nnoremap <leader>f :LeaderfFile<CR>
@@ -431,7 +449,7 @@ else
     nnoremap <leader>b :Buffers<cr>
     nnoremap <leader>ag :Ag <c-r><c-w><cr>
     nnoremap <leader>rg :Rg <c-r><c-w><cr>
-    vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>*<cr>
+    vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>=VisualSelection()<cr>
 endif
 
 " ale
