@@ -237,7 +237,7 @@ hgshow() {
 }
 
 hgrevert() {
-    hg status | fzf -m --preview 'bat {}' --bind '?:toggle-preview' | awk "{print $2}" | xargs hg revert
+    hg status | fzf -m --preview 'hg diff {2}' --bind '?:toggle-preview' | awk "{print $2}" | xargs hg revert
 }
 
 j() {
