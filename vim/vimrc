@@ -1,7 +1,7 @@
 " Constants
 let s:is_windows = has('win32') || has('win64') || has('win32unix')
 let s:is_gui = has("gui_running")
-let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
+let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui) || (s:is_windows && has('nvim'))
 let s:has_node = executable('node')
 let s:path = expand('<sfile>:p:h')
 let mapleader = " "
@@ -164,7 +164,6 @@ autocmd! bufwritepost vimrc source $MYVIMRC
 " GUI
 if s:is_gui && s:is_windows
     au GUIEnter * simalt ~x
-    set relativenumber
     " set guifont=Anonymous_Pro:h11
     " set guifont=Fira_Code_Medium:h10
     set guifont=Source_Code_Pro:h10
@@ -209,9 +208,6 @@ highlight SpecialKey guifg=#444444 ctermfg=2
 " colorscheme railscasts
 " colorscheme material
 
-if s:is_windows
-"    colorscheme molokai
-endif
 
 if s:is_fast
     set cursorline
