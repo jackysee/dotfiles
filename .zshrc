@@ -149,6 +149,8 @@ zinit light zsh-users/zsh-completions
 zinit ice wait"1" lucid notify atinit="ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
 zinit light zdharma/fast-syntax-highlighting
 
+zinit ice from"gh-r" as"program" mv"tldr* -> tldr" pick"tldr"
+zinit light dbrgn/tealdeer
 
 
 zstyle ':completion:*' menu select matcher-list 'm:{a-z}={A-Za-z}'

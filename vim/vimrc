@@ -3,6 +3,7 @@ let s:is_windows = has('win32') || has('win64') || has('win32unix')
 let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui)
 let s:has_node = executable('node')
+let s:path = expand('<sfile>:p:h')
 let mapleader = " "
 
 " Settings
@@ -49,7 +50,7 @@ set history=1000
 set tabpagemax=50
 
 set undofile
-set undodir=~/.vim/undo
+let &undodir= s:path . '/undo'
 
 " set block cursor
 if $TERM == "xterm" || $TERM == "xterm-256color"
@@ -58,14 +59,12 @@ if $TERM == "xterm" || $TERM == "xterm-256color"
     let &t_EI = "\<Esc>[2 q"
 endif
 
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-                \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if !s:is_windows && empty(glob(s:path . '/autoload/plug.vim'))
+    silent exe '!curl -fLo '.s:path.'/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
     autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
 " Plugins
-let s:path = expand('<sfile>:p:h')
 call plug#begin(s:path . '/plugged')
 
 " colorscheme
@@ -83,6 +82,7 @@ Plug 'https://gitlab.com/protesilaos/tempus-themes-vim.git'
 Plug 'junegunn/seoul256.vim'
 Plug 'AlessandroYorba/Alduin'
 Plug 'fcpg/vim-farout'
+Plug 'machakann/vim-highlightedyank'
 
 "start page
 if s:is_fast
@@ -159,11 +159,7 @@ Plug 'elmcast/elm-vim', { 'for': ['elm']}
 call plug#end()
 
 " auto reload vimrc when editing it
-if s:is_windows
-    autocmd! bufwritepost vimrc source c:/settings/dotfiles/vim/vimrc
-else
-    autocmd! bufwritepost vimrc source ~/.vim/vimrc
-endif
+autocmd! bufwritepost vimrc source $MYVIMRC
 
 " GUI
 if s:is_gui && s:is_windows
@@ -188,6 +184,7 @@ set termguicolors
 " colorscheme apprentice
 
 let g:gruvbox_contrast_dark = 'hard'
+let g:gruvbox_invert_selection = '0'
 set background=dark
 colorscheme gruvbox
 highlight SpecialKey guifg=#444444 ctermfg=2
@@ -239,6 +236,8 @@ set path=.,src/main/java,src/main/test,src/frontend/src,frontend/src
 set includeexpr=substitute(v:fname,'/','src/frontend/src/','')
 set suffixesadd=.js,.vue,.scss
 
+autocmd BufEnter *.jsp set ft=html.jsp
+
 "startify
 " let g:startify_custom_header = ['']
 let g:startify_change_to_vcs_root = 1
@@ -285,12 +284,7 @@ map <leader>ev :vsp %%
 map <leader>et :tabe %%
 
 " edit vimrc
-if !s:is_windows
-    nnoremap <silent> <leader>vv :vsp ~/.vim/vimrc<CR>
-endif
-if s:is_windows
-    nnoremap <silent> <leader>vv :vsp c:/settings/dotfiles/vim/vimrc<CR>
-endif
+execute 'nnoremap <silent> <leader>vv :vsp '.s:path.'/vimrc<CR>'
 
 "jump between split
 nnoremap <C-J> <C-W><C-J>
