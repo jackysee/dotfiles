@@ -182,7 +182,7 @@ gdiff() {
 
 _ggrephash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
 _gshowdiff="$_ggrephash | xargs -I % sh -c \
-    'git show --color=always % | diff-so-fancy | less --tabs=4 -Rc'"
+    'git show --color=always % @ | diff-so-fancy | less --tabs=4 -Rc'"
 _gshowdifffile="git show % --color=always \$(git rev-parse --show-toplevel)/\{1} | diff-so-fancy |  less --tabs=4 -Rc"
 _gfzfdiff="$_ggrephash | xargs -I % sh -c \
     'git show % --name-only --pretty=\"format:\" | 
@@ -192,13 +192,13 @@ _gfzfdiff="$_ggrephash | xargs -I % sh -c \
 
 
 gshow() {
-  git log $1 --graph --color=always \
-      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr %C(auto)%an" "$@" |
+  git log --graph --color=always \
+      --format="%C(auto)%h%d %s %C(black)%C(bold)%cr %C(auto)%an" "$@" $1 |
   fzf --ansi --no-sort --reverse --tiebreak=index \
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
-      --preview=$_gshowdiff \
-      --bind "ctrl-m:execute:$_gshowdiff" \
+      --preview=${_gshowdiff/@/$1} \
+      --bind "ctrl-m:execute:${_gshowdiff/@/$1}" \
       --bind "ctrl-d:execute:$_gfzfdiff"
 }
 
@@ -220,7 +220,7 @@ hgdiff() {
 
 _hggrepver="echo {} | grep -o '[0-9]\+' | head -1 "
 _hgshowdiff="$_hggrepver | xargs -I % sh -c \
-    'hg log --stat --color=always -vpr % | diff-so-fancy | less -R'"
+    'hg log @ --stat --color=always -vpr % | diff-so-fancy | less -R'"
 _hgshowdifffile="hg diff -c @ \$(hg root)/\{1} --color=always | diff-so-fancy | less -R"
 _hglogfiles='hg log -r @ --template "{join(files, \"\n\")}"'
 _hgfzfdiff="$_hggrepver | xargs -I @ sh -c '$_hglogfiles |
@@ -231,10 +231,10 @@ _hgfzfdiff="$_hggrepver | xargs -I @ sh -c '$_hglogfiles |
 hgshow() {
   hg log2 $1 --color=always |
   fzf --ansi --no-sort --reverse --tiebreak=index \
-      --preview="$_hgshowdiff" \
+      --preview="${_hgshowdiff/@/$1}" \
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
-      --bind "ctrl-m:execute: $_hgshowdiff" \
+      --bind "ctrl-m:execute: ${_hgshowdiff/@/$1}" \
       --bind "ctrl-d:execute: $_hgfzfdiff"
 }
 
