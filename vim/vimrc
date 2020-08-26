@@ -446,6 +446,10 @@ else
     nnoremap <leader>r :History<cr>
     nnoremap <leader>b :Buffers<cr>
     nnoremap <leader>ag :Ag <c-r><c-w><cr>
+    command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \   "rg --column --line-number --no-heading --color=always --smart-case --trim -- ".shellescape(<q-args>), 1,
+      \   fzf#vim#with_preview('right', 'ctrl-/'), <bang>0)
     nnoremap <leader>rg :Rg <c-r><c-w><cr>
     vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>=VisualSelection()<cr><cr>
 endif
