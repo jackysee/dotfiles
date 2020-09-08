@@ -166,18 +166,21 @@ fi
 
 # fzf
 # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+#
+
+_diff_cmd="delta --paging=always"
 
 gdiff() {
     local DIFF
     if [ "$@" ]; then
         # DIFF="git show --color=always $@ $(git rev-parse --show-toplevel)/{-1} | diff-so-fancy | less --tabs=4 -Rc"
-        DIFF="git show --color=always $@ $(git rev-parse --show-toplevel)/{-1} | delta"
+        DIFF="git show --color=always $@ $(git rev-parse --show-toplevel)/{-1} | $_diff_cmd"
         git show $@ --name-only --pretty="format:" | \
         fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
     else
         # DIFF="git diff --color=always {-1} | diff-so-fancy | less --tabs=4 -Rc"
-        DIFF="git diff --color=always {-1} | delta"
+        DIFF="git diff --color=always {-1} | $_diff_cmd"
         git diff --name-only --pretty="format:" |  \
         fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF"  \
@@ -187,8 +190,8 @@ gdiff() {
 
 _ggrephash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
 _gshowdiff="$_ggrephash | xargs -I % sh -c \
-    'git show --color=always % @ | delta'"
-_gshowdifffile="git show % --color=always \$(git rev-parse --show-toplevel)/\{1} | delta"
+    'git show --color=always % @ | $_diff_cmd'"
+_gshowdifffile="git show % --color=always \$(git rev-parse --show-toplevel)/\{1} | $_diff_cmd"
 _gfzfdiff="$_ggrephash | xargs -I % sh -c \
     'git show % --name-only --pretty=\"format:\" | 
     fzf --ansi --no-sort --reverse --no-select-1 \
@@ -211,13 +214,13 @@ hgdiff() {
     local DIFF
     if [ "$@" ]; then
         # DIFF="hg diff -c $@ $(hg root)/{-1} --color=always | diff-so-fancy | less -R"
-        DIFF="hg diff -c $@ $(hg root)/{-1} --color=always | delta"
+        DIFF="hg diff -c $@ $(hg root)/{-1} --color=always | $_diff_cmd"
         hg log -r $@ --template "{files % '{file}\n'}" | \
         fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
     else
         # DIFF="hg diff $(hg root)/{-1} --color=always | diff-so-fancy | less -R"
-        DIFF="hg diff $(hg root)/{-1} --color=always | delta"
+        DIFF="hg diff $(hg root)/{-1} --color=always | $_diff_cmd"
         hg status | \
         fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
@@ -227,10 +230,10 @@ hgdiff() {
 
 _hggrepver="echo {} | grep -o '[0-9]\+' | head -1 "
 _hgshowdiff="$_hggrepver | xargs -I % sh -c \
-     'hg log @ --stat --color=always -vpr % | delta'"
+     'hg log @ --stat --color=always -vpr % | $_diff_cmd'"
     # 'hg log @ --stat --color=always -vpr % | diff-so-fancy | less -R'"
 # _hgshowdifffile="hg diff -c @ \$(hg root)/\{1} --color=always | diff-so-fancy | less -R"
-_hgshowdifffile="hg diff -c @ \$(hg root)/\{1} --color=always | delta"
+_hgshowdifffile="hg diff -c @ \$(hg root)/\{1} --color=always | $_diff_cmd"
 _hglogfiles='hg log -r @ --template "{join(files, \"\n\")}"'
 _hgfzfdiff="$_hggrepver | xargs -I @ sh -c '$_hglogfiles |
     fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
