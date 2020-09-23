@@ -25,7 +25,6 @@ alias xst='nohup st > /dev/null 2>&1&'
 
 alias mux='tmuxinator'
 
-alias hgd='hg diff --color=always | diff-so-fancy | less -FRX'
 
 killserver() {
     tmux send-keys -t 2 C-c
