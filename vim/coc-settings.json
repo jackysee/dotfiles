@@ -1,27 +1,40 @@
 {
-  "html.format.enable": false,
-  "css.validate": false,
-  "prettier.onlyUseLocalVersion": true,
-  "prettier.disableLanguages": [],
-  "prettier.requireConfig": true,
-  "eslint.options": { "resolvePluginsRelativeTo": "src/frontend" },
-  "eslint.filetypes": ["javascript", "vue"],
-  "diagnostic.errorSign": "❌",
-  "java.enabled": "false",
-  "java.import.exclusions": ["**/node_modules"],
-  "vetur.validation.style": false,
-  "vetur.validation.script": false,
-  "vetur.validation.template": false,
-  "coc.preferences.formatOnSaveFiletypes": [
-    "js",
-    "vue",
-    "css",
-    "scss",
-    "json",
-    "html",
-    "markdown",
-    "md"
-  ],
-  "coc.preferences.rootPatterns": ["package.json", ".vim", ".git", ".hg"],
-  "coc.preferences.colorSupport": true
+    "html.format.enable": false,
+    "css.validate": false,
+    "prettier.onlyUseLocalVersion": true,
+    "prettier.disableLanguages": [],
+    "prettier.requireConfig": true,
+    "eslint.options": {
+        "resolvePluginsRelativeTo": "src/frontend"
+    },
+    "eslint.filetypes": [
+        "javascript",
+        "vue"
+    ],
+    "diagnostic.errorSign": "❌",
+    "java.enabled": "false",
+    "java.import.exclusions": [
+        "**/node_modules"
+    ],
+    "vetur.validation.style": false,
+    "vetur.validation.script": false,
+    "vetur.validation.template": false,
+    "coc.preferences.formatOnSaveFiletypes": [
+        "js",
+        "vue",
+        "css",
+        "scss",
+        "json",
+        "html",
+        "markdown",
+        "md"
+    ],
+    "coc.preferences.rootPatterns": [
+        "package.json",
+        ".vim",
+        ".git",
+        ".hg"
+    ],
+    "coc.preferences.colorSupport": true,
+    "tailwindCSS.headwind.runOnSave": false
 }

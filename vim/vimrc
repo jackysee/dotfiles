@@ -127,6 +127,7 @@ Plug 'haya14busa/vim-asterisk'
 Plug 'osyo-manga/vim-over'
 " Plug 'tweekmonster/startuptime.vim'
 Plug 'mbbill/undotree'
+" Plug 'kamichidu/vim-edit-properties'
 
 
 " file finder
@@ -501,9 +502,9 @@ if !exists('s:eslintdir')
     let s:eslintdir = getcwd()
 endif
 
-if executable('eslint_d')
-    let g:ale_javascript_eslint_executable = 'eslint_d'
-endif
+" if executable('eslint_d')
+"     let g:ale_javascript_eslint_executable = 'eslint_d'
+" endif
 let g:ale_javascript_eslint_options = '--resolve-plugins-relative-to ' . s:eslintdir
 let g:ale_javascript_jshint_executable = getcwd() . '/node_modules/jshint/bin/jshint'
 let g:ale_fixers = {
@@ -515,8 +516,11 @@ let g:ale_fixers = {
             \ 'json': ['prettier'],
             \}
 let g:ale_lint_on_text_changed = 'normal'
-let g:ale_lint_on_save = 1
+" let g:ale_lint_on_save = 1
 let g:ale_fix_on_save = 1
+
+autocmd BufWritePre *.vue,*.js,*.html,*.css ALEFix
+
 
 
 " vim-vue

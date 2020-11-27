@@ -25,6 +25,7 @@ alias xst='nohup st > /dev/null 2>&1&'
 
 alias mux='tmuxinator'
 
+alias geticon='node ~/.dotfiles/scripts/getMaterialIcon.js'
 
 killserver() {
     tmux send-keys -t 2 C-c
