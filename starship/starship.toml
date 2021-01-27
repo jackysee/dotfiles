@@ -1,0 +1,11 @@
+[hostname]
+format = "[@$hostname](dimmed fg:246) "
+
+[username]
+format ="[$user](dimmed fg:246)"
+
+[directory]
+style = "blue"
+
+[hg_branch]
+disabled = false

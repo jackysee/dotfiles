@@ -132,11 +132,11 @@ zinit light ogham/exa
 zinit ice as"program" pick"bin/git-dsf" wait"0" lucid
 zinit light zdharma/zsh-diff-so-fancy
 
-zinit ice pick"async.zsh" src"pure.zsh"
-zinit light sindresorhus/pure
+# zinit ice pick"async.zsh" src"pure.zsh"
+# zinit light sindresorhus/pure
 
-# zinit ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
-# zinit light starship/starship
+zinit ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
+zinit light starship/starship
 
 # zinit ice wait"1" lucid atload"!_zsh_autosuggest_start"
 zinit ice wait"0" lucid

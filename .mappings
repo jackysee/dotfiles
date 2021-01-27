@@ -16,6 +16,7 @@
 ".vrapperrc" = "~/.vrapperrc"
 ".ripgreprc" = "~/.ripgreprc"
 "nvim/init.vim" = "~/.config/nvim/init.vim"
+"starship/starship.toml" = "~/.config/starship.toml"
 
 [darwin]
 "vim" = "~/.vim"
