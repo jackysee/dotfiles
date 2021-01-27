@@ -155,7 +155,6 @@ zinit light dbrgn/tealdeer
 zinit ice from"gh-r" as"program" mv"delta* -> delta" pick"delta/delta"
 zinit light dandavison/delta
 
-
 zstyle ':completion:*' menu select matcher-list 'm:{a-z}={A-Za-z}'
 
 [ -f ~/.aliases ] && source ~/.aliases
