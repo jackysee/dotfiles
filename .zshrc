@@ -27,22 +27,12 @@ export DefaultIMModule=fcitx
 
 export KEYTIMEOUT=25
 
-stty -ixon 
+stty -ixon
 
 
 if [[ $(uname -a) =~ microsoft ]]; then
-    export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0 
+    export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
 fi
-
-## fnm
-export FNM_DIR="${:-$HOME/.}fnm"
-if [[ ! -f $FNM_DIR/fnm ]]; then
-  echo "Installing FNM"
-  mkdir $FNM_DIR
-  curl -fsSL https://github.com/Schniz/fnm/raw/master/.ci/install.sh | bash -s -- --skip-shell --force-install
-fi
-export PATH=$HOME/.fnm:$PATH
-eval "`fnm env --multi`"
 
 ## tpm
 if [[ ! -d "$HOME/.dotfiles/tmux/.tmux/plugins/tpm" ]]; then
@@ -51,33 +41,13 @@ if [[ ! -d "$HOME/.dotfiles/tmux/.tmux/plugins/tpm" ]]; then
     git clone https://github.com/tmux-plugins/tpm $HOME/.dotfiles/tmux/.tmux/plugins/tpm
 fi
 
-# ## nvm
-# export NVM_LAZY_LOAD=true
-# export NVM_DIR="${:-$HOME/.}nvm"
-# if [[ ! -d $NVM_DIR ]]; then
-#   echo "Installing NVM"
-#   mkdir $NVM_DIR
-#   curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash
-#   echo "Please modify ${HOME}/.zshrc to remove the line of code that the NVM installer added"
-# fi
-#
-# if [[ -s "$HOME/.nvm/nvm.sh" ]]; then
-#   declare -a NODE_GLOBALS=(`find $HOME/.nvm/versions/node -maxdepth 3 -type l -wholename '*/bin/*' | xargs -n1 basename | sort | uniq`)
-#   NODE_GLOBALS+=("node")
-#   NODE_GLOBALS+=("nvm")
-#   NODE_GLOBALS+=("vim")
-#   for cmd in "${NODE_GLOBALS[@]}"; do
-#     eval "${cmd}(){ unset -f ${NODE_GLOBALS}; echo 'loading nvm...'; source $HOME/.nvm/nvm.sh; ${cmd} \$@ }"
-#   done
-# fi
-
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
 # export FZF_DEFAULT_COMMAND="rg --files "
 export FZF_DEFAULT_COMMAND="([ ! -f ./.ignore ] && [ -d ./.hg ] && ag -l --hidden --ignore .hg) || rg --files "
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_DEFAULT_OPTS='
-    --border --exit-0 --select-1
+    --border --exit-0
     --color fg:188,hl:103,fg+:222,bg+:234,hl+:104
     --color info:183,prompt:110,spinner:107,pointer:167,marker:215'
 export FZF_CTRL_T_OPTS="--preview 'bat {}' --bind '?:toggle-preview'"
@@ -99,21 +69,24 @@ autoload -Uz _zinit
 set promptsubst
 
 # zinit snippet OMZ::plugins/vi-mode/vi-mode.plugin.zsh
-zinit snippet OMZ::plugins/git/git.plugin.zsh
-zinit snippet OMZ::plugins/mercurial/mercurial.plugin.zsh
 # zinit snippet OMZ::plugins/tmux/tmux.plugin.zsh
-zinit snippet OMZ::lib/directories.zsh
-zinit snippet OMZ::lib/history.zsh
-zinit snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
+zinit snippet OMZP::git
+zinit snippet OMZP::mercurial
+zinit snippet OMZP::colored-man-pages
+zinit snippet OMZP::alias-finder
+zinit snippet OMZP::sudo
+zinit snippet OMZL::directories.zsh
+zinit snippet OMZL::history.zsh
 
-zinit light agkozak/zsh-z
-zinit light bugworm/auto-exa
-zinit light zpm-zsh/autoenv
+zinit light-mode for \
+    agkozak/zsh-z \
+    bugworm/auto-exa \
+    zpm-zsh/autoenv
 
-# zinit ice from"gh-r" as"program"
-# zinit light junegunn/fzf-bin
+zinit light-mode lucid wait for \
+    changyuheng/zsh-interactive-cd \
+    dominik-schwabe/zsh-fnm
 
-# zplugin ice atclone'./install --xdg --no-update-rc --completion --key-bindings' atpull'%atclone' multisrc"shell/{key-bindings,completion}.zsh"
 zinit ice atclone"./install --xdg --no-update-rc --completion --key-bindings" atpull"%atclone" as"program" pick="bin/fzf" multisrc"shell/{key-bindings,completion}.zsh"
 zinit light junegunn/fzf
 
@@ -132,28 +105,26 @@ zinit light ogham/exa
 zinit ice as"program" pick"bin/git-dsf" wait"0" lucid
 zinit light zdharma/zsh-diff-so-fancy
 
+zinit ice from"gh-r" as"program" mv"tldr* -> tldr" pick"tldr"
+zinit light dbrgn/tealdeer
+
+zinit ice from"gh-r" as"program" mv"delta* -> delta" pick"delta/delta"
+zinit light dandavison/delta
+
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure
 
 zinit ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
 zinit light starship/starship
 
-# zinit ice wait"1" lucid atload"!_zsh_autosuggest_start"
-zinit ice wait"0" lucid
-zinit load zsh-users/zsh-autosuggestions
+zinit wait lucid for \
+    atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay" \
+        zdharma/fast-syntax-highlighting \
+    atload"!_zsh_autosuggest_start" \
+        zsh-users/zsh-autosuggestions \
+    blockf \
+        zsh-users/zsh-completions
 
-zinit ice wait"0" blockf lucid
-zinit light zsh-users/zsh-completions
-
-# zinit ice wait"0" lucid
-zinit ice wait"1" lucid notify atinit="ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay"
-zinit light zdharma/fast-syntax-highlighting
-
-zinit ice from"gh-r" as"program" mv"tldr* -> tldr" pick"tldr"
-zinit light dbrgn/tealdeer
-
-zinit ice from"gh-r" as"program" mv"delta* -> delta" pick"delta/delta"
-zinit light dandavison/delta
 
 zstyle ':completion:*' menu select matcher-list 'm:{a-z}={A-Za-z}'
 
@@ -183,7 +154,7 @@ gdiff() {
         git diff --name-only --pretty="format:" |  \
         fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF"  \
-            --bind "ctrl-m:execute:$DIFF" 
+            --bind "ctrl-m:execute:$DIFF"
     fi
 }
 
@@ -192,7 +163,7 @@ _gshowdiff="$_ggrephash | xargs -I % sh -c \
     'git show --color=always % @ | $_diff_cmd'"
 _gshowdifffile="git show % --color=always \$(git rev-parse --show-toplevel)/\{1} | $_diff_cmd"
 _gfzfdiff="$_ggrephash | xargs -I % sh -c \
-    'git show % --name-only --pretty=\"format:\" | 
+    'git show % --name-only --pretty=\"format:\" |
     fzf --ansi --no-sort --reverse --no-select-1 \
         --header=\"hash %\" --preview \"$_gshowdifffile\" \
         --bind \"ctrl-m:execute:$_gshowdifffile\"'"
@@ -249,8 +220,20 @@ hgshow() {
       --bind "ctrl-d:execute: $_hgfzfdiff"
 }
 
-hgrevert() {
-    hg status | fzf -m --preview 'hg diff {2}' --bind '?:toggle-preview' | awk "{print $2}" | xargs hg revert
+hgr() {
+  local files
+  files=$(hg status | fzf -m --preview 'hg diff --color=always {2}' --bind '?:toggle-preview')
+  if [ "$files" ]; then
+    hg revert $(echo "$files" | awk '{print $2}')
+  fi
+}
+
+hgci() {
+  local files
+  files=$(hg status | fzf -m --preview 'hg diff --color=always {2}' --bind '?:toggle-preview')
+  if [ "$files" ]; then
+    hg ci $(echo "$files" | awk '{print $2}')
+  fi
 }
 
 j() {

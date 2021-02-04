@@ -6,6 +6,7 @@ format ="[$user](dimmed fg:246)"
 
 [directory]
 style = "blue"
+truncation_length = 8
 
 [hg_branch]
 disabled = false

@@ -1,4 +1,7 @@
 alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
 
 if type exa &> /dev/null; then
     alias ls="exa"
@@ -48,3 +51,6 @@ alias ts='tmux new-session -s'
 alias tl='tmux list-sessions'
 alias tksv='tmux kill-server'
 alias tkss='tmux kill-session -t'
+
+alias javahome8='export JAVA_HOME=/usr/lib/jvm/java-8-openjdk'
+alias javahome11='export JAVA_HOME=/usr/lib/jvm/java-11-openjdk'
