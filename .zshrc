@@ -12,7 +12,7 @@ export GDK_SCALE=0.5
 export GDK_DPI_SCALE=1
 
 export TERM=xterm-256color
-export PATH="$HOME/.local/bin/:$PATH"
+export PATH="$HOME/.local/bin/:$HOME/.cargo/bin:$PATH"
 
 export QT_PLATFORM_PLUGIN=qt5ct
 export QT_QPA_PLATFORMTHEME=qt5ct
@@ -110,6 +110,9 @@ zinit light dbrgn/tealdeer
 
 zinit ice from"gh-r" as"program" mv"delta* -> delta" pick"delta/delta"
 zinit light dandavison/delta
+
+zinit ice from"gh-r" as"program" bpick="hugo_extended*Linux*64bit.tar.gz" pick"hugo"
+zinit light gohugoio/hugo
 
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure

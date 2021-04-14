@@ -98,5 +98,5 @@ function! s:encode(lnum, ...)
     call setline(a:lnum, buf)
 endfunction
 
-command! -nargs=? -range EditPropsEncode call <SID>encode(<line1>, <line2>)
-command! -nargs=? -range EditPropsDecode call <SID>decode(<line1>, <line2>)
+command! -nargs=? -range N2a call <SID>encode(<line1>, <line2>)
+command! -nargs=? -range A2n call <SID>decode(<line1>, <line2>)

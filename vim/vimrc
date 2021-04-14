@@ -13,6 +13,7 @@ runtime macros/matchit.vim
 set backspace=indent,eol,start
 set complete-=i
 set smarttab
+autocmd FileType jsp set nosmarttab
 set nowrap
 set number relativenumber
 set title
@@ -65,6 +66,7 @@ if !s:is_windows && empty(glob(s:path . '/autoload/plug.vim'))
 endif
 
 " Plugins
+packadd cfilter
 call plug#begin(s:path . '/plugged')
 
 " colorscheme
@@ -124,10 +126,12 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
-Plug 'osyo-manga/vim-over'
+" Plug 'osyo-manga/vim-over'
+Plug 'markonm/traces.vim'
 " Plug 'tweekmonster/startuptime.vim'
 Plug 'mbbill/undotree'
 " Plug 'kamichidu/vim-edit-properties'
+Plug 'rlue/vim-barbaric'
 
 
 " file finder
@@ -181,6 +185,7 @@ set guioptions-=L
 
 set termguicolors
 
+<<<<<<< HEAD
 if s:is_windows && s:is_gui
     colorscheme apprentice
     " colorscheme gruvbit
@@ -216,6 +221,38 @@ else
     " colorscheme onedark
     " colorscheme railscasts
 endif
+=======
+" let g:material_theme_style = 'dark'
+" colorscheme apprentice
+
+let g:gruvbox_contrast_dark = 'hard'
+let g:gruvbox_invert_selection = '0'
+set background=dark
+colorscheme gruvbox
+highlight SpecialKey guifg=#444444 ctermfg=2
+
+" colorscheme gruvbit
+
+" let g:seoul256_background = 233
+" set background=dark
+" colorscheme seoul256
+
+" colorscheme rigel
+" highlight StatusLineNC guifg=#555555 guibg=#333333 cterm=NONE ctermfg=2 ctermbg=NONE
+
+" let g:alduin_Shout_Become_Ethereal = 1
+" colorscheme alduin 
+
+" colorscheme farout
+" colorscheme molokai
+" colorscheme spacegray
+" colorscheme jellybeans
+" colorscheme apprentice
+" colorscheme onehalfdark
+" colorscheme onedark
+" colorscheme railscasts
+" colorscheme material
+>>>>>>> b27b0e2 (update lib)
 
 
 if s:is_fast
@@ -494,6 +531,8 @@ endif
 
 xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
 
+xnoremap <leader>sc :!tw2s<cr>
+
 
 let s:eslintdirs = ['/src/frontend', '/web', '/frontend']
 for l in s:eslintdirs
@@ -551,13 +590,17 @@ nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
 
 " vim-over
-nnoremap <leader>s :OverCommandLine<cr>%s/
-xnoremap <leader>s :OverCommandLine<cr>s/
+" nnoremap <leader>s :OverCommandLine<cr>%s/
+" xnoremap <leader>s :OverCommandLine<cr>s/
 
 " undotree
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_ShortIndicators = 1
 nnoremap <F5> :UndotreeToggle<cr>
+
+" vim-barbaric
+" let g:barbaric_ime = 'fcitx'
+let g:barbaric_fcitx_cmd = 'fcitx-remote'
 
 " statusline {{
 
