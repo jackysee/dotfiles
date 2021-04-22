@@ -113,8 +113,10 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " editing
 " Plug 'tomtom/tcomment_vim'
-Plug 'Shougo/context_filetype.vim'
-Plug 'tyru/caw.vim'
+Plug 'tpope/vim-commentary'
+Plug 'suy/vim-context-commentstring'
+" Plug 'Shougo/context_filetype.vim'
+" Plug 'tyru/caw.vim'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
@@ -132,6 +134,7 @@ Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 " Plug 'kamichidu/vim-edit-properties'
 Plug 'rlue/vim-barbaric'
+Plug 'junegunn/vim-peekaboo'
 
 
 " file finder
