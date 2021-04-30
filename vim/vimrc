@@ -27,7 +27,23 @@ set copyindent
 set autoindent
 set ignorecase
 set smartcase
-set clipboard=unnamed
+if has('nvim')
+    let g:clipboard = {
+                \   'name': 'xsel_override',
+                \   'copy': {
+                \      '+': 'xsel --input --clipboard',
+                \      '*': 'xsel --input --primary',
+                \    },
+                \   'paste': {
+                \      '+': 'xsel --output --clipboard',
+                \      '*': 'xsel --output --primary',
+                \   },
+                \   'cache_enabled': 1,
+                \ }
+    set clipboard+=unnamedplus
+else
+    set clipboard=unnamed
+endif
 set splitbelow splitright
 set hidden
 set mouse=a
@@ -153,7 +169,7 @@ Plug 'ap/vim-css-color'
 
 " js / vue
 if s:is_fast
-    Plug 'w0rp/ale', { 'for': ['javascript', 'vue', 'javascript.jsx', 'css', 'scss', 'html', 'json' ]}
+    " Plug 'w0rp/ale', { 'for': ['javascript', 'vue', 'javascript.jsx', 'css', 'scss', 'html', 'json' ]}
     Plug 'mattn/emmet-vim',  { 'for':['javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' ]}
     Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html', 'vue'] }
     Plug 'elzr/vim-json', { 'for': ['json']}
@@ -379,25 +395,56 @@ let g:coc_global_extensions = [
             \   'coc-html',
             \   'coc-json',
             \   'coc-emmet',
-            \   'coc-ultisnips'
+            \   'coc-ultisnips',
+            \   'coc-prettier',
+            \   'coc-eslint'
             \ ]
             "\   'coc-pairs',
 set updatetime=300
 set shortmess+=c
 set signcolumn=yes
 " remap goto
-" nmap <silent> gd <Plug>(coc-definition)
-" nmap <silent> gy <Plug>(coc-type-definition)
-" nmap <silent> gi <Plug>(coc-implementation)
-" nmap <silent> gr <Plug>(coc-references)
+nmap <leader>gd <Plug>(coc-definition)
+nmap <leader>gt <Plug>(coc-type-definition)
+nmap <leader>gi <Plug>(coc-implementation)
+nmap <leader>gr <Plug>(coc-references)
 " Remap for do codeAction of current line
 nmap <leader>ca  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-nmap <leader>ne  <Plug>(coc-diagnostic-next-error)
-nmap <leader>pe  <Plug>(coc-diagnostic-prev-error)
+nmap <leader>cf  <Plug>(coc-fix-current)
+nmap <leader>cj  <Plug>(coc-diagnostic-next-error)
+nmap <leader>ck  <Plug>(coc-diagnostic-prev-error)
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
+
+nnoremap <leader>cd :call <SID>show_documentation()<CR>
+nnoremap <leader>cs :call CocActionAsync('showSignatureHelp')<CR>
+
+" manual trigger LSP completion
+inoremap <silent><expr> <c-j> coc#refresh()
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+fun! EnableCocJava()
+    call coc#config('java.enabled', v:true)
+    call CocAction('reloadExtension', 'coc-java')
+endfun
+command! EnableCocJava call EnableCocJava()
+
+augroup coc 
+    autocmd!
+    " update signature help on jump placeholder.
+     autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
 
 " Move visual selection
 vnoremap J :m '>+1<cr>gv=gv
@@ -440,7 +487,7 @@ else
     endfunction
     let $FZF_DEFAULT_OPTS = ' --reverse'
     if (v:version >= 802 && has('patch194')) || has('nvim')
-        let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8 } }
+        let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
     else
         let g:fzf_layout = { 'down': '~30%' }
     endif
@@ -471,69 +518,66 @@ else
 endif
 
 " ale
-nmap <silent> <leader>af <Plug>(ale_fix)
-nmap <silent> <leader>aj :ALENext<cr>
-nmap <silent> <leader>ak :ALEPrevious<cr>
-let g:ale_sign_column_always = 1
-let g:ale_sign_error = "\uf00d"
-let g:ale_sign_warning = "\uf529"
-highlight ALEErrorSign guifg=#C30500
-highlight ALEWarningSign guifg=#ED6237
-highlight clear ALEWarningLine
+" nmap <silent> <leader>af <Plug>(ale_fix)
+" nmap <silent> <leader>aj :ALENext<cr>
+" nmap <silent> <leader>ak :ALEPrevious<cr>
+" let g:ale_sign_column_always = 1
+" let g:ale_sign_error = "\uf00d"
+" let g:ale_sign_warning = "\uf529"
+" highlight ALEErrorSign guifg=#C30500
+" highlight ALEWarningSign guifg=#ED6237
+" highlight clear ALEWarningLine
 
-let s:prettierlocations = ['/src/frontend', '/web', '/frontend']
-for l in s:prettierlocations
-    let p = getcwd().l.'/node_modules/.bin/prettier'
-    if filereadable(p)
-        let s:prettierexec = p
-        break
-    endif
-endfor
+" let s:prettierlocations = ['/src/frontend', '/web', '/frontend']
+" for l in s:prettierlocations
+"     let p = getcwd().l.'/node_modules/.bin/prettier'
+"     if filereadable(p)
+"         let s:prettierexec = p
+"         break
+"     endif
+" endfor
 
-if exists('s:prettierexec')
-    let g:ale_javascript_prettier_executable = s:prettierexec
-    let g:ale_css_prettier_executable = s:prettierexec
-    let g:ale_html_prettier_executable = s:prettierexec
-    let g:ale_json_prettier_executable = s:prettierexec
-    let g:ale_scss_prettier_executable = s:prettierexec
-    let g:ale_vue_prettier_executable = s:prettierexec
-endif
+" if exists('s:prettierexec')
+"     let g:ale_javascript_prettier_executable = s:prettierexec
+"     let g:ale_css_prettier_executable = s:prettierexec
+"     let g:ale_html_prettier_executable = s:prettierexec
+"     let g:ale_json_prettier_executable = s:prettierexec
+"     let g:ale_scss_prettier_executable = s:prettierexec
+"     let g:ale_vue_prettier_executable = s:prettierexec
+" endif
 
 xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
 
 xnoremap <leader>sc :!tw2s<cr>
 
 
-let s:eslintdirs = ['/src/frontend', '/web', '/frontend']
-for l in s:eslintdirs
-    let p = getcwd().l.'/.eslintrc.js'
-    if filereadable(p)
-        let s:eslintdir = getcwd().l
-        break
-    endif
-endfor
-if !exists('s:eslintdir')
-    let s:eslintdir = getcwd()
-endif
+" let s:eslintdirs = ['/src/frontend', '/web', '/frontend']
+" for l in s:eslintdirs
+"     let p = getcwd().l.'/.eslintrc.js'
+"     if filereadable(p)
+"         let s:eslintdir = getcwd().l
+"         break
+"     endif
+" endfor
+" if !exists('s:eslintdir')
+"     let s:eslintdir = getcwd()
+" endif
 
 " if executable('eslint_d')
 "     let g:ale_javascript_eslint_executable = 'eslint_d'
 " endif
-let g:ale_javascript_eslint_options = '--resolve-plugins-relative-to ' . s:eslintdir
-let g:ale_javascript_jshint_executable = getcwd() . '/node_modules/jshint/bin/jshint'
-let g:ale_fixers = {
-            \ 'javascript': ['prettier', 'eslint'],
-            \ 'vue': ['prettier', 'eslint'],
-            \ 'css': ['prettier'],
-            \ 'scss': ['prettier'],
-            \ 'html': ['prettier', 'eslint'],
-            \ 'json': ['prettier'],
-            \}
-let g:ale_lint_on_text_changed = 'normal'
+" let g:ale_javascript_jshint_executable = getcwd() . '/node_modules/jshint/bin/jshint'
+" let g:ale_javascript_eslint_options = '--resolve-plugins-relative-to ' . s:eslintdir
+" let g:ale_fixers = {
+"             \ 'javascript': ['eslint'],
+"             \ 'vue': ['eslint'],
+"             \ 'html': ['eslint']
+"             \}
+" let g:ale_lint_on_text_changed = 'normal'
 " let g:ale_lint_on_save = 1
-let g:ale_fix_on_save = 1
+" let g:ale_fix_on_save = 1
 
-autocmd BufWritePre *.vue,*.js,*.html,*.css ALEFix
+" autocmd BufWritePre *.vue,*.js,*.html ALEFix
 
 
 
@@ -619,28 +663,28 @@ function! VcsInfoStatus() abort
     return FugitiveStatus(). LawrenciumStatus(). ChangedStatus()
 endfunction
 
-function! ALELinterStatus() abort
-    if !exists('g:loaded_ale')
-        return ''
-    endif
-    if ale#engine#IsCheckingBuffer(bufnr(''))
-        return 'linting...'
-    endif
-    let linted = get(g:, 'ale_enabled', 0) == 1
-        \ && getbufvar(bufnr(''), 'ale_linted', 0) > 0
-        \ && ale#engine#IsCheckingBuffer(bufnr('')) == 0
-    if !linted
-       return ''
-    endif
-    let l:counts = ale#statusline#Count(bufnr(''))
-    if l:counts.total == 0
-        return 'OK'
-    endif
-    let l:all_errors = l:counts.error + l:counts.style_error
-    let l:all_non_errors = l:counts.total - l:all_errors
-    return (all_non_errors > 0 ? printf('%dW', all_non_errors) : '') .
-        \ (all_errors > 0? printf('%dE', all_errors) : '')
-endfunction
+" function! ALELinterStatus() abort
+"     if !exists('g:loaded_ale')
+"         return ''
+"     endif
+"     if ale#engine#IsCheckingBuffer(bufnr(''))
+"         return 'linting...'
+"     endif
+"     let linted = get(g:, 'ale_enabled', 0) == 1
+"         \ && getbufvar(bufnr(''), 'ale_linted', 0) > 0
+"         \ && ale#engine#IsCheckingBuffer(bufnr('')) == 0
+"     if !linted
+"        return ''
+"     endif
+"     let l:counts = ale#statusline#Count(bufnr(''))
+"     if l:counts.total == 0
+"         return 'OK'
+"     endif
+"     let l:all_errors = l:counts.error + l:counts.style_error
+"     let l:all_non_errors = l:counts.total - l:all_errors
+"     return (all_non_errors > 0 ? printf('%dW', all_non_errors) : '') .
+"         \ (all_errors > 0? printf('%dE', all_errors) : '')
+" endfunction
 
 function! s:is_tmp_file() abort
   if !empty(&buftype)
@@ -666,11 +710,26 @@ function! CocLineStatus() abort
   return ''
 endfunction
 
+function! CocDignostic() abort
+    let info = get(b:, 'coc_diagnostic_info', {})
+    if empty(info) | return '' | endif
+    let msgs = []
+    if get(info, 'error', 0)
+        call add(msgs, 'E' . info['error'])
+    endif
+    if get(info, 'warning', 0)
+        call add(msgs, 'W' . info['warning'])
+    endif
+    return join(msgs, ' ')
+endfunction
+
 function! CocStatus() abort
     let s1 = CocCurrentFunction()
+    let s3 = CocDignostic()
     let s2 = CocLineStatus()
-    return s1 . (!empty(s1) && !empty(s2) ? ' ':'') . s2
+    return join([s1, s3, s2], ' ')
 endfunction
+
 
 function! ModifiedStatus()
     return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -709,7 +768,8 @@ function! Statusline()
   let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
   let sep = ' %= '
   let coc = '%{AddSpace(CocStatus())}'
-  let ale = '%{AddSpace(ALELinterStatus())}'
+  " let ale = '%{AddSpace(ALELinterStatus())}'
+  let ale = ''
   let pos = LineInfoStatus()
   " let dir = '%20.30{CurDir()} '
   return vcs.file.sep.coc.ale.ft.pos
@@ -724,11 +784,11 @@ endfunction
 set laststatus=2
 let &statusline = Statusline()
 
-augroup ALEStatus
-  autocmd!
-  autocmd User ALEJobStarted call RefreshStatusline()
-  autocmd User ALELintPost call RefreshStatusline()
-  autocmd User ALEFixPost call RefreshStatusline()
-augroup END
+" augroup ALEStatus
+"   autocmd!
+"   autocmd User ALEJobStarted call RefreshStatusline()
+"   autocmd User ALELintPost call RefreshStatusline()
+"   autocmd User ALEFixPost call RefreshStatusline()
+" augroup END
 
 "}}
