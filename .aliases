@@ -23,8 +23,9 @@ alias hgrbt='hg rebase --dest tip'
 
 alias mvn=/usr/bin/mvn
 
-alias xterm='nohup xterm > /dev/null 2>&1&'
-alias xst='nohup st > /dev/null 2>&1&'
+
+# alias xterm='nohup xterm > /dev/null 2>&1&'
+# alias xst='nohup st > /dev/null 2>&1&'
 
 alias mux='tmuxinator'
 
@@ -43,6 +44,7 @@ startserver() {
 ## require: PowerShell admin to install `Install-Module -Name BurntToast`
 alias toast='powershell.exe -command New-BurntToastNotification -Text '
 
+alias tmux='tmux -2'
 alias ta='tmux attach -t'
 alias tad='tmux attach -d -t'
 alias tda='tmux detach-client'

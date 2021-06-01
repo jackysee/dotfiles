@@ -111,8 +111,11 @@ zinit light dbrgn/tealdeer
 zinit ice from"gh-r" as"program" mv"delta* -> delta" pick"delta/delta"
 zinit light dandavison/delta
 
-zinit ice from"gh-r" as"program" bpick="hugo_extended*Linux*64bit.tar.gz" pick"hugo"
-zinit light gohugoio/hugo
+# zinit ice from"gh-r" as"program" bpick="hugo_extended*Linux*64bit.tar.gz" pick"hugo"
+# zinit light gohugoio/hugo
+
+zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim"
+zinit light neovim/neovim
 
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure

@@ -27,7 +27,9 @@
         ".git",
         ".hg"
     ],
+    "coc.preferences.listOfWorkspaceEdit": "location",
     "coc.preferences.colorSupport": true,
+    "coc.preferences.currentFunctionSymbolAutoUpdate": true,
     "tailwindCSS.headwind.runOnSave": false,
     "workspace.bottomUpFiletypes": [
         "javascript",

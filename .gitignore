@@ -3,6 +3,7 @@ vim/.netrwhist
 vim/session
 vim/sessions
 vim/undo/**
+vim/nvim/undo/**
 !vim/undo/.gitkeep
 tmux/.tmux/plugins/tpm
 tmux/.tmux/plugins/*

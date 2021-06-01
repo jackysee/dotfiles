@@ -8,7 +8,7 @@ let mapleader = " "
 
 " Settings
 filetype plugin indent on
-syntax enable
+syntax on 
 runtime macros/matchit.vim
 set backspace=indent,eol,start
 set complete-=i
@@ -19,7 +19,9 @@ set number relativenumber
 set title
 set wildchar=<TAB>
 set wildmenu
-set wildmode=longest:list,full
+if !has('nvim')
+    set wildmode=longest:list,full
+endif
 set wildignore=*.o,*.class,*.pyc,*.swp,*.bak
 set nobackup noswapfile
 set autoread
@@ -50,6 +52,10 @@ set mouse=a
 set scrolloff=1
 set sidescrolloff=5
 set display+=lastline
+if executable('rg')
+    set grepprg=rg\ --vimgrep
+    set grepformat=%f:%l:%c:%m
+endif
 
 set ttyfast
 set ttimeout
@@ -67,7 +73,11 @@ set history=1000
 set tabpagemax=50
 
 set undofile
-let &undodir= s:path . '/undo'
+if has('nvim')
+    let &undodir= s:path . '/nvim/undo'
+else
+    let &undodir= s:path . '/undo'
+endif
 
 " set block cursor
 if $TERM == "xterm" || $TERM == "xterm-256color"
@@ -87,9 +97,7 @@ call plug#begin(s:path . '/plugged')
 
 " colorscheme
 Plug 'ajh17/spacegray.vim'
-Plug 'gruvbox-community/gruvbox'
 Plug 'habamax/vim-gruvbit'
-Plug 'kaicataldo/material.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'Rigellute/rigel'
@@ -102,6 +110,9 @@ Plug 'junegunn/seoul256.vim'
 Plug 'AlessandroYorba/Alduin'
 Plug 'fcpg/vim-farout'
 Plug 'machakann/vim-highlightedyank'
+Plug 'gruvbox-community/gruvbox'
+Plug 'kaicataldo/material.vim'
+Plug 'bluz71/vim-nightfly-guicolors'
 
 "start page
 if s:is_fast
@@ -144,11 +155,8 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
-" Plug 'osyo-manga/vim-over'
 Plug 'markonm/traces.vim'
-" Plug 'tweekmonster/startuptime.vim'
 Plug 'mbbill/undotree'
-" Plug 'kamichidu/vim-edit-properties'
 Plug 'rlue/vim-barbaric'
 Plug 'junegunn/vim-peekaboo'
 
@@ -174,7 +182,7 @@ if s:is_fast
     Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html', 'vue'] }
     Plug 'elzr/vim-json', { 'for': ['json']}
     Plug 'posva/vim-vue', { 'for': ['vue']}
-    Plug 'sgur/vim-editorconfig'
+    " Plug 'sgur/vim-editorconfig'
     Plug '1995eaton/vim-better-javascript-completion',  { 'for': [ 'javascript', 'vue' ]}
 endif
 
@@ -208,15 +216,17 @@ if s:is_windows && s:is_gui
     colorscheme apprentice
     " colorscheme gruvbit
 else
-    " let g:material_theme_style = 'dark'
-    " colorscheme apprentice
+    highlight SpecialKey guifg=#444444 ctermfg=2
+    " colorscheme nightfly
 
-    let g:gruvbox_contrast_dark = 'hard'
     let g:gruvbox_invert_selection = '0'
     set background=dark
     colorscheme gruvbox
     highlight SpecialKey guifg=#444444 ctermfg=2
 
+    " let g:material_theme_style = 'dark'
+    " colorscheme apprentice
+    
     " colorscheme gruvbit
 
     " let g:seoul256_background = 233
@@ -442,7 +452,8 @@ command! EnableCocJava call EnableCocJava()
 augroup coc 
     autocmd!
     " update signature help on jump placeholder.
-     autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    autocmd User CocStatusChange call RefreshStatusline()
 augroup end
 
 
@@ -547,6 +558,7 @@ endif
 " endif
 
 xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
+xnoremap <leader>pjs :!npx -q prettier --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
 
 xnoremap <leader>sc :!tw2s<cr>
 
@@ -792,3 +804,8 @@ let &statusline = Statusline()
 " augroup END
 
 "}}
+
+
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
