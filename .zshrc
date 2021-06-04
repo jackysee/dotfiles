@@ -11,8 +11,11 @@ export LIBGL_ALWAYS_INDIRECT=1
 export GDK_SCALE=0.5
 export GDK_DPI_SCALE=1
 
+export ORACLE_HOME=/opt/oracle/instantclient_21_1
+export LD_LIBRARY_PATH="$ORACLE_HOME"
+
 export TERM=xterm-256color
-export PATH="$HOME/.local/bin/:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin/:$HOME/.cargo/bin:$ORACLE_HOME:$PATH"
 
 export QT_PLATFORM_PLUGIN=qt5ct
 export QT_QPA_PLATFORMTHEME=qt5ct

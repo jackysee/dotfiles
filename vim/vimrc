@@ -138,6 +138,10 @@ Plug 'whiteinge/diffconflicts'
 " coc
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+"db 
+Plug 'tpope/vim-dadbod'
+Plug 'kristijanhusak/vim-dadbod-ui'
+
 " editing
 " Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-commentary'
@@ -559,6 +563,7 @@ endif
 
 xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
 xnoremap <leader>pjs :!npx -q prettier --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
+xnoremap <leader>psql :!npx -q sql-formatter-cli
 
 xnoremap <leader>sc :!tw2s<cr>
 
@@ -627,6 +632,10 @@ nnoremap <F5> :UndotreeToggle<cr>
 " vim-barbaric
 " let g:barbaric_ime = 'fcitx'
 let g:barbaric_fcitx_cmd = 'fcitx-remote'
+
+"dadbod-ui
+let g:db_ui_debug = 1
+let g:db_ui_save_location = '~/.config/db_ui'
 
 " statusline {{
 
@@ -806,6 +815,5 @@ let &statusline = Statusline()
 "}}
 
 
-map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+" \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+" \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
