@@ -222,19 +222,16 @@ if s:is_windows && s:is_gui
     colorscheme apprentice
     " colorscheme gruvbit
 else
-    " highlight SpecialKey guifg=#444444 ctermfg=2
-    highlight NonText guifg=#444444 ctermfg=244
-    highlight SpecialKey guifg=#444444 ctermfg=244
     " colorscheme nightfly
-
-    " let g:gruvbox_invert_selection = '0'
-    " set background=dark
-    " colorscheme gruvbox
+    
+    let g:gruvbox_invert_selection = '0'
+    set background=dark
+    colorscheme gruvbox
 
     " let g:material_theme_style = 'dark'
     " colorscheme apprentice
     
-    colorscheme gruvbit
+    " colorscheme gruvbit
 
     " let g:seoul256_background = 233
     " set background=dark
@@ -256,6 +253,11 @@ else
     " colorscheme railscasts
     " colorscheme material
 endif
+
+" highlight SpecialKey guifg=#444444 ctermfg=235
+" highlight NonText guifg=#444444 ctermfg=235
+highlight NonText guifg=#444444 guibg=NONE gui=NONE cterm=NONE
+highlight SpecialKey guifg=#444444 guibg=NONE gui=NONE cterm=NONE
 
 
 if s:is_fast

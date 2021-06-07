@@ -9,7 +9,7 @@
 [interactive]
     diffFilter = delta --color-only
 [delta]
-    features = line-numbers decorations
+    features = line-numbers decorations 
     whitespace-error-style = 22 reverse
     syntax-theme = nord
 [delta "decorations"]
