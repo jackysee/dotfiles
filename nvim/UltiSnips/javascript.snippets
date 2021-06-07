@@ -1,0 +1,158 @@
+snippet fs  "function (shorthand)"
+${1:functionName}(${2}) {
+	${3}
+}
+endsnippet
+
+snippet afs  "function (shorthand)"
+async ${1:functionName}(${2}) {
+	${3}
+}
+endsnippet
+
+snippet fun  "function"
+function ${1:functionName}(${2}) {
+	${3}
+}
+endsnippet
+
+snippet afun "async function"
+async function ${1:functionName}(${2}) {
+	${3}
+}
+endsnippet
+
+snippet noc "eslint-disable no-console"
+/* eslint-disable no-console */
+console.log($0);
+endsnippet
+
+snippet cl "console log"
+console.log($0);
+endsnippet
+
+snippet ce "console error"
+console.error($0);
+endsnippet
+
+snippet set "vuex setter"
+set${1/.*/\u$0/}(state, val) {
+	state.${1} = val;
+}
+endsnippet
+
+snippet desc "describe"
+describe('`!p snip.rv = fn.split(os.extsep)[0]`', () => {
+	$0
+});
+endsnippet
+
+snippet describe "describe verbose"
+describe('${1:`!p snip.rv = fn.split(os.extsep)[0]`}', () => {
+	$0
+});
+endsnippet
+
+snippet it "it"
+it('${1}', () => {
+	$0
+});
+endsnippet
+
+snippet bee "beforeEach"
+beforeEach(() => {
+	$0
+});
+endsnippet
+
+snippet afe "afterEach"
+afterEach(() => {
+	$0
+});
+endsnippet
+
+snippet before "before"
+before(() => {
+	$0
+});
+endsnippet
+
+snippet after "after"
+after(() => {
+	$0
+});
+endsnippet
+
+snippet as "assert"
+assert($0)
+endsnippet
+
+snippet ast "assert true"
+assert.isTrue($1);
+endsnippet
+
+snippet asf "assert false"
+assert.isFalse($1);
+endsnippet
+
+snippet ase "assert equal"
+assert.strictEqual($1, $2);
+endsnippet
+
+snippet asne "assert not equal"
+assert.notStrictEqual($1, $2);
+endsnippet
+
+snippet asde "assert equal"
+assert.deepEqual($1, $2);
+endsnippet
+
+snippet asnde "assert not equal"
+assert.notDeepEqual($1, $2);
+endsnippet
+
+snippet aso "assert ok"
+assert.isOk($1);
+endsnippet
+
+snippet asno "assert not ok"
+assert.isNotOk($1);
+endsnippet
+
+snippet asfa "assert fail"
+assert.fail($1);
+endsnippet
+
+snippet asd "assert defined"
+assert.isDefined($1);
+endsnippet
+
+snippet asnd "assert not defined"
+assert.isNotDefined($1);
+endsnippet
+
+snippet asm "assert match"
+assert.match($1, $2);
+endsnippet
+
+snippet asnm "assert not match"
+assert.notMatch($1, $2);
+endsnippet
+
+snippet test "create test file"
+import { shallowMount } from '@vue/test-utils';
+import { assert } from 'chai';
+
+describe('$1', () => {
+
+	it('$2', () => {
+		$3
+	});
+
+});
+endsnippet
+
+snippet wait "settimeout wait"
+await new Promise(rs => setTimeout(rs, ${1:1000}));
+endsnippet
+

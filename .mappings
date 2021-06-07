@@ -15,8 +15,7 @@
 ".dir_colors" = "~/.dir_colors"
 ".vrapperrc" = "~/.vrapperrc"
 ".ripgreprc" = "~/.ripgreprc"
-"nvim/init.vim" = "~/.config/nvim/init.vim"
-"nvim/coc-settings.json" = "~/.config/nvim/coc-settings.json"
+"nvim" = "~/.config/nvim"
 "starship/starship.toml" = "~/.config/starship.toml"
 
 [darwin]

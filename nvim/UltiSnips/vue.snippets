@@ -1,0 +1,105 @@
+extends html, javascript, css
+
+snippet ico "ico"
+import $1 from '@/components/$1.vue';
+endsnippet
+
+snippet icv "icv"
+import $1 from 'common-vue/$1';
+endsnippet
+
+snippet tt "tt" w
+{{\$t('$0')}}
+endsnippet
+
+
+snippet vbase "vue sfc"
+<style scoped lang="scss">
+</style>
+
+<template>
+    <div>
+		${1}
+    </div>
+</template>
+
+<script>
+
+export default {
+    ${2}
+};
+</script>
+endsnippet
+
+snippet vvue "vue sfc"
+<template>
+    <div>
+		${1}
+    </div>
+</template>
+
+<script>
+
+export default {
+    ${2}
+};
+</script>
+endsnippet
+
+snippet vpage "vue page"
+<template>
+    <page>
+        <template #breadcrumb>
+            <breadcrumb rootLabel="appMenu.$1" rootPath="/$2" />
+        </template>
+    </page>
+</template>
+
+<script>
+import page from '@/components/page.vue';
+import breadcrumb from '@/components/breadcrumb.vue';
+
+export default {
+    components: {
+        page,
+        breadcrumb
+    }
+};
+</script>
+endsnippet
+
+
+snippet met "methods"
+methods: {
+	${1:methodName}(${2:argument}) {
+		${3:body}
+	}
+}
+endsnippet
+
+snippet comp "computed"
+computed: {
+	${1:methodName}(${2:argument}) {
+		${3:body}
+	}
+}
+endsnippet
+
+snippet props "props"
+${1:propName} : { type: ${2:String} }
+endsnippet
+
+snippet vcl "@click"
+@click="${1}"
+endsnippet
+
+
+snippet vfor "v-for (id)"
+<${3:div} v-for="${1:item} in ${2:items}" :key="$1.id">
+	{{ $1 }}
+</$3>
+endsnippet
+
+snippet ivx "import vuex"
+import { $1 } from 'vuex';
+endsnippet

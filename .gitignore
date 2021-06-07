@@ -4,5 +4,9 @@ vim/session
 vim/sessions
 vim/undo/**
 vim/nvim/undo/**
+nvim/plugged
+nvim/undo/**
+nvim/session
+nvim/sessions
 !vim/undo/.gitkeep
 tmux/.tmux/plugins/**
