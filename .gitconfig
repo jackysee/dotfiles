@@ -16,6 +16,8 @@
     commit-decoration-style = bold yellow box ul
     file-style = bold yellow ul
     file-decoration-style = none
+    minus-style = white "#7f0000"
+    plus-style = white black
 [pull]
     rebase = true
 [alias]

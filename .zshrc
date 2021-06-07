@@ -14,7 +14,7 @@ export GDK_DPI_SCALE=1
 export ORACLE_HOME=/opt/oracle/instantclient_21_1
 export LD_LIBRARY_PATH="$ORACLE_HOME"
 
-export TERM=xterm-256color
+# export TERM=xterm-256color
 export PATH="$HOME/.local/bin/:$HOME/.cargo/bin:$ORACLE_HOME:$PATH"
 
 export QT_PLATFORM_PLUGIN=qt5ct
@@ -117,7 +117,7 @@ zinit light dandavison/delta
 # zinit ice from"gh-r" as"program" bpick="hugo_extended*Linux*64bit.tar.gz" pick"hugo"
 # zinit light gohugoio/hugo
 
-zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim"
+zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim"
 zinit light neovim/neovim
 
 # zinit ice pick"async.zsh" src"pure.zsh"

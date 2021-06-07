@@ -214,7 +214,7 @@ set guioptions-=m
 set guioptions-=r
 set guioptions-=L
 
-set termguicolors
+" set termguicolors
 
 if s:is_windows && s:is_gui
     colorscheme apprentice
