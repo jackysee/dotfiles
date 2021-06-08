@@ -2,6 +2,7 @@
 let s:is_windows = has('win32') || has('win64') || has('win32unix')
 let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui) || (s:is_windows && has('nvim'))
+let g:os = substitute(system('uname'), '\n', '', '')
 let s:has_node = executable('node')
 let s:path = expand('<sfile>:p:h')
 let mapleader = " "
@@ -17,18 +18,20 @@ set nobackup noswapfile
 set copyindent
 set ignorecase
 set smartcase
-let g:clipboard = {
-    \   'name': 'xsel_override',
-    \   'copy': {
-    \      '+': 'xsel --input --clipboard',
-    \      '*': 'xsel --input --primary',
-    \    },
-    \   'paste': {
-    \      '+': 'xsel --output --clipboard',
-    \      '*': 'xsel --output --primary',
-    \   },
-    \   'cache_enabled': 1,
-    \ }
+if g:os == "Linux"
+    let g:clipboard = {
+        \   'name': 'xsel_override',
+        \   'copy': {
+        \      '+': 'xsel --input --clipboard',
+        \      '*': 'xsel --input --primary',
+        \    },
+        \   'paste': {
+        \      '+': 'xsel --output --clipboard',
+        \      '*': 'xsel --output --primary',
+        \   },
+        \   'cache_enabled': 1,
+        \ }
+endif
 set clipboard+=unnamedplus
 set splitbelow splitright
 set hidden
