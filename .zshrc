@@ -117,8 +117,14 @@ zinit light dandavison/delta
 # zinit ice from"gh-r" as"program" bpick="hugo_extended*Linux*64bit.tar.gz" pick"hugo"
 # zinit light gohugoio/hugo
 
-zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim"
+unamestr=$(uname)
+if [[ $unamestr == "Linux" ]]; then
+    zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim"
 zinit light neovim/neovim
+elif [[ $unamestr == "Darwin" ]]; then
+    zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick="*mac*"
+    zinit light neovim/neovim
+fi
 
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure

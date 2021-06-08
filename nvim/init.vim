@@ -96,9 +96,6 @@ Plug 'ludovicchabant/vim-lawrencium'
 "diff tools
 Plug 'whiteinge/diffconflicts'
 
-"status line
-Plug 'hoob3rt/lualine.nvim'
-
 " coc
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -281,11 +278,16 @@ map <leader>et :tabe %%
 " edit vimrc
 execute 'nnoremap <silent> <leader>vv :vsp '.s:path.'/init.vim<CR>'
 
+
 "jump between split
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+
+" vim-sneak
+let g:sneak#s_next = 1
+let g:sneak#label = 1
 
 " netw
 let g:netrw_browse_split=2
@@ -656,7 +658,7 @@ endfunction
 function! Statusline()
   let vcs = "%{AddBracket(VcsInfoStatus())}"
   let file = '%{FilenameStatus()}'
-  let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+  let ft  = "%{&filetype}"
   let sep = ' %= '
   let coc = '%{AddSpace(CocStatus())}'
   " let ale = '%{AddSpace(ALELinterStatus())}'
@@ -673,34 +675,8 @@ endfunction
 " vanilla statusline
 " set noshowmode
 set laststatus=2
-" let &statusline = Statusline()
+let &statusline = Statusline()
 "
-
-lua << EOF
-require('lualine').setup {
-    options = { 
-        section_separators = '', 
-        component_separators = ''
-    },
-    sections = {
-        lualine_a = {'mode'},
-        lualine_b = {'VcsInfoStatus'},
-        lualine_c = {'filename'},
-        lualine_x = {'CocStatus', 'encoding', 'filetype'},
-        lualine_y = {'progress'},
-        lualine_z = {'location'}
-    },
-    inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = {'filename'},
-        lualine_x = {'location'},
-        lualine_y = {},
-        lualine_z = {}
-    }
-}
-EOF
-
 
 " map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 " \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"

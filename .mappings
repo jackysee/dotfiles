@@ -1,6 +1,7 @@
 [linux]
 "termite/config" = "~/.config/termite/config"
 "vim" = "~/.vim"
+"nvim" = "~/.config/nvim"
 "tmux/.tmux.conf" = "~/.tmux.conf"
 "tmux/.tmux" = "~/.tmux"
 ".zshrc" = "~/.zshrc"
@@ -15,11 +16,11 @@
 ".dir_colors" = "~/.dir_colors"
 ".vrapperrc" = "~/.vrapperrc"
 ".ripgreprc" = "~/.ripgreprc"
-"nvim" = "~/.config/nvim"
 "starship/starship.toml" = "~/.config/starship.toml"
 
 [darwin]
 "vim" = "~/.vim"
+"nvim" = "~/.config/nvim"
 "tmux/.tmux.conf" = "~/.tmux.conf"
 "tmux/.tmux" = "~/.tmux"
 ".zshrc" = "~/.zshrc"
