@@ -18,20 +18,6 @@ set nobackup noswapfile
 set copyindent
 set ignorecase
 set smartcase
-if g:os == "Linux"
-    let g:clipboard = {
-        \   'name': 'xsel_override',
-        \   'copy': {
-        \      '+': 'xsel --input --clipboard',
-        \      '*': 'xsel --input --primary',
-        \    },
-        \   'paste': {
-        \      '+': 'xsel --output --clipboard',
-        \      '*': 'xsel --output --primary',
-        \   },
-        \   'cache_enabled': 1,
-        \ }
-endif
 set clipboard+=unnamedplus
 set splitbelow splitright
 set hidden
