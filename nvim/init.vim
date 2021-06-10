@@ -102,7 +102,8 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
-Plug 'Raimondi/delimitMate'
+" Plug 'Raimondi/delimitMate'
+Plug 'windwp/nvim-autopairs'
 Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -125,6 +126,10 @@ else
         Plug 'junegunn/fzf'
     endif
     Plug 'junegunn/fzf.vim'
+    Plug 'nvim-lua/popup.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim'   
+    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 endif
 
 Plug 'ap/vim-css-color'
@@ -409,13 +414,25 @@ augroup end
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv 
 
+" function! VisualSelection()
+"     let old_reg     = getreg('"')
+"     let old_regmode = getregtype('"')
+"     normal! gvy
+"     let selection = @"
+"     call setreg('"', old_reg, old_regmode)
+"     return selection
+" endfunction
+
 function! VisualSelection()
-    let old_reg     = getreg('"')
-    let old_regmode = getregtype('"')
-    normal! gvy
-    let selection = @"
-    call setreg('"', old_reg, old_regmode)
-    return selection
+    let [line_start, column_start] = getpos("'<")[1:2]
+    let [line_end, column_end] = getpos("'>")[1:2]
+    let lines = getline(line_start, line_end)
+    if len(lines) == 0
+        return ''
+    endif
+    let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][column_start - 1:]
+    return join(lines, "\n")
 endfunction
 
 function! Escaped(text)
@@ -426,6 +443,13 @@ function! Escaped(text)
     call inputrestore()
     return result
 endfunction
+
+" nvim-autopairs
+lua <<EOF
+require('nvim-autopairs').setup({
+  disable_filetype = { "TelescopePrompt" },
+})
+EOF
 
 " leaderF
 if s:is_windows
@@ -438,6 +462,35 @@ if s:is_windows
     let g:Lf_CommandMap = { '<C-]>': ['<C-V>'], '<C-J>':['<C-N>'], '<C-K>':['<C-P>'] }
     let g:Lf_WindowPosition = 'popup'
 else
+
+lua << EOF
+    require('telescope').setup{
+      defaults = {
+        find_command = 'rg --files',
+        prompt_position = 'top',
+        sorting_strategy = "ascending"
+      },
+      extensions = {
+        fzf = {
+          fuzzy = true,                    -- false will only do exact matching
+          override_generic_sorter = true, -- override the generic sorter
+          override_file_sorter = true,     -- override the file sorter
+          case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                                           -- the default case_mode is "smart_case"
+        }
+      }
+    }
+    -- To get fzf loaded and working with telescope, you need to call
+    -- load_extension, somewhere after setup function:
+    require('telescope').load_extension('fzf')
+EOF
+
+    nnoremap <leader>tf <cmd>lua require('telescope.builtin').find_files()<cr>
+    nnoremap <leader>trg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg >")})<cr>
+    nnoremap <leader>tb <cmd>lua require('telescope.builtin').buffers()<cr>
+    nnoremap <leader>tr <cmd>lua require('telescope.builtin').oldfiles()<cr>
+    nnoremap <expr> <leader>tF ':Telescope find_files<cr>' . "'" . expand('<cword>')
+
     " fzf
     function! s:build_quickfix_list(lines)
       call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
