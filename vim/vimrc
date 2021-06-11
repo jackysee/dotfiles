@@ -14,6 +14,7 @@ set backspace=indent,eol,start
 set complete-=i
 set smarttab
 autocmd FileType jsp set nosmarttab
+autocmd FileType dbout set nofoldenable
 set nowrap
 set number relativenumber
 set title
@@ -342,6 +343,7 @@ nnoremap <C-H> <C-W><C-H>
 " vim-sneak
 let g:sneak#s_next = 1
 let g:sneak#label = 1
+let g:sneak#use_ic_scs = 1
 
 
 " netw

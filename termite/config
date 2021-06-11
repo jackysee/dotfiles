@@ -6,7 +6,7 @@
 # font = Source Code Pro 9
 # font = Input Mono 12
 # font = Inconsolata 14
-font = Hack Nerd Font 12
+font = Hack Nerd Font 13
 # font = Fira Code 12
 # font = Monoid 9
 scrollback_lines = 10000

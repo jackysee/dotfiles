@@ -9,6 +9,7 @@ let mapleader = " "
 
 " Settings
 autocmd FileType jsp set nosmarttab
+autocmd FileType dbout set nofoldenable
 set nowrap
 set number relativenumber
 set title
@@ -282,6 +283,7 @@ nnoremap <C-H> <C-W><C-H>
 " vim-sneak
 let g:sneak#s_next = 1
 let g:sneak#label = 1
+let g:sneak#use_ic_scs = 1
 
 " netw
 let g:netrw_browse_split=2
@@ -464,11 +466,16 @@ if s:is_windows
 else
 
 lua << EOF
+    local actions = require('telescope.actions')
     require('telescope').setup{
       defaults = {
-        find_command = 'rg --files',
         prompt_position = 'top',
-        sorting_strategy = "ascending"
+        sorting_strategy = "ascending",
+        mappings = {
+            i =  {
+                ["<esc>"] = actions.close
+            }
+        }
       },
       extensions = {
         fzf = {
@@ -485,11 +492,21 @@ lua << EOF
     require('telescope').load_extension('fzf')
 EOF
 
-    nnoremap <leader>tf <cmd>lua require('telescope.builtin').find_files()<cr>
-    nnoremap <leader>trg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg >")})<cr>
+function! TelescopeFindFiles()
+    let txt = VisualSelection()
+    Telescope find_files find_command=rg,--files
+    norm i
+endfunction
+
+    " nnoremap <leader>tf <cmd>lua require('telescope.builtin').find_files({ find_command = {'rg', '--files', '--follow', '--hidden', '--smart-case'}  })<cr>
+    nnoremap <leader>tf :Telescope find_files find_command=rg,--files<cr>
+    nnoremap <leader>trg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
     nnoremap <leader>tb <cmd>lua require('telescope.builtin').buffers()<cr>
     nnoremap <leader>tr <cmd>lua require('telescope.builtin').oldfiles()<cr>
     nnoremap <expr> <leader>tF ':Telescope find_files<cr>' . "'" . expand('<cword>')
+    vnoremap <leader>trg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
+    vnoremap <leader>tF :<BS><BS><BS><BS><BS>Telescope find_files find_command=rg,--files<cr>'<c-r>=VisualSelection()<cr>
+    " vnoremap <leader>tF :<BS><BS><BS><BS><BS>Telescope find_files find_command=rg,--files<cr>'
 
     " fzf
     function! s:build_quickfix_list(lines)
