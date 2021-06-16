@@ -303,6 +303,8 @@ let g:startify_lists = [
 let g:signify_realtime = 0
 let g:signify_sign_change = '~'
 let g:signify_update_on_focusgained = 1
+nnoremap <leader>hu :SignifyHunkUndo<cr>
+nnoremap <leader>hd :SignifyHunkDiff<cr>
 
 " Shortcuts / mappings
 
