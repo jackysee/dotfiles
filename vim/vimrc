@@ -6,6 +6,10 @@ let s:has_node = executable('node')
 let s:path = expand('<sfile>:p:h')
 let mapleader = " "
 
+if s:is_windows 
+    set shell=cmd.exe
+endif
+
 " Settings
 filetype plugin indent on
 syntax on 
