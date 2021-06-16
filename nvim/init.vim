@@ -103,8 +103,7 @@ Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
-" Plug 'Raimondi/delimitMate'
-Plug 'windwp/nvim-autopairs'
+Plug 'Raimondi/delimitMate'
 Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -446,12 +445,9 @@ function! Escaped(text)
     return result
 endfunction
 
-" nvim-autopairs
-lua <<EOF
-require('nvim-autopairs').setup({
-  disable_filetype = { "TelescopePrompt" },
-})
-EOF
+
+autocmd FileType TelescopePrompt let b:loaded_delimitMate = 1
+
 
 " leaderF
 if s:is_windows
@@ -573,6 +569,11 @@ nmap <c-n> <plug>(YoinkPostPasteSwapBack)
 nmap <c-p> <plug>(YoinkPostPasteSwapForward)
 nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
+
+augroup highlight_yank
+    autocmd!
+    au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=700}
+augroup END
 
 " vim-over
 " nnoremap <leader>s :OverCommandLine<cr>%s/
