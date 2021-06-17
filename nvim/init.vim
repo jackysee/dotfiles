@@ -30,7 +30,9 @@ if executable('rg')
     set grepprg=rg\ --vimgrep
     set grepformat=%f:%l:%c:%m
 endif
-autocmd VimEnter * GuiPopupmenu 0
+if s:is_gui
+    autocmd VimEnter * GuiPopupmenu 0
+endif
 
 set lazyredraw
 
