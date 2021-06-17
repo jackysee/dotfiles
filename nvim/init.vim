@@ -117,12 +117,15 @@ Plug 'junegunn/vim-peekaboo'
 
 
 " file finder
-if isdirectory('~/.zplugin/plugins/junegunn---fzf')
-    Plug '~/.zplugin/plugins/junegunn---fzf'
-else
-    Plug 'junegunn/fzf'
+if !s:is_windows 
+    if isdirectory('~/.zplugin/plugins/junegunn---fzf')
+        Plug '~/.zplugin/plugins/junegunn---fzf'
+    else
+        Plug 'junegunn/fzf'
+    endif
+    Plug 'junegunn/fzf.vim'
 endif
-Plug 'junegunn/fzf.vim'
+
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'   
@@ -484,55 +487,66 @@ endif
 function! TelescopeFindFiles()
     let txt = VisualSelection()
     Telescope find_files find_command=rg,--files
-    norm i
+    execute "normal i" . txt
 endfunction
 
-" nnoremap <leader>tf <cmd>lua require('telescope.builtin').find_files({ find_command = {'rg', '--files', '--follow', '--hidden', '--smart-case'}  })<cr>
-nnoremap <leader>tf :Telescope find_files find_command=rg,--files<cr>
-nnoremap <leader>trg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
-nnoremap <leader>tb <cmd>lua require('telescope.builtin').buffers()<cr>
-nnoremap <leader>tr <cmd>lua require('telescope.builtin').oldfiles()<cr>
-nnoremap <expr> <leader>tF ':Telescope find_files<cr>' . "'" . expand('<cword>')
-vnoremap <leader>trg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
-vnoremap <leader>tF :<BS><BS><BS><BS><BS>Telescope find_files find_command=rg,--files<cr>'<c-r>=VisualSelection()<cr>
-" vnoremap <leader>tF :<BS><BS><BS><BS><BS>Telescope find_files find_command=rg,--files<cr>'
+if s:is_windows
+    nnoremap <leader>f :Telescope find_files find_command=rg,--files<cr>
+    nnoremap <leader>rg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
+    nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
+    nnoremap <leader>r <cmd>lua require('telescope.builtin').oldfiles()<cr>
+    nnoremap <expr> <leader>F ':Telescope find_files<cr>' . "'" . expand('<cword>')
+    vnoremap <leader>rg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
+    vnoremap <leader>F :<BS><BS><BS><BS><BS>:call TelescopeFindFiles()<cr>
+else
+    nnoremap <leader>sf :Telescope find_files find_command=rg,--files<cr>
+    nnoremap <leader>srg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
+    nnoremap <leader>sb <cmd>lua require('telescope.builtin').buffers()<cr>
+    nnoremap <leader>sr <cmd>lua require('telescope.builtin').oldfiles()<cr>
+    nnoremap <expr> <leader>sF ':Telescope find_files<cr>' . "'" . expand('<cword>')
+    vnoremap <leader>srg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
+    vnoremap <leader>sF :<BS><BS><BS><BS><BS>:call TelescopeFindFiles()<cr>
+endif
 
 " fzf
-function! s:build_quickfix_list(lines)
-  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-  copen
-  cc
-endfunction
-let $FZF_DEFAULT_OPTS = ' --reverse'
-if (v:version >= 802 && has('patch194')) || has('nvim')
-    let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
-else
-    let g:fzf_layout = { 'down': '~30%' }
+
+if !s:is_windows 
+    function! s:build_quickfix_list(lines)
+      call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+      copen
+      cc
+    endfunction
+    let $FZF_DEFAULT_OPTS = ' --reverse'
+    if (v:version >= 802 && has('patch194')) || has('nvim')
+        let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+    else
+        let g:fzf_layout = { 'down': '~30%' }
+    endif
+    let g:fzf_colors =
+                \ { 'fg': ['fg', 'Normal'],
+                \ 'bg': ['bg', 'Normal']}
+    let g:fzf_action = {
+        \ 'ctrl-q': function('s:build_quickfix_list'),
+        \ 'ctrl-t': 'tab split',
+        \ 'ctrl-x': 'split',
+        \ 'ctrl-v': 'vsplit'
+        \ }
+    nnoremap <leader>f :Files<cr>
+    command! -bang -nargs=? -complete=dir FilesSearch
+                \ call fzf#vim#files('', 
+                \   fzf#vim#with_preview({'options':['--query='.<q-args>]}), <bang>0)
+    nnoremap <leader>F :FilesSearch '<c-r><c-w><cr>
+    vnoremap <leader>F :<BS><BS><BS><BS><BS>FilesSearch '<c-r>=VisualSelection()<cr><cr>
+    nnoremap <leader>r :History<cr>
+    nnoremap <leader>b :Buffers<cr>
+    nnoremap <leader>ag :Ag <c-r><c-w><cr>
+    command! -bang -nargs=* Rg
+      \ call fzf#vim#grep(
+      \   "rg --column --line-number --no-heading --color=always --smart-case --trim -- ".shellescape(<q-args>), 1,
+      \   fzf#vim#with_preview('right', 'ctrl-/'), <bang>0)
+    nnoremap <leader>rg :Rg <c-r><c-w><cr>
+    vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>=VisualSelection()<cr><cr>
 endif
-let g:fzf_colors =
-            \ { 'fg': ['fg', 'Normal'],
-            \ 'bg': ['bg', 'Normal']}
-let g:fzf_action = {
-    \ 'ctrl-q': function('s:build_quickfix_list'),
-    \ 'ctrl-t': 'tab split',
-    \ 'ctrl-x': 'split',
-    \ 'ctrl-v': 'vsplit'
-    \ }
-nnoremap <leader>f :Files<cr>
-command! -bang -nargs=? -complete=dir FilesSearch
-            \ call fzf#vim#files('', 
-            \   fzf#vim#with_preview({'options':['--query='.<q-args>]}), <bang>0)
-nnoremap <leader>F :FilesSearch '<c-r><c-w><cr>
-vnoremap <leader>F :<BS><BS><BS><BS><BS>FilesSearch '<c-r>=VisualSelection()<cr><cr>
-nnoremap <leader>r :History<cr>
-nnoremap <leader>b :Buffers<cr>
-nnoremap <leader>ag :Ag <c-r><c-w><cr>
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   "rg --column --line-number --no-heading --color=always --smart-case --trim -- ".shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview('right', 'ctrl-/'), <bang>0)
-nnoremap <leader>rg :Rg <c-r><c-w><cr>
-vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>=VisualSelection()<cr><cr>
 
 xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
 xnoremap <leader>pjs :!npx -q prettier --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
@@ -566,10 +580,6 @@ augroup highlight_yank
     autocmd!
     au TextYankPost * silent! lua vim.highlight.on_yank{higroup="IncSearch", timeout=700}
 augroup END
-
-" vim-over
-" nnoremap <leader>s :OverCommandLine<cr>%s/
-" xnoremap <leader>s :OverCommandLine<cr>s/
 
 " undotree
 let g:undotree_SetFocusWhenToggle = 1
@@ -710,7 +720,7 @@ endfunction
 function! Statusline()
   let vcs = "%{AddBracket(VcsInfoStatus())}"
   let file = '%{FilenameStatus()}'
-  let ft  = "%{&filetype}"
+  let ft  = "%{&filetype} "
   let sep = ' %= '
   let coc = '%{AddSpace(CocStatus())}'
   " let ale = '%{AddSpace(ALELinterStatus())}'
