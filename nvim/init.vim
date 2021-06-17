@@ -30,6 +30,7 @@ if executable('rg')
     set grepprg=rg\ --vimgrep
     set grepformat=%f:%l:%c:%m
 endif
+autocmd VimEnter * GuiPopupmenu 0
 
 set lazyredraw
 
@@ -129,9 +130,8 @@ endif
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'   
-if !s:is_windows 
-    Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
-endif
+" requires make / gcc on windows
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 Plug 'ap/vim-css-color'
 
