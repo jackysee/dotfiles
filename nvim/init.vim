@@ -284,6 +284,10 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+"quick fix
+nnoremap ]q :cnext<cr>
+nnoremap [q :cprev<cr> 
+
 " vim-sneak
 let g:sneak#s_next = 1
 let g:sneak#label = 1
