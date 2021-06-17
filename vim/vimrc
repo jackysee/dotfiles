@@ -24,9 +24,7 @@ set number relativenumber
 set title
 set wildchar=<TAB>
 set wildmenu
-if !has('nvim')
-    set wildmode=longest:list,full
-endif
+set wildmode=longest:list,full
 set wildignore=*.o,*.class,*.pyc,*.swp,*.bak
 set nobackup noswapfile
 set autoread
@@ -34,23 +32,7 @@ set copyindent
 set autoindent
 set ignorecase
 set smartcase
-if has('nvim')
-    let g:clipboard = {
-                \   'name': 'xsel_override',
-                \   'copy': {
-                \      '+': 'xsel --input --clipboard',
-                \      '*': 'xsel --input --primary',
-                \    },
-                \   'paste': {
-                \      '+': 'xsel --output --clipboard',
-                \      '*': 'xsel --output --primary',
-                \   },
-                \   'cache_enabled': 1,
-                \ }
-    set clipboard+=unnamedplus
-else
-    set clipboard=unnamed
-endif
+set clipboard=unnamed
 set splitbelow splitright
 set hidden
 set mouse=a
@@ -78,11 +60,7 @@ set history=1000
 set tabpagemax=50
 
 set undofile
-if has('nvim')
-    let &undodir= s:path . '/nvim/undo'
-else
-    let &undodir= s:path . '/undo'
-endif
+let &undodir= s:path . '/undo'
 
 " set block cursor
 if $TERM == "xterm" || $TERM == "xterm-256color" || $TERM == "screen-256color"
@@ -172,7 +150,7 @@ Plug 'junegunn/vim-peekaboo'
 
 " file finder
 if s:is_windows 
-    Plug 'Yggdroot/LeaderF', { 'do': './install.bat' }
+    Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
 else
     if isdirectory('~/.zplugin/plugins/junegunn---fzf')
         Plug '~/.zplugin/plugins/junegunn---fzf'
@@ -186,7 +164,6 @@ Plug 'ap/vim-css-color'
 
 " js / vue
 if s:is_fast
-    " Plug 'w0rp/ale', { 'for': ['javascript', 'vue', 'javascript.jsx', 'css', 'scss', 'html', 'json' ]}
     Plug 'mattn/emmet-vim',  { 'for':['javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' ]}
     Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html', 'vue'] }
     Plug 'elzr/vim-json', { 'for': ['json']}
