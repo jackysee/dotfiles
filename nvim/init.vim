@@ -132,6 +132,10 @@ if !s:is_windows
     Plug 'junegunn/fzf.vim'
 endif
 
+if !s:is_windows
+    Plug 'kevinhwang91/nvim-bqf'
+endif
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'   
