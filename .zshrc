@@ -55,7 +55,6 @@ export FZF_DEFAULT_OPTS='
     --color info:183,prompt:110,spinner:107,pointer:167,marker:215'
 export FZF_CTRL_T_OPTS="--preview 'bat {}' --bind '?:toggle-preview'"
 
-
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zplugin/bin/zinit.zsh ]]; then
     print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
@@ -83,12 +82,14 @@ zinit snippet OMZL::history.zsh
 
 zinit light-mode for \
     agkozak/zsh-z \
-    bugworm/auto-exa \
     zpm-zsh/autoenv
 
 zinit light-mode lucid wait for \
     changyuheng/zsh-interactive-cd \
     dominik-schwabe/zsh-fnm
+
+zinit ice lucid as"command" from"gh-r" bpick"$PICK" mv"lsd* -> lsd" pick"lsd/lsd"
+zinit light Peltoche/lsd
 
 zinit ice atclone"./install --xdg --no-update-rc --completion --key-bindings" atpull"%atclone" as"program" pick="bin/fzf" multisrc"shell/{key-bindings,completion}.zsh"
 zinit light junegunn/fzf
@@ -102,8 +103,8 @@ zinit light sharkdp/bat
 zinit ice from"gh-r" as"program" mv"fd* -> fd" pick"fd/fd" nocompletions
 zinit light sharkdp/fd
 
-zinit ice from"gh-r" as"program" extract"" mv"exa*->exa" pick"bin/exa"
-zinit light ogham/exa
+# zinit ice from"gh-r" as"program" extract"" mv"exa*->exa" pick"bin/exa"
+# zinit light ogham/exa
 
 zinit ice as"program" pick"bin/git-dsf" wait"0" lucid
 zinit light zdharma/zsh-diff-so-fancy

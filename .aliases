@@ -3,12 +3,20 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
-if type exa &> /dev/null; then
+
+# ls after cd
+function cd {
+    builtin cd "$@" && ll
+}
+
+if type lsd &> /dev/null; then
+    ls() { lsd $@; }
+    alias l="lsd -a"
+    alias ll="lsd -lah"
+elif type exa &> /dev/null; then
     alias ls="exa"
     alias l="exa -a"
     alias ll="exa -lagh"
-    # alias la="exa -lagh"
-    # alias lt="exa -T"
     alias lg="exa -lagh --git"
 else
     alias ls='ls --color=auto'
