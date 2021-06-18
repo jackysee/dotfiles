@@ -1,6 +1,6 @@
 " Constants
 let s:is_windows = has('win32') || has('win64') || has('win32unix')
-let s:is_gui = has("gui_running")
+let s:is_gui = has("gui_running") || g:nvy
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui) || (s:is_windows && has('nvim'))
 let g:os = substitute(system('uname'), '\n', '', '')
 let s:has_node = executable('node')
@@ -161,7 +161,8 @@ if s:is_gui && s:is_windows
     au GUIEnter * simalt ~x
     " set guifont=Anonymous_Pro:h11
     " set guifont=Fira_Code_Medium:h10
-    set guifont=Source_Code_Pro:h10
+    set guifont=Hack_NF:h11
+    " set guifont=Source_Code_Pro:h10
     set linespace=1
     set t_ut=
 endif
@@ -177,8 +178,11 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 if s:is_windows && s:is_gui
-    colorscheme apprentice
+    " colorscheme apprentice
     " colorscheme gruvbit
+    let g:seoul256_background = 233
+    set background=dark
+    colorscheme seoul256
 else
     
     let g:gruvbox_invert_selection = '0'
