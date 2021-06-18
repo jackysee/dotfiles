@@ -117,7 +117,7 @@ Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
 Plug 'junegunn/vim-peekaboo'
-
+Plug 'psliwka/vim-smoothie'
 
 " file finder
 if !s:is_windows 
