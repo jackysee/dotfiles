@@ -68,6 +68,8 @@ Plug 'sainnhe/gruvbox-material'
 " Plug 'rktjmp/lush.nvim'
 " Plug 'npxbr/gruvbox.nvim'
 Plug 'habamax/vim-gruvbit'
+Plug 'tjdevries/colorbuddy.nvim'
+Plug 'maaslalani/nordbuddy'
 
 "start page
 if s:is_fast
@@ -118,7 +120,7 @@ Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
 Plug 'junegunn/vim-peekaboo'
-Plug 'psliwka/vim-smoothie'
+" Plug 'psliwka/vim-smoothie'
 
 " file finder
 if !s:is_windows 
@@ -187,12 +189,9 @@ set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
-if s:is_windows && s:is_gui
+if s:is_windows && (s:is_gui || exists('g:nvy') || exists('g:fvim_loaded'))
     " colorscheme apprentice
-    " colorscheme gruvbit
-    let g:seoul256_background = 233
-    set background=dark
-    colorscheme seoul256
+    colorscheme nordbuddy
 else
     
     let g:gruvbox_invert_selection = '0'
