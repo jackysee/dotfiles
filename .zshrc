@@ -5,7 +5,7 @@ export LANG=en_US.UTF-8
 export LANGUAGE=en_US.UTF-8
 
 export PAGER=less
-export EDITOR=vim
+export EDITOR=nvim
 
 export LIBGL_ALWAYS_INDIRECT=1
 export GDK_SCALE=0.5
@@ -127,11 +127,18 @@ elif [[ $unamestr == "Darwin" ]]; then
     zinit light neovim/neovim
 fi
 
+zinit ice from'gh-r' as'program' pick"build/$(uname -m)*/broot"; 
+zinit load Canop/broot
+
+if type broot >/dev/null 2>&1; then
+  eval "$(broot --print-shell-function zsh)"
+fi
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure
 
 zinit ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
 zinit light starship/starship
+
 
 zinit wait lucid for \
     atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay" \
