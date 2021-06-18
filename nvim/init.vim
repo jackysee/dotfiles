@@ -1,6 +1,7 @@
 " Constants
 let s:is_windows = has('win32') || has('win64') || has('win32unix')
-let s:is_gui = has("gui_running") || g:nvy
+let s:is_nvim = has('nvim')
+let s:is_gui = has("gui_running")
 let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui) || (s:is_windows && has('nvim'))
 let g:os = substitute(system('uname'), '\n', '', '')
 let s:has_node = executable('node')
@@ -30,7 +31,7 @@ if executable('rg')
     set grepprg=rg\ --vimgrep
     set grepformat=%f:%l:%c:%m
 endif
-if s:is_gui
+if s:is_nvim && s:is_gui
     autocmd VimEnter * GuiPopupmenu 0
 endif
 
@@ -161,10 +162,19 @@ if s:is_gui && s:is_windows
     au GUIEnter * simalt ~x
     " set guifont=Anonymous_Pro:h11
     " set guifont=Fira_Code_Medium:h10
-    set guifont=Hack_NF:h11
+    set guifont=Hack\ NF:h11
     " set guifont=Source_Code_Pro:h10
     set linespace=1
     set t_ut=
+elseif exists('g:nvy')
+    set guifont=Hack\ NF:h11
+elseif exists('g:fvim_loaded')
+    set guifont=Hack\ NF:h13
+    nnoremap <silent> <C-ScrollWheelUp> :set guifont=+<CR>
+    nnoremap <silent> <C-ScrollWheelDown> :set guifont=-<CR>
+    nnoremap <A-CR> :FVimToggleFullScreen<CR>
+    FVimFontLineHeight '+1.0'
+    FVimFontAutoSnap v:true
 endif
 
 "gui options
