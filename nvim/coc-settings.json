@@ -6,6 +6,9 @@
     "prettier.requireConfig": true,
     "eslint.autoFixOnSave": true,
     "diagnostic.errorSign": "❌",
+    "diagnostic.virtualText": true,
+    "diagnostic.virtualTextCurrentLineOnly": false,
+    "diagnostic.virtualTextPrefix": " ❯❯❯ ",
     "java.enabled": false,
     "java.signatureHelp.enabled": true,
     "java.import.exclusions": [
