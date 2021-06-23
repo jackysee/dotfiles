@@ -9,6 +9,7 @@
     "diagnostic.virtualText": true,
     "diagnostic.virtualTextCurrentLineOnly": false,
     "diagnostic.virtualTextPrefix": " ❯❯❯ ",
+    "diagnostic.level": "error",
     "java.enabled": false,
     "java.signatureHelp.enabled": true,
     "java.import.exclusions": [
