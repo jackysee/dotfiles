@@ -6,6 +6,7 @@ let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui) || (s:is_windows && 
 let g:os = substitute(system('uname'), '\n', '', '')
 let s:has_node = executable('node')
 let s:path = expand('<sfile>:p:h')
+let s:use_coc = v:false
 let mapleader = " "
 
 " Settings
@@ -33,6 +34,21 @@ if executable('rg')
 endif
 if s:is_nvim && s:is_gui
     autocmd VimEnter * GuiPopupmenu 0
+endif
+
+if executable('xsel')
+    let g:clipboard = {
+          \   'name': 'xsel_override',
+          \   'copy': {
+          \      '+': 'xsel --input --clipboard',
+          \      '*': 'xsel --input --primary',
+          \    },
+          \   'paste': {
+          \      '+': 'xsel --output --clipboard',
+          \      '*': 'xsel --output --primary',
+          \   },
+          \   'cache_enabled': 1,
+          \ }
 endif
 
 set lazyredraw
@@ -93,7 +109,12 @@ Plug 'ludovicchabant/vim-lawrencium'
 Plug 'whiteinge/diffconflicts'
 
 " coc
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+if s:use_coc
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+else
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'hrsh7th/nvim-compe'
+endif
 
 "db 
 Plug 'tpope/vim-dadbod'
@@ -120,7 +141,8 @@ Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
 Plug 'junegunn/vim-peekaboo'
-" Plug 'psliwka/vim-smoothie'
+Plug 'Yggdroot/indentLine'
+Plug 'lukas-reineke/indent-blankline.nvim'
 
 " file finder
 if !s:is_windows 
@@ -257,6 +279,7 @@ let g:startify_lists = [
 let g:signify_realtime = 0
 let g:signify_sign_change = '~'
 let g:signify_update_on_focusgained = 1
+let g:signify_priority = 5
 nnoremap <leader>hu :SignifyHunkUndo<cr>
 nnoremap <leader>hd :SignifyHunkDiff<cr>
 
@@ -309,6 +332,8 @@ nnoremap [q :cprev<cr>
 let g:sneak#s_next = 1
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
+
+let g:indentLine_char = '▏'
 
 " netw
 let g:netrw_browse_split=2
@@ -379,63 +404,138 @@ map g* <Plug>(asterisk-zg*)
 map #  <Plug>(asterisk-z#)
 map g# <Plug>(asterisk-zg#)
 
-" coc
-let g:coc_global_extensions = [
-            \   'coc-css',
-            \   'coc-html',
-            \   'coc-json',
-            \   'coc-emmet',
-            \   'coc-ultisnips',
-            \   'coc-prettier',
-            \   'coc-eslint'
-            \ ]
-            "\   'coc-pairs',
-set updatetime=300
-set shortmess+=c
-set signcolumn=yes
-" remap goto
-nmap <leader>gd <Plug>(coc-definition)
-nmap <leader>gt <Plug>(coc-type-definition)
-nmap <leader>gi <Plug>(coc-implementation)
-nmap <leader>gr <Plug>(coc-references)
-" Remap for do codeAction of current line
-nmap <leader>ca  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>cf  <Plug>(coc-fix-current)
-nmap <leader>cj  <Plug>(coc-diagnostic-next-error)
-nmap <leader>ck  <Plug>(coc-diagnostic-prev-error)
+if s:use_coc
+    " coc
+    let g:coc_global_extensions = [
+                \   'coc-css',
+                \   'coc-html',
+                \   'coc-json',
+                \   'coc-emmet',
+                \   'coc-ultisnips',
+                \   'coc-prettier',
+                \   'coc-eslint'
+                \ ]
+                "\   'coc-pairs',
+    set updatetime=300
+    set shortmess+=c
+    set signcolumn=yes
+    " remap goto
+    nmap <leader>gd <Plug>(coc-definition)
+    nmap <leader>gt <Plug>(coc-type-definition)
+    nmap <leader>gi <Plug>(coc-implementation)
+    nmap <leader>gr <Plug>(coc-references)
+    " Remap for do codeAction of current line
+    nmap <leader>ca  <Plug>(coc-codeaction)
+    " Fix autofix problem of current line
+    nmap <leader>cf  <Plug>(coc-fix-current)
+    nmap <leader>cj  <Plug>(coc-diagnostic-next-error)
+    nmap <leader>ck  <Plug>(coc-diagnostic-prev-error)
 
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
+    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
 
-nnoremap <leader>cd :call <SID>show_documentation()<CR>
-nnoremap <leader>cs :call CocActionAsync('showSignatureHelp')<CR>
+    nnoremap <leader>cd :call <SID>show_documentation()<CR>
+    nnoremap <leader>cs :call CocActionAsync('showSignatureHelp')<CR>
 
-" manual trigger LSP completion
-inoremap <silent><expr> <c-j> coc#refresh()
+    " manual trigger LSP completion
+    inoremap <silent><expr> <c-j> coc#refresh()
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
+    function! s:show_documentation()
+      if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+      elseif (coc#rpc#ready())
+        call CocActionAsync('doHover')
+      else
+        execute '!' . &keywordprg . " " . expand('<cword>')
+      endif
+    endfunction
 
-fun! EnableCocJava()
-    call coc#config('java.enabled', v:true)
-    call CocAction('reloadExtension', 'coc-java')
-endfun
-command! EnableCocJava call EnableCocJava()
+    fun! EnableCocJava()
+        call coc#config('java.enabled', v:true)
+        call CocAction('reloadExtension', 'coc-java')
+    endfun
+    command! EnableCocJava call EnableCocJava()
 
-augroup coc 
-    autocmd!
-    " update signature help on jump placeholder.
-    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-    " autocmd User CocStatusChange call RefreshStatusline()
-augroup end
+    augroup coc 
+        autocmd!
+        " update signature help on jump placeholder.
+        autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+        " autocmd User CocStatusChange call RefreshStatusline()
+    augroup end
 
+else
+
+    "lsp config
+lua << EOF
+    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+        vim.lsp.diagnostic.on_publish_diagnostics, {
+            virtual_text = true,
+            underline = true,
+            signs = true
+        }
+    )
+    local eslint = {
+        lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
+        lintStdin = true,
+        lintFormats = { "%f:%l:%c: %m" },
+        lintIgnoreExitCode = true,
+        formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
+        formatStdin = true
+    }
+    require"lspconfig".efm.setup {
+        init_options = {documentFormatting = true},
+        filetypes = { "javascript" },
+        settings = {
+            rootMarkers = {"package.json"},
+            languages = {
+                javascript = { eslint },
+                html = { eslint },
+                vue = { eslint },
+                css = { eslint }
+            }
+        },
+    }
+EOF
+    augroup FormatAutogroup
+      autocmd!
+      " autocmd BufWritePost *.vue,*.js,*.css,*.scss,*.html FormatWrite
+      autocmd BufWritePre *.js,*.js,*.css,*.html lua vim.lsp.buf.formatting_sync(nil, 1000)
+    augroup END
+    nmap <leader>cj  <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
+    nmap <leader>ck  <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
+
+
+    "nvim-compe
+    set completeopt=menuone,noselect
+    set shortmess+=c
+
+lua << EOF
+    require'compe'.setup {
+      enabled = true;
+      autocomplete = true;
+      debug = false;
+      min_length = 1;
+      preselect = 'enable';
+      throttle_time = 80;
+      source_timeout = 200;
+      resolve_timeout = 800;
+      incomplete_delay = 400;
+      max_abbr_width = 100;
+      max_kind_width = 100;
+      max_menu_width = 100;
+      documentation = true;
+
+      source = {
+        path = true;
+        buffer = true;
+        calc = true;
+        nvim_lsp = true;
+        nvim_lua = true;
+        -- vsnip = true;
+        ultisnips = true;
+      };
+    }
+EOF
+endif
 
 " Move visual selection
 vnoremap J :m '>+1<cr>gv=gv
@@ -708,6 +808,21 @@ function! CocStatus() abort
     return join([s1, s3, s2], ' ')
 endfunction
 
+function! LspStatus() abort
+    let sl = ''
+    if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
+        let errorCount = luaeval("vim.lsp.diagnostic.get_count(0, [[Error]])")
+        if errorCount > 0
+            let sl.='E'. errorCount
+        endif
+        let warningCount = luaeval("vim.lsp.diagnostic.get_count(0, [[Warning]])")
+        if warningCount > 0
+            let sl.=' W' . warningCount
+        endif
+    endif
+    return sl
+endfunction
+
 
 function! ModifiedStatus()
     return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -745,12 +860,17 @@ function! Statusline()
   let file = '%{FilenameStatus()}'
   let ft  = "%{&filetype} "
   let sep = ' %= '
-  let coc = '%{AddSpace(CocStatus())}'
+  if s:use_coc
+    let lsp = '%{AddSpace(CocStatus())}'
+  else
+    let lsp = '%{AddSpace(LspStatus())}'
+  endif
+  
   " let ale = '%{AddSpace(ALELinterStatus())}'
   let ale = ''
   let pos = LineInfoStatus()
   " let dir = '%20.30{CurDir()} '
-  return vcs.file.sep.coc.ale.ft.pos
+  return vcs.file.sep.lsp.ale.ft.pos
 endfunction
 
 function! RefreshStatusline()
