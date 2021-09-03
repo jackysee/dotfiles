@@ -124,8 +124,8 @@ if [[ $unamestr == "Linux" ]]; then
     zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim"
     zinit light neovim/neovim
 
-    zinit ice from'gh-r' as'program' pick"build/$(uname -m)*/broot"; 
-    zinit load Canop/broot
+    # zinit ice from'gh-r' as'program' pick"build/$(uname -m)*/broot"; 
+    # zinit load Canop/broot
 
 elif [[ $unamestr == "Darwin" ]]; then
     zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick="*mac*"

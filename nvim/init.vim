@@ -114,6 +114,7 @@ if s:use_coc
 else
     Plug 'neovim/nvim-lspconfig'
     Plug 'hrsh7th/nvim-compe'
+    Plug 'kabouzeid/nvim-lspinstall'
 endif
 
 "db 
@@ -123,7 +124,8 @@ Plug 'kristijanhusak/vim-dadbod-ui'
 " editing
 " Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-commentary'
-Plug 'suy/vim-context-commentstring'
+" Plug 'suy/vim-context-commentstring'
+Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 " Plug 'Shougo/context_filetype.vim'
 " Plug 'tyru/caw.vim'
 Plug 'justinmk/vim-sneak'
@@ -141,8 +143,8 @@ Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
 Plug 'junegunn/vim-peekaboo'
-Plug 'Yggdroot/indentLine'
-Plug 'lukas-reineke/indent-blankline.nvim'
+" Plug 'Yggdroot/indentLine'
+" Plug 'lukas-reineke/indent-blankline.nvim'
 
 " file finder
 if !s:is_windows 
@@ -157,7 +159,11 @@ endif
 if !s:is_windows
     Plug 'kevinhwang91/nvim-bqf'
 endif
+
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+" :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript vim
+
+
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'   
@@ -288,6 +294,9 @@ nnoremap <leader>hd :SignifyHunkDiff<cr>
 " paste on visual mode without chaning original register
 vnoremap p "_dP
 
+" reselect pasted selection
+nnoremap gp `[v`]
+
 "; :
 nnoremap ; :
 nnoremap > ;
@@ -333,7 +342,7 @@ let g:sneak#s_next = 1
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 
-let g:indentLine_char = '▏'
+" let g:indentLine_char = '▏'
 
 " netw
 let g:netrw_browse_split=2
@@ -466,6 +475,12 @@ else
 
     "lsp config
 lua << EOF
+    -- require"lspinstall".setup()
+    -- require"lspinstall".installed_servers()
+EOF
+
+
+lua << EOF
     vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, {
             virtual_text = true,
@@ -478,27 +493,32 @@ lua << EOF
         lintStdin = true,
         lintFormats = { "%f:%l:%c: %m" },
         lintIgnoreExitCode = true,
-        formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
-        formatStdin = true
+        -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
+        -- formatStdin = true
+    }
+    local prettier = {
+      formatCommand = 'prettierd "${INPUT}"',
+      formatStdin = true
     }
     require"lspconfig".efm.setup {
         init_options = {documentFormatting = true},
-        filetypes = { "javascript" },
+        filetypes = { "javascript", "vue", "html", "css" },
         settings = {
             rootMarkers = {"package.json"},
             languages = {
-                javascript = { eslint },
-                html = { eslint },
-                vue = { eslint },
-                css = { eslint }
+                javascript = { prettier, eslint },
+                html = { prettier, eslint },
+                vue = { prettier, eslint },
+                css = { prettier,  eslint }
             }
-        },
+        }
     }
+
 EOF
     augroup FormatAutogroup
       autocmd!
       " autocmd BufWritePost *.vue,*.js,*.css,*.scss,*.html FormatWrite
-      autocmd BufWritePre *.js,*.js,*.css,*.html lua vim.lsp.buf.formatting_sync(nil, 1000)
+      autocmd BufWritePre *.js,*.js,*.css,*.html,*.vue lua vim.lsp.buf.formatting_sync(nil, 1000)
     augroup END
     nmap <leader>cj  <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
     nmap <leader>ck  <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
@@ -579,7 +599,9 @@ lua << EOF
     local actions = require('telescope.actions')
     require('telescope').setup{
       defaults = {
-        prompt_position = 'top',
+        layout_config = {
+            prompt_position = 'top',
+        },
         sorting_strategy = "ascending",
         mappings = {
             i =  {
@@ -671,8 +693,8 @@ if !s:is_windows
     vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>=VisualSelection()<cr><cr>
 endif
 
-xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
-xnoremap <leader>pjs :!npx -q prettier --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
+xnoremap <leader>pt :!npx -q prettierd --stdin-filepath=%:p
+xnoremap <leader>pjs :!npx -q prettierd --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
 xnoremap <leader>psql :!npx -q sql-formatter-cli
 
 xnoremap <leader>sc :!tw2s<cr>
@@ -710,12 +732,25 @@ let g:undotree_ShortIndicators = 1
 nnoremap <F5> :UndotreeToggle<cr>
 
 " vim-barbaric
-" let g:barbaric_ime = 'fcitx'
+let g:barbaric_ime = 'fcitx'
 let g:barbaric_fcitx_cmd = 'fcitx-remote'
 
 "dadbod-ui
 let g:db_ui_debug = 1
 let g:db_ui_save_location = '~/.config/db_ui'
+
+"treesitter
+" :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript
+
+"commentstring
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  context_commentstring = {
+    enable = true
+  }
+}
+EOF
+
 
 " statusline {{
 
