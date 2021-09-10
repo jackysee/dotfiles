@@ -113,8 +113,14 @@ if s:use_coc
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
 else
     Plug 'neovim/nvim-lspconfig'
-    Plug 'hrsh7th/nvim-compe'
+    "Plug 'hrsh7th/nvim-compe'
     Plug 'kabouzeid/nvim-lspinstall'
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    " Plug 'nvim-lua/lsp-status.nvim'
 endif
 
 "db 
@@ -474,13 +480,40 @@ if s:use_coc
 else
 
     "lsp config
-lua << EOF
-    -- require"lspinstall".setup()
-    -- require"lspinstall".installed_servers()
-EOF
-
 
 lua << EOF
+
+    -- local lsp_status = require('lsp-status')
+    -- lsp_status.register_progress()
+
+    local lspconfig = require"lspconfig"
+    -- require"lspconfig".vue.setup{}
+    require"lspinstall".setup()
+    local servers = require"lspinstall".installed_servers()
+    -- for _, server in pairs(servers) do
+    --     print(server)
+    -- end
+    -- print(vim.inspect(lspconfig))
+    lspconfig.typescript.setup {
+        init_options = { formatting = false },
+        on_attach = function(client)
+          client.resolved_capabilities.document_formatting = false
+          -- lsp_status.on_attach(client)
+        end,
+        -- capabilities = lsp_status.capabilities
+    }
+
+    lspconfig.vue.setup {
+        init_options = { formatting = false },
+        on_attach = function(client)
+          client.resolved_capabilities.document_formatting = false
+          -- lsp_status.on_attach(client)
+        end,
+        -- capabilities = lsp_status.capabilities
+    }
+
+    -- vim.lsp.callbacks["textDocument/publishDiagnostics"] = function() end
+
     vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, {
             virtual_text = true,
@@ -500,8 +533,8 @@ lua << EOF
       formatCommand = 'prettierd "${INPUT}"',
       formatStdin = true
     }
-    require"lspconfig".efm.setup {
-        init_options = {documentFormatting = true},
+    lspconfig.efm.setup {
+        init_options = { documentFormatting = true},
         filetypes = { "javascript", "vue", "html", "css" },
         settings = {
             rootMarkers = {"package.json"},
@@ -522,38 +555,86 @@ EOF
     augroup END
     nmap <leader>cj  <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
     nmap <leader>ck  <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
-
+    nnoremap <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
+    nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
+    nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
+    nnoremap <leader>K <cmd>lua vim.lsp.buf.hover()<CR>
+    nnoremap <leader>gi <cmd>lua vim.lsp.buf.implementation()<CR>
+    nnoremap <leader>gr <cmd>lua vim.lsp.buf.references()<CR>
+    nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
+    nnoremap <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
 
     "nvim-compe
     set completeopt=menuone,noselect
     set shortmess+=c
 
 lua << EOF
-    require'compe'.setup {
-      enabled = true;
-      autocomplete = true;
-      debug = false;
-      min_length = 1;
-      preselect = 'enable';
-      throttle_time = 80;
-      source_timeout = 200;
-      resolve_timeout = 800;
-      incomplete_delay = 400;
-      max_abbr_width = 100;
-      max_kind_width = 100;
-      max_menu_width = 100;
-      documentation = true;
 
-      source = {
-        path = true;
-        buffer = true;
-        calc = true;
-        nvim_lsp = true;
-        nvim_lua = true;
-        -- vsnip = true;
-        ultisnips = true;
-      };
-    }
+  local cmp = require'cmp'
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        vim.fn["UltiSnips#Anon"](args.body)
+      end,
+    },
+    mapping = {
+      -- ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      -- ['<M-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({
+        behavior = cmp.ConfirmBehavior.Replace,
+        select = true,
+      })
+    },
+    sources = {
+        { name = "buffer" },
+        { name = "path" },
+        { name = "nvim_lsp" },
+        { name = "ultisnips" }
+    },
+    formatting = {
+      format = function(entry, vim_item)
+        vim_item.menu = ({
+          buffer = "[Buffer]",
+          nvim_lsp = "[LSP]",
+          path = "[Path]",
+          ultisnips = "[UltiSnips]"
+          -- luasnip = "[LuaSnip]",
+          -- nvim_lua = "[Lua]",
+          -- latex_symbols = "[Latex]",
+        })[entry.source.name]
+        return vim_item
+      end,
+    },
+  })
+    -- require'compe'.setup {
+    --   enabled = true;
+    --   autocomplete = true;
+    --   debug = true;
+    --   min_length = 1;
+    --   preselect = 'enable';
+    --   throttle_time = 80;
+    --   source_timeout = 200;
+    --   resolve_timeout = 800;
+    --   incomplete_delay = 400;
+    --   max_abbr_width = 100;
+    --   max_kind_width = 100;
+    --   max_menu_width = 100;
+    --   documentation = true;
+
+    --   source = {
+    --     path = true;
+    --     buffer = true;
+    --     calc = true;
+    --     nvim_lsp = true;
+    --     nvim_lua = true;
+    --     -- vsnip = true;
+    --     ultisnips = true;
+    --   };
+    -- }
+
 EOF
 endif
 
@@ -843,8 +924,29 @@ function! CocStatus() abort
     return join([s1, s3, s2], ' ')
 endfunction
 
+
+lua << EOF
+function _G.lsp_progress()
+  local lsp = vim.lsp.util.get_progress_messages()[1]
+  if lsp then
+    local name = lsp.name or ""
+    local msg = lsp.message or ""
+    local percentage = lsp.percentage or 0
+    local title = lsp.title or ""
+    return string.format(
+      " %%<%s: %s %s (%s%%%%) ",
+      name,
+      title,
+      msg,
+      percentage
+    )
+  end
+  return ""
+end
+EOF
+
 function! LspStatus() abort
-    let sl = ''
+    let sl = v:lua.lsp_progress()
     if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
         let errorCount = luaeval("vim.lsp.diagnostic.get_count(0, [[Error]])")
         if errorCount > 0
