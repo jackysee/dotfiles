@@ -15,7 +15,7 @@ export ORACLE_HOME=/opt/oracle/instantclient_21_1
 export LD_LIBRARY_PATH="$ORACLE_HOME"
 
 # export TERM=xterm-256color
-export PATH="$HOME/.local/bin/:$HOME/.cargo/bin:$HOME/go/bin:$ORACLE_HOME:$PATH"
+export PATH="$HOME/.local/bin/:$HOME/.cargo/bin:$HOME/go/bin:$ORACLE_HOME:/opt/homebrew/bin:$PATH"
 
 export QT_PLATFORM_PLUGIN=qt5ct
 export QT_QPA_PLATFORMTHEME=qt5ct
