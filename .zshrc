@@ -37,6 +37,12 @@ if [[ $(uname -a) =~ microsoft ]]; then
     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
 fi
 
+if [ "$(uname -s)" = 'Linux' ]; then
+    BPICK="(*x86*linux*)|(*linux-x86*)|(*linux*amd*)"
+else
+    BPICK="(*darwin*amd*)|(*macos*)|(*apple*darwin*)"
+fi
+
 ## tpm
 if [[ ! -d "$HOME/.dotfiles/tmux/.tmux/plugins/tpm" ]]; then
     echo "install tpm"
@@ -94,9 +100,6 @@ zinit light Peltoche/lsd
 zinit ice atclone"./install --xdg --no-update-rc --completion --key-bindings" atpull"%atclone" as"program" pick="bin/fzf" multisrc"shell/{key-bindings,completion}.zsh"
 zinit light junegunn/fzf
 
-zinit ice from"gh-r" as"program" bpick"*64*linux*" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
-zinit light BurntSushi/ripgrep
-
 zinit ice from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat"
 zinit light sharkdp/bat
 
@@ -118,19 +121,11 @@ zinit light dandavison/delta
 # zinit ice from"gh-r" as"program" bpick="hugo_extended*Linux*64bit.tar.gz" pick"hugo"
 # zinit light gohugoio/hugo
 
-unamestr=$(uname)
-if [[ $unamestr == "Linux" ]]; then
+zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg" bpick"${BPICK}"
+zinit light BurntSushi/ripgrep
 
-    zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim"
-    zinit light neovim/neovim
-
-    # zinit ice from'gh-r' as'program' pick"build/$(uname -m)*/broot"; 
-    # zinit load Canop/broot
-
-elif [[ $unamestr == "Darwin" ]]; then
-    zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick="*mac*"
-    zinit light neovim/neovim
-fi
+zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
+zinit light neovim/neovim
 
 
 if type broot >/dev/null 2>&1; then
