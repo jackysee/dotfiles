@@ -94,7 +94,7 @@ zinit light-mode lucid wait for \
     changyuheng/zsh-interactive-cd \
     dominik-schwabe/zsh-fnm
 
-zinit ice lucid as"command" from"gh-r" bpick"$PICK" mv"lsd* -> lsd" pick"lsd/lsd"
+zinit ice lucid as"command" from"gh-r" bpick"${BPICK}" mv"lsd* -> lsd" pick"lsd/lsd"
 zinit light Peltoche/lsd
 
 zinit ice atclone"./install --xdg --no-update-rc --completion --key-bindings" atpull"%atclone" as"program" pick="bin/fzf" multisrc"shell/{key-bindings,completion}.zsh"
