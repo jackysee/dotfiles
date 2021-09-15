@@ -1,0 +1,32 @@
+{
+    "import @/component": {
+        "prefix":"ico",
+        "body": "import $1 from '@components/$1.vue';"
+    },
+    "import common-vue" : {
+        "prefix": "icv",
+        "body": "import $1 from 'common-vue/$1';"
+
+    },
+    "vue sfc": {
+        "prefix":"vvue",
+        "body": [
+            "<template>",
+            "    <div>",
+            "        $1",
+            "    </div>",
+            "</template>",
+            "",
+            "<script>",
+            "",
+            "export default {",
+            "    $2",
+            "};",
+            "</script>"
+        ]
+    },
+    "message $t": {
+        "prefix":"tt",
+        "body":"{{\\$t('$0')}}"
+    }
+}

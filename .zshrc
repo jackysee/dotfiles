@@ -38,7 +38,7 @@ if [[ $(uname -a) =~ microsoft ]]; then
 fi
 
 if [ "$(uname -s)" = 'Linux' ]; then
-    BPICK="(*x86*linux*)|(*linux-x86*)|(*linux*amd*)"
+    BPICK="(*x86*linux*)|(*linux-x86*)|(*linux*amd*)|(*linux64*)"
 else
     BPICK="(*darwin*amd*)|(*macos*)|(*apple*darwin*)"
 fi

@@ -94,8 +94,11 @@ endif
 
 " snippet
 if s:is_fast
-    Plug 'SirVer/ultisnips'
-    Plug 'honza/vim-snippets'
+    Plug 'L3MON4D3/LuaSnip'
+    Plug 'saadparwaiz1/cmp_luasnip'
+    Plug 'rafamadriz/friendly-snippets'
+    " Plug 'SirVer/ultisnips'
+    " Plug 'honza/vim-snippets'
 endif
 
 " git
@@ -120,6 +123,7 @@ else
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-path'
     Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    Plug 'ray-x/lsp_signature.nvim'
     " Plug 'nvim-lua/lsp-status.nvim'
 endif
 
@@ -482,37 +486,24 @@ else
     "lsp config
 
 lua << EOF
-
-    -- local lsp_status = require('lsp-status')
-    -- lsp_status.register_progress()
-
     local lspconfig = require"lspconfig"
-    -- require"lspconfig".vue.setup{}
-    require"lspinstall".setup()
-    local servers = require"lspinstall".installed_servers()
+    local lspinstall = require"lspinstall"
+    lspinstall.setup()
+    local lsp_signature = require"lsp_signature"
+    -- local servers = require"lspinstall".installed_servers()
     -- for _, server in pairs(servers) do
     --     print(server)
     -- end
     -- print(vim.inspect(lspconfig))
-    lspconfig.typescript.setup {
+    local lsp_common_opt = {
         init_options = { formatting = false },
         on_attach = function(client)
           client.resolved_capabilities.document_formatting = false
-          -- lsp_status.on_attach(client)
-        end,
-        -- capabilities = lsp_status.capabilities
+          lsp_signature.on_attach()
+        end
     }
-
-    lspconfig.vue.setup {
-        init_options = { formatting = false },
-        on_attach = function(client)
-          client.resolved_capabilities.document_formatting = false
-          -- lsp_status.on_attach(client)
-        end,
-        -- capabilities = lsp_status.capabilities
-    }
-
-    -- vim.lsp.callbacks["textDocument/publishDiagnostics"] = function() end
+    lspconfig.typescript.setup(lsp_common_opt) 
+    lspconfig.vue.setup(lsp_common_opt) 
 
     vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -570,11 +561,23 @@ EOF
 
 lua << EOF
 
+  local luasnip = require'luasnip'
+  vim.cmd [[ imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' ]]
+  luasnip.config.set_config {
+     history = true,
+     updateevents = "TextChanged,TextChangedI",
+  }
+  require('luasnip/loaders/from_vscode').load({ 
+    paths = { "~/.dotfiles/nvim/snippets" } 
+  })
+  require("luasnip/loaders/from_vscode").load()
+
   local cmp = require'cmp'
   cmp.setup({
     snippet = {
       expand = function(args)
-        vim.fn["UltiSnips#Anon"](args.body)
+        -- vim.fn["UltiSnips#Anon"](args.body)
+        luasnip.lsp_expand(args.body)
       end,
     },
     mapping = {
@@ -586,13 +589,32 @@ lua << EOF
       ['<CR>'] = cmp.mapping.confirm({
         behavior = cmp.ConfirmBehavior.Replace,
         select = true,
-      })
+      }), 
+      -- ["<Tab>"] = function(fallback)
+      --    if vim.fn.pumvisible() == 1 then
+      --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-n>", true, true, true), "n")
+      --    elseif require("luasnip").expand_or_jumpable() then
+      --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
+      --    else
+      --       fallback()
+      --    end
+      -- end,
+      -- ["<S-Tab>"] = function(fallback)
+      --    if vim.fn.pumvisible() == 1 then
+      --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-p>", true, true, true), "n")
+      --    elseif require("luasnip").jumpable(-1) then
+      --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-jump-prev", true, true, true), "")
+      --    else
+      --       fallback()
+      --    end
+      -- end,
     },
     sources = {
         { name = "buffer" },
         { name = "path" },
         { name = "nvim_lsp" },
-        { name = "ultisnips" }
+        -- { name = "ultisnips" }
+        { name = "luasnip" }
     },
     formatting = {
       format = function(entry, vim_item)
@@ -600,8 +622,8 @@ lua << EOF
           buffer = "[Buffer]",
           nvim_lsp = "[LSP]",
           path = "[Path]",
-          ultisnips = "[UltiSnips]"
-          -- luasnip = "[LuaSnip]",
+          -- ultisnips = "[UltiSnips]"
+          luasnip = "[LuaSnip]",
           -- nvim_lua = "[Lua]",
           -- latex_symbols = "[Latex]",
         })[entry.source.name]
@@ -790,8 +812,8 @@ let g:vim_json_syntax_conceal = 0
 
 
 " ultisnips
-let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsEditSplit="vertical"
+" let g:UltiSnipsExpandTrigger="<tab>"
 
 " tmux
 let g:tmux_navigator_disable_when_zoomed = 1
@@ -934,7 +956,7 @@ function _G.lsp_progress()
     local percentage = lsp.percentage or 0
     local title = lsp.title or ""
     return string.format(
-      " %%<%s: %s %s (%s%%%%) ",
+      "%s: %s %s (%s%%%%) ",
       name,
       title,
       msg,
@@ -943,21 +965,27 @@ function _G.lsp_progress()
   end
   return ""
 end
+
+function _G.lsp_error()
+    if not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+        local s = ""
+        local errorCount = vim.lsp.diagnostic.get_count(0, [[Error]])
+        if errorCount > 0 then
+            s = s .. "E" .. errorCount
+        end
+        local warningCount = vim.lsp.diagnostic.get_count(0, [[Warning]]);
+        if warningCount > 0 then
+            s = s .. "W" .. warningCount
+        end
+        return s
+    end
+    return ""
+end
+
 EOF
 
 function! LspStatus() abort
-    let sl = v:lua.lsp_progress()
-    if luaeval('not vim.tbl_isempty(vim.lsp.buf_get_clients(0))')
-        let errorCount = luaeval("vim.lsp.diagnostic.get_count(0, [[Error]])")
-        if errorCount > 0
-            let sl.='E'. errorCount
-        endif
-        let warningCount = luaeval("vim.lsp.diagnostic.get_count(0, [[Warning]])")
-        if warningCount > 0
-            let sl.=' W' . warningCount
-        endif
-    endif
-    return sl
+    return v:lua.lsp_progress() . v:lua.lsp_error()
 endfunction
 
 

@@ -1,0 +1,9 @@
+{
+    "no-console": {
+        "prefix": "noc",
+        "body": [
+            "/* eslint-disable no-console */",
+            "console.log($1);"
+        ]
+    }
+}

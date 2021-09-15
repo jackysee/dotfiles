@@ -1,0 +1,18 @@
+
+{
+    "<fmt:msg>": {
+        "prefix":"fmsg",
+        "body":"<fmt:message key=\"$1\" />"
+    },
+    "<c:out>" : {
+        "prefix":"cout",
+        "body": "<c:out value=\"\\${$1\\}\" />"
+    },
+    "<c:url>": {
+        "prefix":"curl",
+        "body": "<c:url value=\"\\${$1\\}\" />"
+    }
+
+
+}
+

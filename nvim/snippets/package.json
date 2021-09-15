@@ -1,0 +1,22 @@
+{
+  "name": "dotfiles",
+  "engines": {
+    "vscode": "^1.11.0"
+  },
+  "contributes": {
+    "snippets": [
+      {
+        "language": "vue",
+        "path": "./vue/vue.json"
+      },
+      {
+        "language":"jsp",
+        "path":"./jsp.json"
+      },
+      {
+        "language":"javascript",
+        "path":"./javascript.json"
+      }
+    ]
+  }
+}
