@@ -528,11 +528,16 @@ lua << EOF
         -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
         -- formatStdin = true
     }
+    local is_windows = vim.api.nvim_eval('s:is_windows')
     local prettier = {
       formatCommand = 'PRETTIERD_LOCAL_PRETTIER_ONLY=1 prettierd "${INPUT}"',
       formatStdin = true
     }
+    if is_windows then
+        prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
+    end
     lspconfig.efm.setup {
+        cmd = { 'efm-langserver' },
         init_options = { documentFormatting = true},
         filetypes = { "javascript", "vue", "html", "css" },
         settings = {
