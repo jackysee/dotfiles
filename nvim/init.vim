@@ -499,11 +499,19 @@ lua << EOF
         init_options = { formatting = false },
         on_attach = function(client)
           client.resolved_capabilities.document_formatting = false
-          lsp_signature.on_attach()
+          lsp_signature.on_attach({
+            -- floating_window = false,
+            fix_pos = false,
+            hint_enable = false
+          })
         end
     }
-    lspconfig.typescript.setup(lsp_common_opt) 
-    lspconfig.vue.setup(lsp_common_opt) 
+    local servers = require'lspinstall'.installed_servers()
+    for _, server in pairs(servers) do
+      if not server == 'efm' then
+        require'lspconfig'[server].setup(lsp_common_opt)
+      end
+    end
 
     vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
         vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -521,7 +529,7 @@ lua << EOF
         -- formatStdin = true
     }
     local prettier = {
-      formatCommand = 'prettierd "${INPUT}"',
+      formatCommand = 'PRETTIERD_LOCAL_PRETTIER_ONLY=1 prettierd "${INPUT}"',
       formatStdin = true
     }
     lspconfig.efm.setup {
@@ -562,15 +570,20 @@ EOF
 lua << EOF
 
   local luasnip = require'luasnip'
-  vim.cmd [[ imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>' ]]
+  vim.cmd [[ imap <silent><expr> <tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<tab>' ]]
+  vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<C-j>' ]]
+  vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
+
   luasnip.config.set_config {
      history = true,
-     updateevents = "TextChanged,TextChangedI",
+     -- updateevents = "TextChanged,TextChangedI",
+     store_selection_keys = "<Tab>"
   }
   require('luasnip/loaders/from_vscode').load({ 
     paths = { "~/.dotfiles/nvim/snippets" } 
   })
   require("luasnip/loaders/from_vscode").load()
+  require("snippets/*")
 
   local cmp = require'cmp'
   cmp.setup({
@@ -631,31 +644,6 @@ lua << EOF
       end,
     },
   })
-    -- require'compe'.setup {
-    --   enabled = true;
-    --   autocomplete = true;
-    --   debug = true;
-    --   min_length = 1;
-    --   preselect = 'enable';
-    --   throttle_time = 80;
-    --   source_timeout = 200;
-    --   resolve_timeout = 800;
-    --   incomplete_delay = 400;
-    --   max_abbr_width = 100;
-    --   max_kind_width = 100;
-    --   max_menu_width = 100;
-    --   documentation = true;
-
-    --   source = {
-    --     path = true;
-    --     buffer = true;
-    --     calc = true;
-    --     nvim_lsp = true;
-    --     nvim_lua = true;
-    --     -- vsnip = true;
-    --     ultisnips = true;
-    --   };
-    -- }
 
 EOF
 endif
@@ -663,15 +651,6 @@ endif
 " Move visual selection
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv 
-
-" function! VisualSelection()
-"     let old_reg     = getreg('"')
-"     let old_regmode = getregtype('"')
-"     normal! gvy
-"     let selection = @"
-"     call setreg('"', old_reg, old_regmode)
-"     return selection
-" endfunction
 
 function! VisualSelection()
     let [line_start, column_start] = getpos("'<")[1:2]
