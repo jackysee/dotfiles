@@ -36,20 +36,20 @@ if s:is_nvim && s:is_gui
     autocmd VimEnter * GuiPopupmenu 0
 endif
 
-if executable('xsel')
-    let g:clipboard = {
-          \   'name': 'xsel_override',
-          \   'copy': {
-          \      '+': 'xsel --input --clipboard',
-          \      '*': 'xsel --input --primary',
-          \    },
-          \   'paste': {
-          \      '+': 'xsel --output --clipboard',
-          \      '*': 'xsel --output --primary',
-          \   },
-          \   'cache_enabled': 1,
-          \ }
-endif
+" if executable('xsel')
+"     let g:clipboard = {
+"           \   'name': 'xsel_override',
+"           \   'copy': {
+"           \      '+': 'xsel --input --clipboard',
+"           \      '*': 'xsel --input --primary',
+"           \    },
+"           \   'paste': {
+"           \      '+': 'xsel --output --clipboard',
+"           \      '*': 'xsel --output --primary',
+"           \   },
+"           \   'cache_enabled': 1,
+"           \ }
+" endif
 
 set lazyredraw
 
@@ -336,13 +336,6 @@ map <leader>et :tabe %%
 " edit vimrc
 execute 'nnoremap <silent> <leader>vv :vsp '.s:path.'/init.vim<CR>'
 
-
-"jump between split
-nnoremap <C-J> <C-W><C-J>
-nnoremap <C-K> <C-W><C-K>
-nnoremap <C-L> <C-W><C-L>
-nnoremap <C-H> <C-W><C-H>
-
 "quick fix
 nnoremap ]q :cnext<cr>
 nnoremap [q :cprev<cr> 
@@ -400,17 +393,25 @@ endfun
 command! TrimWhitespace call TrimWhitespace()
 
 function! Scratch()
-    split
-    noswapfile hide enew
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    "setlocal nobuflisted
-    "lcd ~
-    file scratch
+    let scr_winnr = bufwinnr('scratch')
+    if winnr() == scr_winnr
+        return
+    endif
+    let bnr = bufexists('scratch')
+    if bnr > 0
+        split scratch
+    else 
+        split
+        noswapfile hide enew
+        setlocal buftype=nofile bufhidden=hide nobuflisted
+        "lcd ~
+        file scratch
+    endif 
 endfunction
+nnoremap <leader>j :call Scratch()<cr>
 
 " emmet
-imap <C-E> <C-y>,
+imap <C-e> <C-y>,
 
 " Add semi colon at end of line
 noremap <leader>; g_a;<Esc>
@@ -530,14 +531,15 @@ lua << EOF
     }
     local is_windows = vim.api.nvim_eval('s:is_windows')
     local prettier = {
-      formatCommand = 'PRETTIERD_LOCAL_PRETTIER_ONLY=1 prettierd "${INPUT}"',
-      formatStdin = true
+      formatCommand = 'prettierd "${INPUT}"',
+      formatStdin = true,
+      env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
     }
     if is_windows then
         prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
     end
     lspconfig.efm.setup {
-        cmd = { 'efm-langserver' },
+        cmd = { 'efm-langserver', '-loglevel', '5' },
         init_options = { documentFormatting = true},
         filetypes = { "javascript", "vue", "html", "css" },
         settings = {
@@ -566,7 +568,7 @@ EOF
     nnoremap <leader>gi <cmd>lua vim.lsp.buf.implementation()<CR>
     nnoremap <leader>gr <cmd>lua vim.lsp.buf.references()<CR>
     nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
-    nnoremap <C-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+    nnoremap <leader>gs <cmd>lua vim.lsp.buf.signature_help()<CR>
 
     "nvim-compe
     set completeopt=menuone,noselect
@@ -580,15 +582,20 @@ lua << EOF
   vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
 
   luasnip.config.set_config {
-     history = true,
-     -- updateevents = "TextChanged,TextChangedI",
-     store_selection_keys = "<Tab>"
+    history = true,
+    -- updateevents = "TextChanged,TextChangedI",
+    store_selection_keys = "<Tab>"
   }
   require('luasnip/loaders/from_vscode').load({ 
-    paths = { "~/.dotfiles/nvim/snippets" } 
+    -- paths = { "~/.dotfiles/nvim/snippets" }
+    paths = { "./snippets", "./plugged/friendly-snippets" }
   })
-  require("luasnip/loaders/from_vscode").load()
-  require("snippets/*")
+  -- require("luasnip/loaders/from_vscode").load()
+  -- require("snippets/*")
+  luasnip.filetype_extend("vue", {"html", "javascript", "css"})
+  -- luasnip.filetype_extend("html", {"vue"})
+  -- luasnip.filetype_extend("javascript", {"vue"})
+  -- luasnip.filetype_extend("css", {"vue"})
 
   local cmp = require'cmp'
   cmp.setup({
@@ -628,7 +635,13 @@ lua << EOF
       -- end,
     },
     sources = {
-        { name = "buffer" },
+        { name = "buffer" ,
+          opts = {
+            get_bufnrs = function()
+              return vim.api.nvim_list_bufs()
+            end
+          }
+        },
         { name = "path" },
         { name = "nvim_lsp" },
         -- { name = "ultisnips" }

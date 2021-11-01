@@ -30,6 +30,9 @@ export DefaultIMModule=fcitx
 
 export KEYTIMEOUT=25
 
+export WSL_HOST=$(tail -1 /etc/resolv.conf | cut -d' ' -f2)
+export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
+
 stty -ixon
 
 
@@ -147,7 +150,8 @@ zinit wait lucid for \
         zsh-users/zsh-completions
 
 
-zstyle ':completion:*' menu select matcher-list 'm:{a-z}={A-Za-z}'
+# zstyle ':completion:*' menu select matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|=*' 'l:|=* r:|=*'
 
 [ -f ~/.aliases ] && source ~/.aliases
 
