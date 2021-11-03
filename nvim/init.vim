@@ -81,6 +81,7 @@ Plug 'romainl/Apprentice'
 Plug 'junegunn/seoul256.vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'sainnhe/gruvbox-material'
+Plug 'lifepillar/vim-gruvbox8'
 " Plug 'rktjmp/lush.nvim'
 " Plug 'npxbr/gruvbox.nvim'
 Plug 'habamax/vim-gruvbit'
@@ -237,14 +238,17 @@ if s:is_windows && (s:is_gui || exists('g:nvy') || exists('g:fvim_loaded'))
     colorscheme nordbuddy
 else
     
-    let g:gruvbox_invert_selection = '0'
-    set background=dark
-    colorscheme gruvbox
+    " let g:gruvbox_invert_selection = '0'
+    " set background=dark
+    " colorscheme gruvbox
 
     " let g:gruvbox_invert_selection = '0'
     " let g:gruvbox_material_background = 'hard'
     " set background=dark
     " colorscheme gruvbox-material
+
+	set background=dark
+	colorscheme gruvbox8
 
     " colorscheme apprentice
     
