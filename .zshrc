@@ -66,9 +66,9 @@ export FZF_CTRL_T_OPTS="--preview 'bat {}' --bind '?:toggle-preview'"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zplugin/bin/zinit.zsh ]]; then
-    print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma/zinit)…%f"
+    print -P "%F{33}▓▒░ %F{220}Installing DHARMA Initiative Plugin Manager (zdharma-continuum/zinit)…%f"
     command mkdir -p "$HOME/.zplugin" && command chmod g-rwX "$HOME/.zplugin"
-    command git clone https://github.com/zdharma/zinit "$HOME/.zplugin/bin" && \
+    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.zplugin/bin" && \
         print -P "%F{33}▓▒░ %F{34}Installation successful.%f" || \
         print -P "%F{160}▓▒░ The clone has failed.%f"
 fi
@@ -113,7 +113,7 @@ zinit light sharkdp/fd
 # zinit light ogham/exa
 
 zinit ice as"program" pick"bin/git-dsf" wait"0" lucid
-zinit light zdharma/zsh-diff-so-fancy
+zinit light zdharma-continuum/zsh-diff-so-fancy
 
 zinit ice from"gh-r" as"program" mv"tldr* -> tldr" pick"tldr"
 zinit light dbrgn/tealdeer
@@ -143,7 +143,7 @@ zinit light starship/starship
 
 zinit wait lucid for \
     atinit"ZINIT[COMPINIT_OPTS]=-C; zpcompinit; zpcdreplay" \
-        zdharma/fast-syntax-highlighting \
+        zdharma-continuum/fast-syntax-highlighting \
     atload"!_zsh_autosuggest_start" \
         zsh-users/zsh-autosuggestions \
     blockf \
