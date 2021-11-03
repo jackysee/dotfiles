@@ -149,6 +149,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
+Plug 'osyo-manga/vim-anzu'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
@@ -417,12 +418,14 @@ imap <C-e> <C-y>,
 noremap <leader>; g_a;<Esc>
 
 " vim-asterisk
-nnoremap n nzz
-nnoremap N Nzz
-map *  <Plug>(asterisk-z*)
-map g* <Plug>(asterisk-zg*)
-map #  <Plug>(asterisk-z#)
-map g# <Plug>(asterisk-zg#)
+" nnoremap n nzz
+" nnoremap N Nzz
+nmap n <Plug>(anzu-n-with-echo)zz
+nmap N <Plug>(anzu-N-with-echo)zz
+map *  <Plug>(asterisk-z*)<Plug>(anzu-update-search-status-with-echo)
+map g* <Plug>(asterisk-zg*)<Plug>(anzu-update-search-status-with-echo)
+map #  <Plug>(asterisk-z#)<Plug>(anzu-update-search-status-with-echo)
+map g# <Plug>(asterisk-zg#)<Plug>(anzu-update-search-status-with-echo)
 
 if s:use_coc
     " coc
@@ -1030,9 +1033,11 @@ function! Statusline()
   
   " let ale = '%{AddSpace(ALELinterStatus())}'
   let ale = ''
+  " let search_status = '%{AddSpace(anzu#search_status())}'
+  let search_status = ''
   let pos = LineInfoStatus()
   " let dir = '%20.30{CurDir()} '
-  return vcs.file.sep.lsp.ale.ft.pos
+  return vcs.file.sep.lsp.ale.search_status.ft.pos
 endfunction
 
 function! RefreshStatusline()
