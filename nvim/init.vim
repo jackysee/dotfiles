@@ -36,24 +36,24 @@ if s:is_nvim && s:is_gui
     autocmd VimEnter * GuiPopupmenu 0
 endif
 
-" if executable('xsel')
-"     let g:clipboard = {
-"           \   'name': 'xsel_override',
-"           \   'copy': {
-"           \      '+': 'xsel --input --clipboard',
-"           \      '*': 'xsel --input --primary',
-"           \    },
-"           \   'paste': {
-"           \      '+': 'xsel --output --clipboard',
-"           \      '*': 'xsel --output --primary',
-"           \   },
-"           \   'cache_enabled': 1,
-"           \ }
-" endif
+if executable('xsel')
+    let g:clipboard = {
+          \   'name': 'xsel_override',
+          \   'copy': {
+          \      '+': 'xsel --input --clipboard',
+          \      '*': 'xsel --input --primary',
+          \    },
+          \   'paste': {
+          \      '+': 'xsel --output --clipboard',
+          \      '*': 'xsel --output --primary',
+          \   },
+          \   'cache_enabled': 1,
+          \ }
+endif
 
 set lazyredraw
 
-nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>:AnzuClearSearchStatus<CR>
 
 set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
 
@@ -430,6 +430,8 @@ map *  <Plug>(asterisk-z*)<Plug>(anzu-update-search-status)
 map g* <Plug>(asterisk-zg*)<Plug>(anzu-update-search-status)
 map #  <Plug>(asterisk-z#)<Plug>(anzu-update-search-status)
 map g# <Plug>(asterisk-zg#)<Plug>(anzu-update-search-status)
+
+let g:anzu_status_format = "%i/%l"
 
 if s:use_coc
     " coc
