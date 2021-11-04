@@ -424,12 +424,12 @@ noremap <leader>; g_a;<Esc>
 " vim-asterisk
 " nnoremap n nzz
 " nnoremap N Nzz
-nmap n <Plug>(anzu-n-with-echo)zz
-nmap N <Plug>(anzu-N-with-echo)zz
-map *  <Plug>(asterisk-z*)<Plug>(anzu-update-search-status-with-echo)
-map g* <Plug>(asterisk-zg*)<Plug>(anzu-update-search-status-with-echo)
-map #  <Plug>(asterisk-z#)<Plug>(anzu-update-search-status-with-echo)
-map g# <Plug>(asterisk-zg#)<Plug>(anzu-update-search-status-with-echo)
+nmap n <Plug>(anzu-n)zz
+nmap N <Plug>(anzu-N)zz
+map *  <Plug>(asterisk-z*)<Plug>(anzu-update-search-status)
+map g* <Plug>(asterisk-zg*)<Plug>(anzu-update-search-status)
+map #  <Plug>(asterisk-z#)<Plug>(anzu-update-search-status)
+map g# <Plug>(asterisk-zg#)<Plug>(anzu-update-search-status)
 
 if s:use_coc
     " coc
@@ -1037,11 +1037,11 @@ function! Statusline()
   
   " let ale = '%{AddSpace(ALELinterStatus())}'
   let ale = ''
-  " let search_status = '%{AddSpace(anzu#search_status())}'
-  let search_status = ''
+  let search_status = '%{AddSpace(AddBracket(anzu#search_status()))}'
+  " let search_status = ''
   let pos = LineInfoStatus()
   " let dir = '%20.30{CurDir()} '
-  return vcs.file.sep.lsp.ale.search_status.ft.pos
+  return vcs.file.search_status.sep.lsp.ale.ft.pos
 endfunction
 
 function! RefreshStatusline()
