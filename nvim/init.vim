@@ -238,17 +238,17 @@ if s:is_windows && (s:is_gui || exists('g:nvy') || exists('g:fvim_loaded'))
     colorscheme nordbuddy
 else
     
-    " let g:gruvbox_invert_selection = '0'
-    " set background=dark
-    " colorscheme gruvbox
+    let g:gruvbox_invert_selection = '0'
+    set background=dark
+    colorscheme gruvbox
 
     " let g:gruvbox_invert_selection = '0'
     " let g:gruvbox_material_background = 'hard'
     " set background=dark
     " colorscheme gruvbox-material
 
-	set background=dark
-	colorscheme gruvbox8
+	" set background=dark
+	" colorscheme gruvbox8
 
     " colorscheme apprentice
     
@@ -643,6 +643,9 @@ lua << EOF
       --    end
       -- end,
     },
+    -- completion = {
+    --     keyword_length = 3
+    -- },
     sources = {
         { name = "buffer" ,
           opts = {
