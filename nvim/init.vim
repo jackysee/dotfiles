@@ -82,11 +82,7 @@ Plug 'junegunn/seoul256.vim'
 Plug 'gruvbox-community/gruvbox'
 Plug 'sainnhe/gruvbox-material'
 Plug 'lifepillar/vim-gruvbox8'
-" Plug 'rktjmp/lush.nvim'
-" Plug 'npxbr/gruvbox.nvim'
 Plug 'habamax/vim-gruvbit'
-Plug 'tjdevries/colorbuddy.nvim'
-Plug 'maaslalani/nordbuddy'
 
 "start page
 if s:is_fast
@@ -133,13 +129,9 @@ Plug 'tpope/vim-dadbod'
 Plug 'kristijanhusak/vim-dadbod-ui'
 
 " editing
-" Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-commentary'
-" Plug 'suy/vim-context-commentstring'
 Plug 'JoosepAlviste/nvim-ts-context-commentstring'
-" Plug 'Shougo/context_filetype.vim'
-" Plug 'tyru/caw.vim'
-Plug 'justinmk/vim-sneak'
+Plug 'phaazon/hop.nvim'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
@@ -155,8 +147,8 @@ Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
 Plug 'junegunn/vim-peekaboo'
-" Plug 'Yggdroot/indentLine'
-" Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'andymass/vim-matchup'
+Plug 'wellle/targets.vim'
 
 " file finder
 if !s:is_windows 
@@ -234,13 +226,12 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 if s:is_windows && (s:is_gui || exists('g:nvy') || exists('g:fvim_loaded'))
-    " colorscheme apprentice
-    colorscheme nordbuddy
+    colorscheme apprentice
 else
-    
-    let g:gruvbox_invert_selection = '0'
-    set background=dark
-    colorscheme gruvbox
+
+    " let g:gruvbox_invert_selection = '0'
+    " set background=dark
+    " colorscheme gruvbox
 
     " let g:gruvbox_invert_selection = '0'
     " let g:gruvbox_material_background = 'hard'
@@ -252,7 +243,7 @@ else
 
     " colorscheme apprentice
     
-    " colorscheme gruvbit
+    colorscheme gruvbit
 
     " let g:seoul256_background = 233
     " set background=dark
@@ -316,10 +307,6 @@ nnoremap gp `[v`]
 nnoremap ; :
 nnoremap > ;
 nnoremap < ,
-
-" beginning / end of line
-nnoremap <leader>h ^
-nnoremap <leader>l $
 
 " indent in visual model
 vnoremap < <gv
@@ -596,11 +583,8 @@ lua << EOF
     store_selection_keys = "<Tab>"
   }
   require('luasnip/loaders/from_vscode').load({ 
-    -- paths = { "~/.dotfiles/nvim/snippets" }
     paths = { "./snippets", "./plugged/friendly-snippets" }
   })
-  -- require("luasnip/loaders/from_vscode").load()
-  -- require("snippets/*")
   luasnip.filetype_extend("vue", {"html", "javascript", "css"})
   -- luasnip.filetype_extend("html", {"vue"})
   -- luasnip.filetype_extend("javascript", {"vue"})
@@ -619,7 +603,9 @@ lua << EOF
       ['<C-d>'] = cmp.mapping.scroll_docs(-4),
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       -- ['<M-Space>'] = cmp.mapping.complete(),
-      ['<C-e>'] = cmp.mapping.close(),
+      ['<C-e>'] = cmp.mapping(cmp.mapping.disable), 
+      ['<C-E>'] = cmp.mapping(cmp.mapping.disable), 
+      ['<C-y>'] = cmp.mapping(cmp.mapping.disable), 
       ['<CR>'] = cmp.mapping.confirm({
         behavior = cmp.ConfirmBehavior.Replace,
         select = true,
@@ -862,6 +848,24 @@ require'nvim-treesitter.configs'.setup {
   }
 }
 EOF
+
+"hop
+lua << EOF
+require'hop'.setup()
+EOF
+
+nnoremap f <cmd>HopChar1CurrentLineAC<cr>
+xnoremap f <cmd>HopChar1CurrentLineAC<cr>
+onoremap f <cmd>HopChar1CurrentLineAC<cr>
+nnoremap F <cmd>HopChar1CurrentLineBC<cr>
+xnoremap F <cmd>HopChar1CurrentLineBC<cr>
+onoremap F <cmd>HopChar1CurrentLineBC<cr>
+nnoremap s <cmd>HopChar2<cr>
+xnoremap s <cmd>HopChar2<cr>
+onoremap s <cmd>HopChar2<cr>
+nnoremap <leader>l <cmd>HopLine<cr>
+xnoremap <leader>l <cmd>HopLine<cr>
+onoremap <leader>l <cmd>HopLine<cr>
 
 
 " statusline {{

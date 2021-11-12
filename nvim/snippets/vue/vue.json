@@ -1,7 +1,7 @@
 {
-    "import @/component": {
+    "import @/components": {
         "prefix":"ico",
-        "body": "import $1 from '@components/$1.vue';"
+        "body": "import $1 from '@/components/$1.vue';"
     },
     "import common-vue" : {
         "prefix": "icv",

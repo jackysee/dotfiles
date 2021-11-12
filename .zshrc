@@ -35,6 +35,8 @@ export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
 
 stty -ixon
 
+xset r rate 250 250
+
 
 if [[ $(uname -a) =~ microsoft ]]; then
     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
