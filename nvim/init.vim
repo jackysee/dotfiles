@@ -51,7 +51,7 @@ if executable('xsel')
           \ }
 endif
 
-set lazyredraw
+" set lazyredraw
 
 nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>:AnzuClearSearchStatus<CR>
 
@@ -83,6 +83,13 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'sainnhe/gruvbox-material'
 Plug 'lifepillar/vim-gruvbox8'
 Plug 'habamax/vim-gruvbit'
+Plug 'arcticicestudio/nord-vim'
+Plug 'haishanh/night-owl.vim'
+Plug 'rakr/vim-one'
+Plug 'ayu-theme/ayu-vim'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'folke/tokyonight.nvim'
 
 "start page
 if s:is_fast
@@ -124,6 +131,9 @@ else
     " Plug 'nvim-lua/lsp-status.nvim'
 endif
 
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'folke/trouble.nvim'
+
 "db 
 Plug 'tpope/vim-dadbod'
 Plug 'kristijanhusak/vim-dadbod-ui'
@@ -131,10 +141,11 @@ Plug 'kristijanhusak/vim-dadbod-ui'
 " editing
 Plug 'tpope/vim-commentary'
 Plug 'JoosepAlviste/nvim-ts-context-commentstring'
-Plug 'phaazon/hop.nvim'
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-surround'
+" Plug 'tpope/vim-surround'
+Plug 'machakann/vim-sandwich'
 Plug 'tpope/vim-eunuch'
+Plug 'ggandor/lightspeed.nvim'
 Plug 'Raimondi/delimitMate'
 Plug 'chiedojohn/vim-case-convert'
 Plug 'christoomey/vim-tmux-navigator'
@@ -243,11 +254,21 @@ else
 
     " colorscheme apprentice
     
-    colorscheme gruvbit
+    " colorscheme gruvbit
 
     " let g:seoul256_background = 233
     " set background=dark
     " colorscheme seoul256
+    "
+    " colorscheme nord
+    " colorscheme night-owl
+    " colorscheme one
+    " colorscheme ayu
+    " colorscheme PaperColor
+    " colorscheme nightfox
+
+    let g:tokyonight_style = "night"
+    colorscheme tokyonight
 
 endif
 
@@ -420,6 +441,13 @@ map g# <Plug>(asterisk-zg#)<Plug>(anzu-update-search-status)
 
 let g:anzu_status_format = "%i/%l"
 
+augroup anzu
+  autocmd!
+  if exists(':AnzuClearSearchStatus')
+    autocmd WinLeave * :AnzuClearSearchStatus
+  endif
+augroup end
+
 if s:use_coc
     " coc
     let g:coc_global_extensions = [
@@ -538,6 +566,9 @@ lua << EOF
         cmd = { 'efm-langserver', '-loglevel', '5' },
         init_options = { documentFormatting = true},
         filetypes = { "javascript", "vue", "html", "css" },
+        root_dir = function(fname)
+          return lspconfig.util.root_pattern("package.json")(fname)
+        end,
         settings = {
             rootMarkers = {"package.json"},
             languages = {
@@ -695,15 +726,20 @@ autocmd FileType TelescopePrompt let b:loaded_delimitMate = 1
 
 lua << EOF
     local actions = require('telescope.actions')
-    require('telescope').setup{
+    require('telescope').setup {
       defaults = {
         layout_config = {
             prompt_position = 'top',
+            width = 0.92,
         },
+        layout_strategy = "flex",
+        -- border = false,
+        path_display = {'truncate'}, 
         sorting_strategy = "ascending",
         mappings = {
             i =  {
-                ["<esc>"] = actions.close
+                ["<esc>"] = actions.close,
+                ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist
             }
         }
       },
@@ -728,6 +764,10 @@ EOF
 endif
 
 function! TelescopeFindFiles()
+    lua require('telescope.builtin').find_files(require('telescope.themes').get_ivy())
+endfunction
+
+function! TelescopeFindFilesUnderCursor()
     let txt = VisualSelection()
     Telescope find_files find_command=rg,--files
     execute "normal i" . txt
@@ -740,15 +780,17 @@ if s:is_windows
     nnoremap <leader>r <cmd>lua require('telescope.builtin').oldfiles()<cr>
     nnoremap <expr> <leader>F ':Telescope find_files<cr>' . "'" . expand('<cword>')
     vnoremap <leader>rg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
-    vnoremap <leader>F :<BS><BS><BS><BS><BS>:call TelescopeFindFiles()<cr>
+    vnoremap <leader>F :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
 else
     nnoremap <leader>sf :Telescope find_files find_command=rg,--files<cr>
-    nnoremap <leader>srg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
+    nnoremap <leader>sl <cmd>lua require('telescope.builtin').live_grep({})<cr>
+    nnoremap <leader>sg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
     nnoremap <leader>sb <cmd>lua require('telescope.builtin').buffers()<cr>
     nnoremap <leader>sr <cmd>lua require('telescope.builtin').oldfiles()<cr>
+    nnoremap <leader>sc <cmd>lua require('telescope.builtin').commands()<cr>
     nnoremap <expr> <leader>sF ':Telescope find_files<cr>' . "'" . expand('<cword>')
-    vnoremap <leader>srg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
-    vnoremap <leader>sF :<BS><BS><BS><BS><BS>:call TelescopeFindFiles()<cr>
+    vnoremap <leader>sg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
+    vnoremap <leader>sF :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
 endif
 
 " fzf
@@ -841,32 +883,25 @@ let g:db_ui_save_location = '~/.config/db_ui'
 " :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript
 
 "commentstring
-lua << EOF
-require'nvim-treesitter.configs'.setup {
-  context_commentstring = {
-    enable = true
-  }
-}
-EOF
+lua require'nvim-treesitter.configs'.setup { context_commentstring = { enable = true } }
 
-"hop
-lua << EOF
-require'hop'.setup()
-EOF
+" vim-sandwich
+runtime macros/sandwich/keymap/surround.vim
+let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
+let g:sandwich#recipes += [
+    \ {'buns': ["( ", " )"], 'nesting': 1, 'match_syntax': 1, 'input': ['('] },
+    \ {'buns': ["[ ", " ]"], 'nesting': 1, 'match_syntax': 1, 'input': ['['] },
+    \ {'buns': ["{ ", " }"], 'nesting': 1, 'match_syntax': 1, 'input': ['{'] },
+    \ ]
 
-nnoremap f <cmd>HopChar1CurrentLineAC<cr>
-xnoremap f <cmd>HopChar1CurrentLineAC<cr>
-onoremap f <cmd>HopChar1CurrentLineAC<cr>
-nnoremap F <cmd>HopChar1CurrentLineBC<cr>
-xnoremap F <cmd>HopChar1CurrentLineBC<cr>
-onoremap F <cmd>HopChar1CurrentLineBC<cr>
-nnoremap s <cmd>HopChar2<cr>
-xnoremap s <cmd>HopChar2<cr>
-onoremap s <cmd>HopChar2<cr>
-nnoremap <leader>l <cmd>HopLine<cr>
-xnoremap <leader>l <cmd>HopLine<cr>
-onoremap <leader>l <cmd>HopLine<cr>
-
+" lightspeed
+lua require('lightspeed').setup({})
+" nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
+" nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
+" nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
+" nmap <expr> T reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_T" : "T"
+xmap s <Plug>Lightspeed_x
+xmap S <Plug>Lightspeed_S
 
 " statusline {{
 
