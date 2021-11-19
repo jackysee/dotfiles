@@ -367,6 +367,11 @@ nnoremap <leader>w :WinResize<CR>
 " sudo tee save with w!!
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
+augroup numbertoggle
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave,WinEnter,CmdlineLeave * if &nu && mode() != "i" | set rnu   | endif
+  autocmd BufLeave,FocusLost,InsertEnter,WinLeave,CmdlineEnter *   if &nu                  | set nornu | redraw | endif
+augroup END
 
 " Update a buffer's contents on focus if it changed outside of Vim.
 au FocusGained,BufEnter * :checktime
