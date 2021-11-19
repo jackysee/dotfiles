@@ -6,7 +6,6 @@ let s:is_fast = !s:is_windows || (s:is_windows && s:is_gui) || (s:is_windows && 
 let g:os = substitute(system('uname'), '\n', '', '')
 let s:has_node = executable('node')
 let s:path = expand('<sfile>:p:h')
-let s:use_coc = v:false
 let mapleader = " "
 
 " Settings
@@ -101,8 +100,6 @@ if s:is_fast
     Plug 'L3MON4D3/LuaSnip'
     Plug 'saadparwaiz1/cmp_luasnip'
     Plug 'rafamadriz/friendly-snippets'
-    " Plug 'SirVer/ultisnips'
-    " Plug 'honza/vim-snippets'
 endif
 
 " git
@@ -115,21 +112,16 @@ Plug 'ludovicchabant/vim-lawrencium'
 "diff tools
 Plug 'whiteinge/diffconflicts'
 
-" coc
-if s:use_coc
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-else
-    Plug 'neovim/nvim-lspconfig'
-    "Plug 'hrsh7th/nvim-compe'
-    Plug 'kabouzeid/nvim-lspinstall'
-    Plug 'hrsh7th/nvim-cmp'
-    Plug 'hrsh7th/cmp-buffer'
-    Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'hrsh7th/cmp-path'
-    Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-    Plug 'ray-x/lsp_signature.nvim'
-    " Plug 'nvim-lua/lsp-status.nvim'
-endif
+Plug 'neovim/nvim-lspconfig'
+"Plug 'hrsh7th/nvim-compe'
+Plug 'kabouzeid/nvim-lspinstall'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-path'
+Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+Plug 'ray-x/lsp_signature.nvim'
+" Plug 'nvim-lua/lsp-status.nvim'
 
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
@@ -200,6 +192,9 @@ endif
 
 " elm
 Plug 'elmcast/elm-vim', { 'for': ['elm']}
+
+" lua
+Plug 'andrejlevkovitch/vim-lua-format'
 
 call plug#end()
 
@@ -353,17 +348,9 @@ execute 'nnoremap <silent> <leader>vv :vsp '.s:path.'/init.vim<CR>'
 nnoremap ]q :cnext<cr>
 nnoremap [q :cprev<cr> 
 
-" vim-sneak
-let g:sneak#s_next = 1
-let g:sneak#label = 1
-let g:sneak#use_ic_scs = 1
-
-" let g:indentLine_char = '▏'
 
 " netw
 let g:netrw_browse_split=2
-" let g:netrw_banner=0
-" let g:netrw_winresize=10
 nnoremap <leader>pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 35<CR>
 
 "textobj for bracket function like block (linewise) 
@@ -448,181 +435,124 @@ augroup anzu
   endif
 augroup end
 
-if s:use_coc
-    " coc
-    let g:coc_global_extensions = [
-                \   'coc-css',
-                \   'coc-html',
-                \   'coc-json',
-                \   'coc-emmet',
-                \   'coc-ultisnips',
-                \   'coc-prettier',
-                \   'coc-eslint'
-                \ ]
-                "\   'coc-pairs',
-    set updatetime=300
-    set shortmess+=c
-    set signcolumn=yes
-    " remap goto
-    nmap <leader>gd <Plug>(coc-definition)
-    nmap <leader>gt <Plug>(coc-type-definition)
-    nmap <leader>gi <Plug>(coc-implementation)
-    nmap <leader>gr <Plug>(coc-references)
-    " Remap for do codeAction of current line
-    nmap <leader>ca  <Plug>(coc-codeaction)
-    " Fix autofix problem of current line
-    nmap <leader>cf  <Plug>(coc-fix-current)
-    nmap <leader>cj  <Plug>(coc-diagnostic-next-error)
-    nmap <leader>ck  <Plug>(coc-diagnostic-prev-error)
 
-    inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
-
-    nnoremap <leader>cd :call <SID>show_documentation()<CR>
-    nnoremap <leader>cs :call CocActionAsync('showSignatureHelp')<CR>
-
-    " manual trigger LSP completion
-    inoremap <silent><expr> <c-j> coc#refresh()
-
-    function! s:show_documentation()
-      if (index(['vim','help'], &filetype) >= 0)
-        execute 'h '.expand('<cword>')
-      elseif (coc#rpc#ready())
-        call CocActionAsync('doHover')
-      else
-        execute '!' . &keywordprg . " " . expand('<cword>')
-      endif
-    endfunction
-
-    fun! EnableCocJava()
-        call coc#config('java.enabled', v:true)
-        call CocAction('reloadExtension', 'coc-java')
-    endfun
-    command! EnableCocJava call EnableCocJava()
-
-    augroup coc 
-        autocmd!
-        " update signature help on jump placeholder.
-        autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-        " autocmd User CocStatusChange call RefreshStatusline()
-    augroup end
-
-else
-
-    "lsp config
+"lsp config
 
 lua << EOF
-    local lspconfig = require"lspconfig"
-    local lspinstall = require"lspinstall"
-    lspinstall.setup()
-    local lsp_signature = require"lsp_signature"
-    -- local servers = require"lspinstall".installed_servers()
-    -- for _, server in pairs(servers) do
-    --     print(server)
-    -- end
-    -- print(vim.inspect(lspconfig))
-    local lsp_common_opt = {
-        init_options = { formatting = false },
-        on_attach = function(client)
-          client.resolved_capabilities.document_formatting = false
-          lsp_signature.on_attach({
-            -- floating_window = false,
-            fix_pos = false,
-            hint_enable = false
-          })
-        end
-    }
-    local servers = require'lspinstall'.installed_servers()
-    for _, server in pairs(servers) do
-      if not server == 'efm' then
-        require'lspconfig'[server].setup(lsp_common_opt)
-      end
+local lspconfig = require"lspconfig"
+local lspinstall = require"lspinstall"
+lspinstall.setup()
+local lsp_signature = require"lsp_signature"
+-- local servers = require"lspinstall".installed_servers()
+-- for _, server in pairs(servers) do
+--     print(server)
+-- end
+-- print(vim.inspect(lspconfig))
+local lsp_common_opt = {
+    init_options = { formatting = false },
+    on_attach = function(client)
+      client.resolved_capabilities.document_formatting = false
+      lsp_signature.on_attach({
+        -- floating_window = false,
+        fix_pos = false,
+        hint_enable = false
+      })
     end
+}
+local servers = require'lspinstall'.installed_servers()
+for _, server in pairs(servers) do
+  if not server == 'efm' then
+    require'lspconfig'[server].setup(lsp_common_opt)
+  end
+end
 
-    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics, {
-            virtual_text = true,
-            underline = true,
-            signs = true
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        virtual_text = true,
+        underline = true,
+        signs = true
+    }
+)
+local eslint = {
+    lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
+    lintStdin = true,
+    lintFormats = { "%f:%l:%c: %m" },
+    lintIgnoreExitCode = true,
+    -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
+    -- formatStdin = true
+}
+local is_windows = vim.api.nvim_eval('s:is_windows')
+local prettier = {
+  formatCommand = 'prettierd "${INPUT}"',
+  formatStdin = true,
+  env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
+}
+if is_windows then
+    prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
+end
+lspconfig.efm.setup {
+    cmd = { 'efm-langserver', '-loglevel', '5' },
+    init_options = { documentFormatting = true},
+    filetypes = { "javascript", "vue", "html", "css" },
+    root_dir = function(fname)
+      return lspconfig.util.root_pattern("package.json")(fname)
+    end,
+    settings = {
+        rootMarkers = {"package.json"},
+        languages = {
+            javascript = { prettier, eslint },
+            html = { prettier, eslint },
+            vue = { prettier, eslint },
+            css = { prettier,  eslint }
         }
-    )
-    local eslint = {
-        lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
-        lintStdin = true,
-        lintFormats = { "%f:%l:%c: %m" },
-        lintIgnoreExitCode = true,
-        -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
-        -- formatStdin = true
     }
-    local is_windows = vim.api.nvim_eval('s:is_windows')
-    local prettier = {
-      formatCommand = 'prettierd "${INPUT}"',
-      formatStdin = true,
-      env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
-    }
-    if is_windows then
-        prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
-    end
-    lspconfig.efm.setup {
-        cmd = { 'efm-langserver', '-loglevel', '5' },
-        init_options = { documentFormatting = true},
-        filetypes = { "javascript", "vue", "html", "css" },
-        root_dir = function(fname)
-          return lspconfig.util.root_pattern("package.json")(fname)
-        end,
-        settings = {
-            rootMarkers = {"package.json"},
-            languages = {
-                javascript = { prettier, eslint },
-                html = { prettier, eslint },
-                vue = { prettier, eslint },
-                css = { prettier,  eslint }
-            }
-        }
-    }
-
+}
 EOF
-    augroup FormatAutogroup
-      autocmd!
-      " autocmd BufWritePost *.vue,*.js,*.css,*.scss,*.html FormatWrite
-      autocmd BufWritePre *.js,*.js,*.css,*.html,*.vue lua vim.lsp.buf.formatting_sync(nil, 1000)
-    augroup END
-    nmap <leader>cj  <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
-    nmap <leader>ck  <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
-    nnoremap <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
-    nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
-    nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
-    nnoremap <leader>K <cmd>lua vim.lsp.buf.hover()<CR>
-    nnoremap <leader>gi <cmd>lua vim.lsp.buf.implementation()<CR>
-    nnoremap <leader>gr <cmd>lua vim.lsp.buf.references()<CR>
-    nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
-    nnoremap <leader>gs <cmd>lua vim.lsp.buf.signature_help()<CR>
 
-    "nvim-compe
-    set completeopt=menuone,noselect
-    set shortmess+=c
+augroup FormatAutogroup
+  autocmd!
+  " autocmd BufWritePost *.vue,*.js,*.css,*.scss,*.html FormatWrite
+  autocmd BufWritePre *.js,*.js,*.css,*.html,*.vue lua vim.lsp.buf.formatting_sync(nil, 1000)
+augroup END
 
+nmap <leader>cj  <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
+nmap <leader>ck  <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
+nnoremap <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
+nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <leader>K <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <leader>gi <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <leader>gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
+nnoremap <leader>gs <cmd>lua vim.lsp.buf.signature_help()<CR>
+set completeopt=menuone,noselect
+set shortmess+=c
+
+"luasnip
 lua << EOF
+local luasnip = require'luasnip'
+vim.cmd [[ imap <silent><expr> <tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<tab>' ]]
+vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<C-j>' ]]
+vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
 
-  local luasnip = require'luasnip'
-  vim.cmd [[ imap <silent><expr> <tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<tab>' ]]
-  vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<C-j>' ]]
-  vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
+luasnip.config.set_config {
+history = true,
+-- updateevents = "TextChanged,TextChangedI",
+store_selection_keys = "<Tab>"
+}
+require('luasnip/loaders/from_vscode').load({ 
+paths = { "./snippets", "./plugged/friendly-snippets" }
+})
+luasnip.filetype_extend("vue", {"html", "javascript", "css"})
+-- luasnip.filetype_extend("html", {"vue"})
+-- luasnip.filetype_extend("javascript", {"vue"})
+-- luasnip.filetype_extend("css", {"vue"})
+EOF
 
-  luasnip.config.set_config {
-    history = true,
-    -- updateevents = "TextChanged,TextChangedI",
-    store_selection_keys = "<Tab>"
-  }
-  require('luasnip/loaders/from_vscode').load({ 
-    paths = { "./snippets", "./plugged/friendly-snippets" }
-  })
-  luasnip.filetype_extend("vue", {"html", "javascript", "css"})
-  -- luasnip.filetype_extend("html", {"vue"})
-  -- luasnip.filetype_extend("javascript", {"vue"})
-  -- luasnip.filetype_extend("css", {"vue"})
-
-  local cmp = require'cmp'
-  cmp.setup({
+" cmp
+lua << EOF
+local cmp = require'cmp'
+cmp.setup({
     snippet = {
       expand = function(args)
         -- vim.fn["UltiSnips#Anon"](args.body)
@@ -690,10 +620,9 @@ lua << EOF
         return vim_item
       end,
     },
-  })
+})
 
 EOF
-endif
 
 " Move visual selection
 vnoremap J :m '>+1<cr>gv=gv
@@ -725,34 +654,34 @@ autocmd FileType TelescopePrompt let b:loaded_delimitMate = 1
 
 
 lua << EOF
-    local actions = require('telescope.actions')
-    require('telescope').setup {
-      defaults = {
-        layout_config = {
-            prompt_position = 'top',
-            width = 0.92,
-        },
-        layout_strategy = "flex",
-        -- border = false,
-        path_display = {'truncate'}, 
-        sorting_strategy = "ascending",
-        mappings = {
-            i =  {
-                ["<esc>"] = actions.close,
-                ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist
-            }
+local actions = require('telescope.actions')
+require('telescope').setup {
+  defaults = {
+    layout_config = {
+        prompt_position = 'top',
+        width = 0.92,
+    },
+    layout_strategy = "flex",
+    -- border = false,
+    path_display = {'truncate'}, 
+    sorting_strategy = "ascending",
+    mappings = {
+        i =  {
+            ["<esc>"] = actions.close,
+            ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist
         }
-      },
-      extensions = {
-        fzf = {
-          fuzzy = true,                    -- false will only do exact matching
-          override_generic_sorter = true, -- override the generic sorter
-          override_file_sorter = true,     -- override the file sorter
-          case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
-                                           -- the default case_mode is "smart_case"
-        }
-      }
     }
+  },
+  extensions = {
+    fzf = {
+      fuzzy = true,                    -- false will only do exact matching
+      override_generic_sorter = true, -- override the generic sorter
+      override_file_sorter = true,     -- override the file sorter
+      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                                       -- the default case_mode is "smart_case"
+    }
+  }
+}
 EOF
 
 if !s:is_windows
@@ -763,33 +692,37 @@ lua << EOF
 EOF
 endif
 
-function! TelescopeFindFiles()
-    lua require('telescope.builtin').find_files(require('telescope.themes').get_ivy())
+function! TelescopeFindFiles(txt)
+    lua require('telescope.builtin').find_files({find_command={'rg','--files'}})
+    call feedkeys(a:txt)
 endfunction
 
 function! TelescopeFindFilesUnderCursor()
     let txt = VisualSelection()
-    Telescope find_files find_command=rg,--files
-    execute "normal i" . txt
+    call TelescopeFindFiles(txt)
+endfunction
+
+function! TelescopeGrepVisualSelectedString()
+    lua require('telescope.builtin').grep_string({ search = vim.api.nvim_eval('VisualSelection()'), use_regex = true })
 endfunction
 
 if s:is_windows
-    nnoremap <leader>f :Telescope find_files find_command=rg,--files<cr>
+    nnoremap <leader>sf :call TelescopeFindFiles()<cr>
     nnoremap <leader>rg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
     nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
     nnoremap <leader>r <cmd>lua require('telescope.builtin').oldfiles()<cr>
-    nnoremap <expr> <leader>F ':Telescope find_files<cr>' . "'" . expand('<cword>')
-    vnoremap <leader>rg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
+    nnoremap <leader>F :call TelescopeFindFiles(expand('<cword>'))<cr>
+    vnoremap <leader>rg :<BS><BS><BS><BS><BS>:call TelescopeGrepVisualSelectedString()<cr>
     vnoremap <leader>F :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
 else
-    nnoremap <leader>sf :Telescope find_files find_command=rg,--files<cr>
+    nnoremap <leader>sf :call TelescopeFindFiles()<cr>
     nnoremap <leader>sl <cmd>lua require('telescope.builtin').live_grep({})<cr>
     nnoremap <leader>sg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
     nnoremap <leader>sb <cmd>lua require('telescope.builtin').buffers()<cr>
     nnoremap <leader>sr <cmd>lua require('telescope.builtin').oldfiles()<cr>
     nnoremap <leader>sc <cmd>lua require('telescope.builtin').commands()<cr>
-    nnoremap <expr> <leader>sF ':Telescope find_files<cr>' . "'" . expand('<cword>')
-    vnoremap <leader>sg :<BS><BS><BS><BS><BS>Telescope grep_string use_regex=true search=<c-r>=VisualSelection()<cr><cr>
+    nnoremap <leader>sF :call TelescopeFindFiles(expand('<cword>'))<cr>
+    vnoremap <leader>sg :<BS><BS><BS><BS><BS>:call TelescopeGrepVisualSelectedString()<cr>
     vnoremap <leader>sF :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
 endif
 
@@ -895,11 +828,16 @@ let g:sandwich#recipes += [
     \ ]
 
 " lightspeed
-lua require('lightspeed').setup({})
-" nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
-" nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
-" nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
-" nmap <expr> T reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_T" : "T"
+lua << EOF
+require('lightspeed').setup({
+  instant_repeat_fwd_key = 'f',
+  instant_repeat_bwd_key = 'F'
+})
+EOF
+nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
+nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
+nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
+nmap <expr> T reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_T" : "T"
 xmap s <Plug>Lightspeed_x
 xmap S <Plug>Lightspeed_S
 
@@ -959,41 +897,6 @@ function! s:is_tmp_file() abort
     return 0
   endif
 endfunction
-
-function! CocCurrentFunction() abort
-    return get(b:, 'coc_current_function', '')
-endfunction
-
-function! CocLineStatus() abort
-  if s:is_tmp_file()
-      return ''
-  endif
-  if exists('g:coc_status') && get(g:, 'coc_enabled', 0)
-      return g:coc_status
-  endif
-  return ''
-endfunction
-
-function! CocDignostic() abort
-    let info = get(b:, 'coc_diagnostic_info', {})
-    if empty(info) | return '' | endif
-    let msgs = []
-    if get(info, 'error', 0)
-        call add(msgs, 'E' . info['error'])
-    endif
-    if get(info, 'warning', 0)
-        call add(msgs, 'W' . info['warning'])
-    endif
-    return join(msgs, ' ')
-endfunction
-
-function! CocStatus() abort
-    let s1 = CocCurrentFunction()
-    let s3 = CocDignostic()
-    let s2 = CocLineStatus()
-    return join([s1, s3, s2], ' ')
-endfunction
-
 
 lua << EOF
 function _G.lsp_progress()
@@ -1073,11 +976,7 @@ function! Statusline()
   let file = '%{FilenameStatus()}'
   let ft  = "%{&filetype} "
   let sep = ' %= '
-  if s:use_coc
-    let lsp = '%{AddSpace(CocStatus())}'
-  else
-    let lsp = '%{AddSpace(LspStatus())}'
-  endif
+ let lsp = '%{AddSpace(LspStatus())}'
   
   " let ale = '%{AddSpace(ALELinterStatus())}'
   let ale = ''

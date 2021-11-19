@@ -23,17 +23,24 @@ function s:WinResize()
         let s:winResizeTimer = timer_start(800, {-> feedkeys("\<CR>")})
         let c = getchar()
         let n = winnr()
-        let isCap = c == char2nr('H') || c == char2nr('J') || c == char2nr('K') || c == char2nr('L')
-        let step = isCap? 10 : 3 
+        let h = char2nr('h')
+        let H = char2nr('H')
+        let j = char2nr('j')
+        let J = char2nr('J')
+        let k = char2nr('k')
+        let K = char2nr('K')
+        let l = char2nr('l')
+        let L = char2nr('L')
+        let step = (c == H || c == J || c == K || c == L)? 10 : 3 
         let shifted = 0
-        if c == char2nr("h") || c == char2nr("H")
+        if c == h || c == H
             if !HasWin('h') | wincmd h | let shifted = 1 | endif
             execute 'vertical resize '. (HasWin('l')? '+':'-'). step
-        elseif (c == char2nr("j") || c == char2nr("J")) && !(HasWin('k') && HasWin('j'))
+        elseif (c == j || c == J && !(HasWin('k') && HasWin('j'))
             execute 'resize ' . (HasWin('j')?'-':'+') . step
-        elseif ( c == char2nr("k") || c == char2nr("K") ) && !(HasWin('k') && HasWin('j'))
+        elseif ( c == k || c == K ) && !(HasWin('k') && HasWin('j'))
             execute 'resize ' . (HasWin('j')?'+':'-') . step
-        elseif c == char2nr("l")  || c == char2nr("L")
+        elseif c == l  || c == L
             if !HasWin('h') | wincmd h | let shifted = 1 | endif
             execute 'vertical resize '. (HasWin('l')? '-':'+'). step
         elseif c == char2nr('=')
