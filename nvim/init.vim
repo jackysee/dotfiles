@@ -707,7 +707,7 @@ function! TelescopeGrepVisualSelectedString()
 endfunction
 
 if s:is_windows
-    nnoremap <leader>sf :call TelescopeFindFiles()<cr>
+    nnoremap <leader>sf :call TelescopeFindFiles('')<cr>
     nnoremap <leader>rg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
     nnoremap <leader>b <cmd>lua require('telescope.builtin').buffers()<cr>
     nnoremap <leader>r <cmd>lua require('telescope.builtin').oldfiles()<cr>
@@ -715,7 +715,7 @@ if s:is_windows
     vnoremap <leader>rg :<BS><BS><BS><BS><BS>:call TelescopeGrepVisualSelectedString()<cr>
     vnoremap <leader>F :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
 else
-    nnoremap <leader>sf :call TelescopeFindFiles()<cr>
+    nnoremap <leader>sf :call TelescopeFindFiles('')<cr>
     nnoremap <leader>sl <cmd>lua require('telescope.builtin').live_grep({})<cr>
     nnoremap <leader>sg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
     nnoremap <leader>sb <cmd>lua require('telescope.builtin').buffers()<cr>
