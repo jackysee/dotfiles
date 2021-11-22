@@ -35,7 +35,9 @@ export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
 
 stty -ixon
 
-xset r rate 250 250
+if command -v xset > /dev/null; then
+    xset r rate 250 250
+fi
 
 
 if [[ $(uname -a) =~ microsoft ]]; then
