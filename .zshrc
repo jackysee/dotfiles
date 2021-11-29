@@ -336,3 +336,5 @@ if [[ -f ~/.zshrc.local ]]; then
 fi
 
 # zprof
+
+alias luamake=/home/jackys/server/lua-language-server/3rd/luamake/luamake
