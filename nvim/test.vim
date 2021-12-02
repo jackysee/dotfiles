@@ -14,12 +14,37 @@ end
 
 execute 'set runtimepath+=' . s:plug_dir
 call plug#begin(s:plug_dir)
-Plug 'ggandor/lightspeed.nvim'
+Plug 'neovim/nvim-lspconfig'
 call plug#end()
 PlugInstall | quit
 
-nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
-nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
-nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
-nmap <expr> T reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_T" : "T"
+lua << EOF
 
+local prettier = {
+    formatCommand = 'prettierd ${INPUT}',
+    formatStdin = true
+}
+
+require'lspconfig'.efm.setup {
+    cmd = {'/home/jackys/.local/share/nvim/lsp_servers/efm/efm-langserver'},
+    filetypes = { "typescript", "javascript"},
+    init_options = { documentFormatting = true },
+    root_dir = require'lspconfig.util'.root_pattern('package.json'),
+    settings = {
+        rootMarkers = { "package.json" },
+        languages = {
+            typescript = { prettier },
+            javascript = { prettier }
+        }
+    },
+    on_attach = function(client)
+        client.resolved_capabilities.document_formatting = true
+    end
+}
+EOF
+
+
+augroup FormatAutogroup
+  autocmd!
+  autocmd BufWritePre *.js,*.ts lua vim.lsp.buf.formatting_sync(nil, 1000)
+augroup END

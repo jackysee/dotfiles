@@ -22,7 +22,6 @@ set ignorecase
 set smartcase
 set clipboard+=unnamedplus
 set splitbelow splitright
-set hidden
 set mouse=a
 set scrolloff=1
 set sidescrolloff=5
@@ -114,8 +113,7 @@ Plug 'jackysee/telescope-hg.nvim'
 Plug 'whiteinge/diffconflicts'
 
 Plug 'neovim/nvim-lspconfig'
-"Plug 'hrsh7th/nvim-compe'
-Plug 'kabouzeid/nvim-lspinstall'
+Plug 'williamboman/nvim-lsp-installer'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -123,6 +121,7 @@ Plug 'hrsh7th/cmp-path'
 Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 Plug 'ray-x/lsp_signature.nvim'
 " Plug 'nvim-lua/lsp-status.nvim'
+Plug 'b0o/SchemaStore.nvim'
 
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
@@ -197,7 +196,7 @@ Plug 'elmcast/elm-vim', { 'for': ['elm']}
 
 " lua
 Plug 'andrejlevkovitch/vim-lua-format', { 'for': ['lua']}
-Plug 'bfredl/nvim-luadev', { 'for': ['lua']}
+" Plug 'bfredl/nvim-luadev', { 'for': ['lua']}
 
 call plug#end()
 
@@ -450,28 +449,9 @@ augroup end
 
 lua << EOF
 local lspconfig = require"lspconfig"
-local lspinstall = require"lspinstall"
-lspinstall.setup()
+local lspinstaller = require"nvim-lsp-installer"
 local lsp_signature = require"lsp_signature"
 
-local lsp_common_opt = {
-    init_options = { formatting = false },
-    on_attach = function(client)
-        client.resolved_capabilities.document_formatting = false
-        lsp_signature.on_attach({
-            -- floating_window = false,
-            fix_pos = false,
-            hint_enable = false
-        })
-    end
-}
-
-local servers = require'lspinstall'.installed_servers()
-for _, server in pairs(servers) do
-    if not server == 'efm' then
-        require'lspconfig'[server].setup(lsp_common_opt)
-    end
-end
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -481,83 +461,100 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     }
 )
 
-local eslint = {
-    lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
-    lintStdin = true,
-    lintFormats = { "%f:%l:%c: %m" },
-    lintIgnoreExitCode = true,
-    -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
-    -- formatStdin = true
-}
 local is_windows = vim.api.nvim_eval('s:is_windows')
-local prettier = {
-    formatCommand = 'prettierd "${INPUT}"',
-    formatStdin = true,
-    env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
-}
-if is_windows then
-    prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
-end
-lspconfig.efm.setup {
-    cmd = { 'efm-langserver', '-loglevel', '5' },
-    init_options = { documentFormatting = true},
-    filetypes = { "javascript", "vue", "html", "css" },
-    root_dir = function(fname)
-        return lspconfig.util.root_pattern("package.json")(fname)
-    end,
-    settings = {
-        rootMarkers = {"package.json"},
-        languages = {
-            javascript = { prettier, eslint },
-            html = { prettier, eslint },
-            vue = { prettier, eslint },
-            css = { prettier,  eslint }
-        }
+lspinstaller.on_server_ready(function(server)
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+    local opts = {
+        capabilities = capabilities,
+        init_options = { formatting = false },
+        on_attach = function(client)
+            client.resolved_capabilities.document_formatting = false
+            lsp_signature.on_attach({
+                -- floating_window = false,
+                fix_pos = false,
+                hint_enable = false
+            })
+        end
     }
-}
 
-local system_name
-if vim.fn.has("mac") == 1 then
-    system_name = "macOS"
-elseif vim.fn.has("unix") == 1 then
-    system_name = "Linux"
-elseif vim.fn.has('win32') == 1 then
-    system_name = "Windows"
-else
-    print("Unsupported system for sumneko")
-end
--- local sumneko_root_path = '~/lspconfig/sumneko_lua/lua-language-server'
-local sumneko_root_path = os.getenv('HOME') .. '/server/lua-language-server'
-local sumneko_binary = sumneko_root_path.."/bin/"..system_name.."/lua-language-server"
-local runtime_path = vim.split(package.path, ';')
-table.insert(runtime_path, "lua/?.lua")
-table.insert(runtime_path, "lua/?/init.lua")
-lspconfig.sumneko_lua.setup {
-    autostart = false,
-    cmd = {sumneko_binary, "-E", sumneko_root_path .. "/main.lua"},
-    settings = {
-        Lua = {
-            runtime = { version = 'LuaJIT', path = runtime_path },
-            diagnostics = { globals = {'vim'} },
-            workspace = { library = vim.api.nvim_get_runtime_file("", true) },
-            telemetry = { enable = false }
-        }
-    },
-    init_options = { formatting = false },
-    on_attach = function(client)
-        client.resolved_capabilities.document_formatting = false
-        lsp_signature.on_attach({
-            fix_pos = false,
-            hint_enable = false
-        })
+    if server.name == 'tsserver' then
+        opts.root_dir = require'lspconfig.util'.root_pattern('tsconfig.json')
     end
-}
+
+    if server.name == 'denols' then
+        opts.root_dir = require'lspconfig.util'.root_pattern('deno.json')
+    end
+
+    if server.name == 'efm' then
+        local eslint = {
+            lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
+            lintStdin = true,
+            lintFormats = { "%f:%l:%c: %m" },
+            lintIgnoreExitCode = true,
+            -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
+            -- formatStdin = true
+        }
+        local prettier = {
+            formatCommand = 'prettierd "${INPUT}"',
+            formatStdin = true,
+            env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
+        }
+        if is_windows ~= 0 then
+            prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
+        end
+        opts = {
+            capabilities = capabilities,
+            root_dir = require'lspconfig.util'.root_pattern("package.json", '.prettierrc', 'prettier.config.js', '.eslintrc.js'),
+            filetypes = { "javascript", "typescript", "vue", "html", "css" },
+            init_options = { documentFormatting = true },
+            settings = {
+                rootMarkers = {"package.json", 'prettierrc', 'prettier.config.js', '.eslintrc.js'},
+                languages = {
+                    javascript = { prettier, eslint },
+                    typescript = { prettier, eslint },
+                    html = { prettier, eslint },
+                    vue = { prettier, eslint },
+                    css = { prettier,  eslint }
+                }
+            },
+            on_attach = function(client)
+                client.resolved_capabilities.document_formatting = true
+            end
+        }
+    end
+
+    if server.name == 'sumneko_lua' then
+        opts.autostart = false
+        opts.settings = {
+            Lua = {
+                -- runtime = { version = 'LuaJIT', path = runtime_path },
+                diagnostics = { globals = {'vim'} },
+                workspace = { library = vim.api.nvim_get_runtime_file("", true) },
+                telemetry = { enable = false }
+            }
+        }
+        opts.init_options = { formatting = false }
+    end
+
+    if server.name == 'jsonls' then
+        opts.settings = {
+            json = {
+                schemas = require('schemastore').json.schemas {
+                    select = { '.eslintrc', 'package.json', }
+                }
+            }
+        }
+    end
+    server:setup(opts)
+end)
+
+
 EOF
 
 augroup FormatAutogroup
   autocmd!
-  " autocmd BufWritePost *.vue,*.js,*.css,*.scss,*.html FormatWrite
-  autocmd BufWritePre *.js,*.js,*.css,*.html,*.vue lua vim.lsp.buf.formatting_sync(nil, 1000)
+  autocmd BufWritePre *.js,*.css,*.html,*.vue,*.ts lua vim.lsp.buf.formatting_sync(nil, 1000)
 augroup END
 
 if executable('lua-format')
@@ -596,9 +593,7 @@ require('luasnip/loaders/from_vscode').load({
     paths = { "./snippets", "./plugged/friendly-snippets" }
 })
 luasnip.filetype_extend("vue", {"html", "javascript", "css"})
--- luasnip.filetype_extend("html", {"vue"})
--- luasnip.filetype_extend("javascript", {"vue"})
--- luasnip.filetype_extend("css", {"vue"})
+luasnip.filetype_extend("typescript", { "javascript"})
 EOF
 
 " cmp
