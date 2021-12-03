@@ -14,37 +14,28 @@ end
 
 execute 'set runtimepath+=' . s:plug_dir
 call plug#begin(s:plug_dir)
-Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'andymass/vim-matchup'
 call plug#end()
 PlugInstall | quit
 
+
+let g:vimsyn_embed = 'l'
+let g:loaded_matchit = 1
+let g:matchup_transmute_enabled = 0
+
 lua << EOF
 
-local prettier = {
-    formatCommand = 'prettierd ${INPUT}',
-    formatStdin = true
+require'nvim-treesitter.configs'.setup {
+    matchup = { enable = true }
 }
 
-require'lspconfig'.efm.setup {
-    cmd = {'/home/jackys/.local/share/nvim/lsp_servers/efm/efm-langserver'},
-    filetypes = { "typescript", "javascript"},
-    init_options = { documentFormatting = true },
-    root_dir = require'lspconfig.util'.root_pattern('package.json'),
-    settings = {
-        rootMarkers = { "package.json" },
-        languages = {
-            typescript = { prettier },
-            javascript = { prettier }
-        }
-    },
-    on_attach = function(client)
-        client.resolved_capabilities.document_formatting = true
+local test = function (a) 
+    if a == nil then
+        return 'word'
     end
-}
+    return 'hello'
+end
+
 EOF
 
-
-augroup FormatAutogroup
-  autocmd!
-  autocmd BufWritePre *.js,*.ts lua vim.lsp.buf.formatting_sync(nil, 1000)
-augroup END

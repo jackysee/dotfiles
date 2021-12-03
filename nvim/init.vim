@@ -113,6 +113,7 @@ Plug 'jackysee/telescope-hg.nvim'
 Plug 'whiteinge/diffconflicts'
 
 Plug 'neovim/nvim-lspconfig'
+Plug 'jose-elias-alvarez/null-ls.nvim'
 Plug 'williamboman/nvim-lsp-installer'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-buffer'
@@ -135,7 +136,6 @@ Plug 'tpope/vim-commentary'
 Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
-" Plug 'machakann/vim-sandwich'
 Plug 'tpope/vim-eunuch'
 Plug 'ggandor/lightspeed.nvim'
 Plug 'Raimondi/delimitMate'
@@ -452,19 +452,16 @@ local lspconfig = require"lspconfig"
 local lspinstaller = require"nvim-lsp-installer"
 local lsp_signature = require"lsp_signature"
 
-
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = true,
-        underline = true,
-        signs = true
-    }
-)
+vim.diagnostic.config({
+    virtual_text = true, 
+    signs = true
+});
 
 local is_windows = vim.api.nvim_eval('s:is_windows')
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
 lspinstaller.on_server_ready(function(server)
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
     local opts = {
         capabilities = capabilities,
         init_options = { formatting = false },
@@ -479,11 +476,13 @@ lspinstaller.on_server_ready(function(server)
     }
 
     if server.name == 'tsserver' then
-        opts.root_dir = require'lspconfig.util'.root_pattern('tsconfig.json')
+        opts.root_dir = require'lspconfig.util'.root_pattern('package.json', 'tsconfig.json')
+        -- opts.autostart = false
     end
 
     if server.name == 'denols' then
         opts.root_dir = require'lspconfig.util'.root_pattern('deno.json')
+        -- opts.autostart = false
     end
 
     if server.name == 'efm' then
@@ -504,12 +503,13 @@ lspinstaller.on_server_ready(function(server)
             prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
         end
         opts = {
+            -- autostart = false,
             capabilities = capabilities,
-            root_dir = require'lspconfig.util'.root_pattern("package.json", '.prettierrc', 'prettier.config.js', '.eslintrc.js'),
+            root_dir = require'lspconfig.util'.root_pattern("package.json", '.prettierrc.js', 'prettier.config.js', '.eslintrc.js'),
             filetypes = { "javascript", "typescript", "vue", "html", "css" },
             init_options = { documentFormatting = true },
             settings = {
-                rootMarkers = {"package.json", 'prettierrc', 'prettier.config.js', '.eslintrc.js'},
+                rootMarkers = {"package.json", '.prettierrc.js', 'prettier.config.js', '.eslintrc.js'},
                 languages = {
                     javascript = { prettier, eslint },
                     typescript = { prettier, eslint },
@@ -549,6 +549,22 @@ lspinstaller.on_server_ready(function(server)
     server:setup(opts)
 end)
 
+-- local null_ls = require("null-ls")
+-- null_ls.config {
+--     debug = true,
+--     sources = {
+--         null_ls.builtins.formatting.prettierd.with {
+--             only_local = "node_modules/.bin"
+--         },
+--         null_ls.builtins.diagnostics.eslint_d
+--     }
+-- }
+-- require("lspconfig")["null-ls"].setup { 
+--     on_attach = function(client)
+--         client.resolved_capabilities.document_formatting = true
+--     end
+-- }
+
 
 EOF
 
@@ -564,8 +580,8 @@ if executable('lua-format')
     augroup END
 endif
 
-nmap <leader>cj  <cmd>lua vim.lsp.diagnostic.goto_prev()<cr>
-nmap <leader>ck  <cmd>lua vim.lsp.diagnostic.goto_next()<cr>
+nmap <leader>cj  <cmd>lua vim.diagnostic.goto_prev()<cr>
+nmap <leader>ck  <cmd>lua vim.diagnostic.goto_next()<cr>
 nnoremap <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
@@ -987,13 +1003,13 @@ end
 function _G.lsp_error()
     if not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
         local s = ""
-        local errorCount = vim.lsp.diagnostic.get_count(0, [[Error]])
-        if errorCount > 0 then
-            s = s .. "E" .. errorCount
+        local errors = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
+        if #errors > 0 then
+            s = s .. "E" .. #errors
         end
-        local warningCount = vim.lsp.diagnostic.get_count(0, [[Warning]]);
-        if warningCount > 0 then
-            s = s .. "W" .. warningCount
+        local warns = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
+        if #warns > 0 then
+            s = s .. "W" .. #warns
         end
         return s
     end
