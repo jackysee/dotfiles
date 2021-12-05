@@ -51,7 +51,7 @@ endif
 
 " set lazyredraw
 
-nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>:AnzuClearSearchStatus<CR>
+nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>
 
 set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
 
@@ -145,7 +145,6 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
-Plug 'osyo-manga/vim-anzu'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
@@ -426,23 +425,8 @@ imap <C-e> <C-y>,
 noremap <leader>; g_a;<Esc>
 
 " vim-asterisk
-" nnoremap n nzz
-" nnoremap N Nzz
-nmap n <Plug>(anzu-n)zz
-nmap N <Plug>(anzu-N)zz
-map *  <Plug>(asterisk-z*)<Plug>(anzu-update-search-status)
-map g* <Plug>(asterisk-zg*)<Plug>(anzu-update-search-status)
-map #  <Plug>(asterisk-z#)<Plug>(anzu-update-search-status)
-map g# <Plug>(asterisk-zg#)<Plug>(anzu-update-search-status)
-
-let g:anzu_status_format = "%i/%l"
-
-augroup anzu
-  autocmd!
-  if exists(':AnzuClearSearchStatus')
-    autocmd WinLeave * :AnzuClearSearchStatus
-  endif
-augroup end
+nnoremap n nzz
+nnoremap N Nzz
 
 
 "lsp config
@@ -906,12 +890,6 @@ xmap gs       <Plug>VSurround
 xmap gS       <Plug>VgSurround
 
 " lightspeed
-lua << EOF
-require('lightspeed').setup({
-    instant_repeat_fwd_key = 'f',
-    instant_repeat_bwd_key = 'F'
-})
-EOF
 nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
 nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
 nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
@@ -1063,11 +1041,9 @@ function! Statusline()
   
   " let ale = '%{AddSpace(ALELinterStatus())}'
   let ale = ''
-  let search_status = '%{AddSpace(AddBracket(anzu#search_status()))}'
-  " let search_status = ''
   let pos = LineInfoStatus()
   " let dir = '%20.30{CurDir()} '
-  return vcs.file.search_status.sep.lsp.ale.ft.pos
+  return vcs.file.sep.lsp.ale.ft.pos
 endfunction
 
 function! RefreshStatusline()
