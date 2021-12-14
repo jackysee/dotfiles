@@ -31,12 +31,6 @@ alias hgrbt='hg rebase --dest tip'
 
 alias mvn=/usr/bin/mvn
 
-
-# alias xterm='nohup xterm > /dev/null 2>&1&'
-# alias xst='nohup st > /dev/null 2>&1&'
-
-alias mux='tmuxinator'
-
 alias geticon='node ~/.dotfiles/scripts/getMaterialIcon.js'
 
 killserver() {
@@ -53,7 +47,10 @@ startserver() {
 alias toast='powershell.exe -command New-BurntToastNotification -Text '
 
 alias tmux='tmux -2'
-alias ta='tmux attach -t'
+ta() {
+    tmux attach -t ${1:-0}
+}
+# alias ta='tmux attach -t'
 alias tad='tmux attach -d -t'
 alias tda='tmux detach-client'
 alias tlc='tmux list-client'

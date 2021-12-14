@@ -427,6 +427,7 @@ noremap <leader>; g_a;<Esc>
 " vim-asterisk
 nnoremap n nzz
 nnoremap N Nzz
+map * <Plug>(asterisk-z*)
 
 
 "lsp config
@@ -481,7 +482,7 @@ lspinstaller.on_server_ready(function(server)
         local prettier = {
             formatCommand = 'prettierd "${INPUT}"',
             formatStdin = true,
-            env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
+            -- env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
         }
         if is_windows ~= 0 then
             prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
@@ -564,8 +565,8 @@ if executable('lua-format')
     augroup END
 endif
 
-nmap <leader>cj  <cmd>lua vim.diagnostic.goto_prev()<cr>
-nmap <leader>ck  <cmd>lua vim.diagnostic.goto_next()<cr>
+nmap <leader>ck  <cmd>lua vim.diagnostic.goto_prev()<cr>
+nmap <leader>cj  <cmd>lua vim.diagnostic.goto_next()<cr>
 nnoremap <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
