@@ -5,5 +5,14 @@
             "/* eslint-disable no-console */",
             "console.log($1);"
         ]
+    },
+    "For Range": {
+        "prefix": "forr",
+        "body": [
+            "for (let ${1:index} = 0; ${1:index} < ${2:number}; ${1:index}++) {",
+                "\t$0",
+                "}"
+        ],
+        "description": "For Range"
     }
 }
