@@ -14,5 +14,9 @@
                 "}"
         ],
         "description": "For Range"
-    }
+    },
+    "import vue" : {
+        "prefix": "iv",
+        "body": "import { $1 } from 'vue';"
+    },
 }

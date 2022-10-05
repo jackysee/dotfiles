@@ -6,7 +6,10 @@
     "import common-vue" : {
         "prefix": "icv",
         "body": "import $1 from 'common-vue/$1';"
-
+    },
+    "import vue" : {
+        "prefix": "iv",
+        "body": "import { $1 } from 'vue';"
     },
     "vue sfc": {
         "prefix":"vvue",
@@ -23,6 +26,34 @@
             "    $2",
             "};",
             "</script>"
+        ]
+    },
+    "vue setup": {
+        "prefix":"vsu",
+        "body": [
+            "<script setup>",
+            "$1",
+            "</script>",
+            "",
+            "<template>",
+            "    <div>",
+            "        $2",
+            "    </div>",
+            "</template>"
+        ]
+    },
+    "histoire story": {
+        "prefix":"vst",
+        "body": [
+            "<script setup>",
+            "$1",
+            "</script>",
+            "",
+            "<template>",
+            "    <Story title='$2'>",
+            "        $3",
+            "    </Story>",
+            "</template>"
         ]
     },
     "message $t": {

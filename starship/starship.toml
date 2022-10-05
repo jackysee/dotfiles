@@ -1,6 +1,9 @@
 [hostname]
 format = "[@$hostname](dimmed fg:246) "
 
+[localip]
+disabled = true
+
 [username]
 format ="[$user](dimmed fg:246)"
 

@@ -32,6 +32,7 @@ export KEYTIMEOUT=25
 
 export WSL_HOST=$(tail -1 /etc/resolv.conf | cut -d' ' -f2)
 export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
+export ANDROID_SDK_ROOT=/opt/android-sdk
 
 stty -ixon
 
@@ -67,6 +68,9 @@ export FZF_DEFAULT_OPTS='
     --color fg:188,hl:103,fg+:222,bg+:234,hl+:104
     --color info:183,prompt:110,spinner:107,pointer:167,marker:215'
 export FZF_CTRL_T_OPTS="--preview 'bat {}' --bind '?:toggle-preview'"
+
+# fnm
+export ZSH_FNM_ENV_EXTRA_ARGS="--use-on-cd"
 
 ### Added by Zinit's installer
 if [[ ! -f $HOME/.zplugin/bin/zinit.zsh ]]; then
@@ -117,7 +121,7 @@ zinit light sharkdp/fd
 # zinit light ogham/exa
 
 zinit ice as"program" pick"bin/git-dsf" wait"0" lucid
-zinit light zdharma-continuum/zsh-diff-so-fancy
+zinit light z-shell/zsh-diff-so-fancy
 
 zinit ice from"gh-r" as"program" mv"tldr* -> tldr" pick"tldr"
 zinit light dbrgn/tealdeer
@@ -131,7 +135,8 @@ zinit light dandavison/delta
 zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg" bpick"${BPICK}"
 zinit light BurntSushi/ripgrep
 
-zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
+# zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"*linux64*tar*"
+zinit ice from"gh-r" as"program" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
 zinit light neovim/neovim
 
 
@@ -141,7 +146,7 @@ fi
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure
 
-zinit ice as'program' from'gh-r' mv'target/*/release/starship -> starship' atload'eval $(starship init zsh)'
+zinit ice as'program' from'gh-r' mv'starship* -> starship' atload'eval $(starship init zsh)'
 zinit light starship/starship
 
 
@@ -257,7 +262,7 @@ hgr() {
   fi
 }
 
-hgci() {
+hgcom () {
   local files
   files=$(hg status | fzf -m --preview 'hg diff --color=always {2}' --bind '?:toggle-preview')
   if [ "$files" ]; then
@@ -277,7 +282,7 @@ vf() {
 
   if [[ -n $files ]]
   then
-     vim -- $files
+     nvim -- $files
      print -l $files[1]
   fi
 }
@@ -291,7 +296,7 @@ vg() {
 
   if [[ -n $file ]]
   then
-     vim $file +$line
+     nvim $file +$line
   fi
 }
 

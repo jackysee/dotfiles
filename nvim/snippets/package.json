@@ -16,6 +16,10 @@
       {
         "language":"javascript",
         "path":"./javascript.json"
+      },
+      {
+        "language": "jest",
+        "path": "./jest.json"
       }
     ]
   }

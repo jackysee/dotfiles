@@ -120,7 +120,6 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-path'
 " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-Plug 'ray-x/lsp_signature.nvim'
 " Plug 'nvim-lua/lsp-status.nvim'
 Plug 'b0o/SchemaStore.nvim'
 
@@ -137,9 +136,10 @@ Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-eunuch'
-Plug 'ggandor/lightspeed.nvim'
+" Plug 'ggandor/lightspeed.nvim'
+Plug 'ggandor/leap.nvim'
 Plug 'Raimondi/delimitMate'
-Plug 'chiedojohn/vim-case-convert'
+Plug 'arthurxavierx/vim-caser'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'pbrisbin/vim-mkdir'
@@ -148,13 +148,15 @@ Plug 'haya14busa/vim-asterisk'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
-Plug 'junegunn/vim-peekaboo'
+" Plug 'junegunn/vim-peekaboo'
 Plug 'andymass/vim-matchup'
 Plug 'wellle/targets.vim'
 Plug 'voldikss/vim-floaterm'
+Plug 'terryma/vim-expand-region'
 
 " file finder
 if !s:is_windows 
+    " Plug 'ibhagwan/fzf-lua'
     if isdirectory('~/.zplugin/plugins/junegunn---fzf')
         Plug '~/.zplugin/plugins/junegunn---fzf'
     else
@@ -168,6 +170,7 @@ if !s:is_windows
 endif
 
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 " :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript vim
 
 
@@ -299,6 +302,7 @@ let g:vimsyn_embed = 'l'
 
 "startify
 " let g:startify_custom_header = ['']
+let g:startify_change_to_dir = 0
 let g:startify_change_to_vcs_root = 1
 let g:startify_lists = [
             \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
@@ -418,8 +422,17 @@ function! Scratch()
 endfunction
 nnoremap <leader>j :call Scratch()<cr>
 
+function! CopyMatches(reg)
+  let hits = []
+  %s//\=len(add(hits, submatch(0))) ? submatch(0) : ''/gne
+  let reg = empty(a:reg) ? '+' : a:reg
+  execute 'let @'.reg.' = join(hits, "\n") . "\n"'
+endfunction
+command! -register CopyMatches call CopyMatches(<q-reg>)
+
 " emmet
-imap <C-e> <C-y>,
+" imap <C-e> <C-y>,
+" integrate with luasnip mapping
 
 " Add semi colon at end of line
 noremap <leader>; g_a;<Esc>
@@ -435,7 +448,6 @@ map * <Plug>(asterisk-z*)
 lua << EOF
 local lspconfig = require"lspconfig"
 local lspinstaller = require"nvim-lsp-installer"
-local lsp_signature = require"lsp_signature"
 
 vim.diagnostic.config({
     virtual_text = true, 
@@ -451,63 +463,71 @@ lspinstaller.on_server_ready(function(server)
         capabilities = capabilities,
         init_options = { formatting = false },
         on_attach = function(client)
-            client.resolved_capabilities.document_formatting = false
-            lsp_signature.on_attach({
-                -- floating_window = false,
-                fix_pos = false,
-                hint_enable = false
-            })
+            client.server_capabilities.documentFormattingProvider = false
         end
     }
 
     if server.name == 'tsserver' then
-        opts.root_dir = require'lspconfig.util'.root_pattern('package.json', 'tsconfig.json')
-        -- opts.autostart = false
+        opts.root_dir = require'lspconfig.util'.root_pattern('tsconfig.json', 'package.json')
+        opts.autostart = false
     end
 
     if server.name == 'denols' then
         opts.root_dir = require'lspconfig.util'.root_pattern('deno.json')
-        -- opts.autostart = false
+        opts.autostart = false
+    end
+
+    if server.name == 'jdtls' then
+        opts.autostart = false
     end
 
     if server.name == 'efm' then
-        local eslint = {
-            lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
-            lintStdin = true,
-            lintFormats = { "%f:%l:%c: %m" },
-            lintIgnoreExitCode = true,
-            -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
-            -- formatStdin = true
-        }
-        local prettier = {
-            formatCommand = 'prettierd "${INPUT}"',
-            formatStdin = true,
-            -- env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
-        }
-        if is_windows ~= 0 then
-            prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
-        end
-        opts = {
-            -- autostart = false,
-            capabilities = capabilities,
-            root_dir = require'lspconfig.util'.root_pattern("package.json", '.prettierrc.js', 'prettier.config.js', '.eslintrc.js'),
-            filetypes = { "javascript", "typescript", "vue", "html", "css" },
-            init_options = { documentFormatting = true },
-            settings = {
-                rootMarkers = {"package.json", '.prettierrc.js', 'prettier.config.js', '.eslintrc.js'},
-                languages = {
-                    javascript = { prettier, eslint },
-                    typescript = { prettier, eslint },
-                    html = { prettier, eslint },
-                    vue = { prettier, eslint },
-                    css = { prettier,  eslint }
-                }
-            },
-            on_attach = function(client)
-                client.resolved_capabilities.document_formatting = true
-            end
-        }
+        opts.autostart = false
     end
+
+    -- if server.name == 'efm' then
+    --     local eslint = {
+    --         lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
+    --         lintStdin = true,
+    --         lintFormats = { "%f:%l:%c: %m" },
+    --         lintIgnoreExitCode = true,
+    --         -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
+    --         -- formatStdin = true
+    --     }
+    --     local prettier = {
+    --         -- formatCommand = 'npx prettier --stdin-filepath ${INPUT}',
+    --         -- formatCommand = 'prettier --stdin-filepath ${INPUT}',
+    --         formatCommand = 'prettierd ${INPUT}',
+    --         -- formatCommand = "./node_modules/.bin/prettier --stdin-filepath ${INPUT}",
+    --         -- formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}',
+    --         formatStdin = true,
+    --         env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
+    --     }
+    --     if is_windows ~= 0 then
+    --         prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
+    --     end
+    --     opts = {
+    --         -- autostart = false,
+    --         capabilities = capabilities,
+    --         root_dir = require'lspconfig.util'.root_pattern("package.json", '.prettierrc.js', 'prettier.config.js', 'prettier.config.cjs', '.eslintrc.js', '.eslintrc.cjs'),
+    --         filetypes = { "javascript", "typescript", "vue", "html", "css" },
+    --         init_options = { documentFormatting = true },
+    --         settings = {
+    --             rootMarkers = {"package.json", '.prettierrc.js', 'prettier.config.js', 'prettier.config.cjs', '.eslintrc.js', '.eslintrc.cjs'},
+    --             languages = {
+    --                 javascript = { prettier, eslint },
+    --                 typescript = { prettier, eslint },
+    --                 html = { prettier, eslint },
+    --                 vue = { prettier, eslint },
+    --                 css = { prettier,  eslint }
+    --             }
+    --         },
+    --         -- on_attach = function(client)
+    --         --     client.server_capabilities.documentFormattingProvider = false
+    --         -- end
+    --     }
+    -- end
+
 
     if server.name == 'sumneko_lua' then
         opts.autostart = false
@@ -534,22 +554,36 @@ lspinstaller.on_server_ready(function(server)
     server:setup(opts)
 end)
 
--- local null_ls = require("null-ls")
--- null_ls.config {
---     debug = true,
---     sources = {
---         null_ls.builtins.formatting.prettierd.with {
---             only_local = "node_modules/.bin"
---         },
---         null_ls.builtins.diagnostics.eslint_d
---     }
--- }
--- require("lspconfig")["null-ls"].setup { 
---     on_attach = function(client)
---         client.resolved_capabilities.document_formatting = true
+-- suppress lsp autotart message
+-- local notify = vim.notify
+-- vim.notify = function(msg, ...)
+--     if msg:match("[lspconfig]") then 
+--         return
 --     end
--- }
+--     notify(msg, ...)
+-- end
 
+local null_ls = require("null-ls")
+null_ls.setup {
+    debug = true,
+    sources = {
+        null_ls.builtins.formatting.prettierd,
+        null_ls.builtins.diagnostics.eslint_d
+    },
+    on_attach = function(client, bufnr)
+        -- if client.resolved_capabilities.document_formatting then
+        if client.supports_method("textDocument/formatting") then
+            vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+            vim.api.nvim_create_autocmd("BufWritePre", {
+                group = augroup,
+                buffer = bufnr,
+                callback = function()
+                    vim.lsp.buf.format({ bufnr = bufnr })
+                end,
+            })
+        end
+    end
+}
 
 EOF
 
@@ -574,15 +608,19 @@ nnoremap <leader>K <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <leader>gi <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <leader>gr <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
-nnoremap <leader>gs <cmd>lua vim.lsp.buf.signature_help()<CR>
+" nnoremap <leader>gs <cmd>lua vim.lsp.buf.signature_help()<CR>
+inoremap <c-s> <cmd>lua vim.lsp.buf.signature_help()<CR>
 set completeopt=menuone,noselect
 set shortmess+=c
+
+".test.js filetype
+au BufRead,BufNewFile *.test.js  setlocal filetype=javascript.jest
 
 "luasnip
 lua << EOF
 local luasnip = require'luasnip'
-vim.cmd [[ imap <silent><expr> <tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<tab>' ]]
-vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<C-j>' ]]
+vim.cmd [[ imap <silent><expr> <C-e> luasnip#expandable() ? '<Plug>luasnip-expand-or-jump' : '<C-y>,' ]]
+vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Plug>luasnip-expand-or-jump' ]]
 vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
 
 luasnip.config.set_config {
@@ -593,6 +631,7 @@ luasnip.config.set_config {
 require('luasnip/loaders/from_vscode').load({ 
     paths = { "./snippets", "./plugged/friendly-snippets" }
 })
+require('./snippets/javascript');
 luasnip.filetype_extend("vue", {"html", "javascript", "css"})
 luasnip.filetype_extend("typescript", { "javascript"})
 EOF
@@ -604,7 +643,7 @@ cmp.setup({
     snippet = {
         expand = function(args)
             -- vim.fn["UltiSnips#Anon"](args.body)
-            luasnip.lsp_expand(args.body)
+            require'luasnip'.lsp_expand(args.body)
         end,
     },
     mapping = {
@@ -615,60 +654,45 @@ cmp.setup({
         ['<C-e>'] = cmp.mapping(cmp.mapping.disable), 
         ['<C-E>'] = cmp.mapping(cmp.mapping.disable), 
         ['<C-y>'] = cmp.mapping(cmp.mapping.disable), 
+        ['<C-n>'] = cmp.mapping.select_next_item(),
+        ['<C-p>'] = cmp.mapping.select_prev_item(),
         ['<CR>'] = cmp.mapping.confirm({
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         }), 
-        -- ["<Tab>"] = function(fallback)
-            --    if vim.fn.pumvisible() == 1 then
-            --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-n>", true, true, true), "n")
-            --    elseif require("luasnip").expand_or_jumpable() then
-            --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
-            --    else
-            --       fallback()
-            --    end
-            -- end,
-            -- ["<S-Tab>"] = function(fallback)
-                --    if vim.fn.pumvisible() == 1 then
-                --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<C-p>", true, true, true), "n")
-                --    elseif require("luasnip").jumpable(-1) then
-                --       vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-jump-prev", true, true, true), "")
-                --    else
-                --       fallback()
-                --    end
-                -- end,
-            },
-            -- completion = {
-                --     keyword_length = 3
-                -- },
-                sources = {
-                    { name = "buffer" ,
-                    options = {
-                        get_bufnrs = function()
-                            return vim.api.nvim_list_bufs()
-                        end
-                    }
-                },
-                { name = "path" },
-                { name = "nvim_lsp" },
-                -- { name = "ultisnips" }
-                { name = "luasnip" }
-            },
-            formatting = {
-                format = function(entry, vim_item)
-                    vim_item.menu = ({
-                        buffer = "[Buffer]",
-                        nvim_lsp = "[LSP]",
-                        path = "[Path]",
-                        -- ultisnips = "[UltiSnips]"
-                        luasnip = "[LuaSnip]",
-                        -- nvim_lua = "[Lua]",
-                        -- latex_symbols = "[Latex]",
-                    })[entry.source.name]
-                    return vim_item
-                end,
-            },
-        })
+    },
+    completion = {
+        keyword_length = 2
+    },
+    sources = {
+        { 
+            name = "buffer" ,
+            option = {
+                get_bufnrs = function()
+                    return vim.api.nvim_list_bufs()
+                end
+            }
+        },
+        { name = "path" },
+        { name = "nvim_lsp" },
+        -- { name = "ultisnips" }
+        { name = "luasnip" }
+    },
+    formatting = {
+        format = function(entry, vim_item)
+            vim_item.menu = ({
+                buffer = "[Buffer]",
+                nvim_lsp = "[LSP]",
+                path = "[Path]",
+                -- ultisnips = "[UltiSnips]"
+                luasnip = "[LuaSnip]",
+                -- nvim_lua = "[Lua]",
+                -- latex_symbols = "[Latex]",
+            })[entry.source.name]
+            return vim_item
+        end,
+    }
+})
 
 EOF
 
@@ -829,6 +853,9 @@ let g:vue_disable_pre_processors=1
 " vim-json
 let g:vim_json_syntax_conceal = 0
 
+" matchup
+let g:matchup_matchparen_offscreen = {'method': 'popup'}
+
 
 " ultisnips
 " let g:UltiSnipsEditSplit="vertical"
@@ -842,6 +869,11 @@ nmap <c-n> <plug>(YoinkPostPasteSwapBack)
 nmap <c-p> <plug>(YoinkPostPasteSwapForward)
 nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
+
+" paste without polluting register
+xnoremap <leader>p "_dP
+vnoremap <leader>d "_d
+nnoremap <leader>d "_d
 
 augroup highlight_yank
     autocmd!
@@ -865,17 +897,17 @@ let g:db_ui_save_location = '~/.config/db_ui'
 " :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript
 
 "commentstring
-lua require'nvim-treesitter.configs'.setup { context_commentstring = { enable = true } }
-
-" vim-sandwich
-" runtime macros/sandwich/keymap/surround.vim
-" let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
-" let g:sandwich#recipes += [
-"     \ {'buns': ["( ", " )"], 'nesting': 1, 'match_syntax': 1, 'input': ['('] },
-"     \ {'buns': ["[ ", " ]"], 'nesting': 1, 'match_syntax': 1, 'input': ['['] },
-"     \ {'buns': ["{ ", " }"], 'nesting': 1, 'match_syntax': 1, 'input': ['{'] },
-"     \ ]
-" xmap gs <Plug>(operator-sandwich-add)
+lua << EOF
+require'nvim-treesitter.configs'.setup { 
+    context_commentstring = { enable = true }, 
+    highlight = { enable = true },
+    query_linter = {
+        enable = true,
+        use_virtual_text = true,
+        lint_events = { "BufWrite", "CursorHold"}
+    }
+}
+EOF
 
 " vim-surround
 let g:surround_no_mappings = 1
@@ -890,17 +922,25 @@ nmap ySS      <Plug>YSsurround
 xmap gs       <Plug>VSurround
 xmap gS       <Plug>VgSurround
 
-" lightspeed
-nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
-nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
-nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
-nmap <expr> T reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_T" : "T"
-xmap s <Plug>Lightspeed_x
-xmap S <Plug>Lightspeed_S
+" " lightspeed
+" nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
+" nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
+" nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
+" nmap <expr> T reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_T" : "T"
+" xmap s <Plug>Lightspeed_x
+" xmap S <Plug>Lightspeed_S
+
+" leap
+lua require('leap').set_default_keymaps()
 
 
 " floaterm
 nnoremap <leader>t :FloatermNew --width=0.85 --height=0.85<cr>
+
+
+" vue3_emits
+nnoremap <leader>ve A,<CR><C-O>:VueEmits<cr><esc>==
+vnoremap <leader>vm :s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>
 
 
 " statusline {{
@@ -915,7 +955,7 @@ function! FugitiveStatus() abort
     if !exists('g:loaded_fugitive')
         return ''
     endif
-    let l:status = fugitive#head()
+    let l:status = FugitiveHead()
     return l:status
     " return l:status == '' ? '': "\ue725".l:status
 endfunction
@@ -1054,6 +1094,7 @@ endfunction
 " vanilla statusline
 " set noshowmode
 set laststatus=2
+set cmdheight=0
 let &statusline = Statusline()
 "
 

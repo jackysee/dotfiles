@@ -14,13 +14,10 @@ local n = require("luasnip.extras").nonempty
 local dl = require("luasnip.extras").dynamic_lambda
 
 local javascript = {
-    s({ trig = "set", name ="set", dscr ="vuex setter" }, {
-        t("set"), 
-        l(l._1:gsub("^%l", string.upper), 1), 
-        t("(state, val){ "), t({ "", "" }),
-        t("    state."), i(1), t(" = val;"), t({"", ""}),
-        t("}")
+    s({trig = "set", name = "set", dscr = "vuex setter"}, {
+        t("set"), l(l._1:gsub("^%l", string.upper), 1), t("(state, val) { "),
+        t({"", ""}), t("    state."), i(1), t(" = val;"), t({"", ""}), t("}")
     })
 }
 
-ls.snippets = { javascript = javascript }
+ls.snippets = {javascript = javascript}
