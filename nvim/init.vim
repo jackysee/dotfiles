@@ -52,6 +52,7 @@ endif
 " set lazyredraw
 
 nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>
+nnoremap <leader><leader> <c-^>
 
 set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
 
@@ -112,9 +113,11 @@ Plug 'jackysee/telescope-hg.nvim'
 "diff tools
 Plug 'whiteinge/diffconflicts'
 
-Plug 'neovim/nvim-lspconfig'
 Plug 'jose-elias-alvarez/null-ls.nvim'
-Plug 'williamboman/nvim-lsp-installer'
+" Plug 'williamboman/nvim-lsp-installer'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -180,17 +183,18 @@ Plug 'nvim-telescope/telescope.nvim'
 " requires make / gcc on windows
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
-Plug 'ap/vim-css-color'
+" Plug 'ap/vim-css-color'
+Plug 'NvChad/nvim-colorizer.lua'
 
 " js / vue
 if s:is_fast
     " Plug 'w0rp/ale', { 'for': ['javascript', 'vue', 'javascript.jsx', 'css', 'scss', 'html', 'json' ]}
     Plug 'mattn/emmet-vim',  { 'for':['javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' ]}
-    Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html', 'vue'] }
-    Plug 'elzr/vim-json', { 'for': ['json']}
+    " Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javascript.jsx', 'html', 'vue'] }
+    " Plug 'elzr/vim-json', { 'for': ['json']}
     Plug 'posva/vim-vue', { 'for': ['vue']}
     " Plug 'sgur/vim-editorconfig'
-    Plug '1995eaton/vim-better-javascript-completion',  { 'for': [ 'javascript', 'vue' ]}
+    " Plug '1995eaton/vim-better-javascript-completion',  { 'for': [ 'javascript', 'vue' ]}
 endif
 
 " elm
@@ -441,134 +445,114 @@ noremap <leader>; g_a;<Esc>
 nnoremap n nzz
 nnoremap N Nzz
 map * <Plug>(asterisk-z*)
+map #  <Plug>(asterisk-z#)
 
 
 "lsp config
 
 lua << EOF
-local lspconfig = require"lspconfig"
-local lspinstaller = require"nvim-lsp-installer"
+require("mason").setup()
+require("mason-lspconfig").setup()
+local lspconfig = require("lspconfig")
+-- local lspinstaller = require"nvim-lsp-installer"
 
 vim.diagnostic.config({
     virtual_text = true, 
     signs = true
 });
 
-local is_windows = vim.api.nvim_eval('s:is_windows')
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
-lspinstaller.on_server_ready(function(server)
-    local opts = {
-        capabilities = capabilities,
-        init_options = { formatting = false },
-        on_attach = function(client)
-            client.server_capabilities.documentFormattingProvider = false
-        end
-    }
+local on_attach = function(client)
+    client.server_capabilities.documentFormattingProvider = false
+end
 
-    if server.name == 'tsserver' then
-        opts.root_dir = require'lspconfig.util'.root_pattern('tsconfig.json', 'package.json')
-        opts.autostart = false
-    end
+lspconfig.denols.setup {
+    root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'),
+    init_options = { formatting = false },
+    capabilities = capabilities,
+    on_attach = on_attach
+}
 
-    if server.name == 'denols' then
-        opts.root_dir = require'lspconfig.util'.root_pattern('deno.json')
-        opts.autostart = false
-    end
+-- local is_windows = vim.api.nvim_eval('s:is_windows')
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
-    if server.name == 'jdtls' then
-        opts.autostart = false
-    end
+-- lspinstaller.on_server_ready(function(server)
+--     local opts = {
+--         capabilities = capabilities,
+--         init_options = { formatting = false },
+--         on_attach = function(client)
+--             client.server_capabilities.documentFormattingProvider = false
+--         end
+--     }
 
-    if server.name == 'efm' then
-        opts.autostart = false
-    end
-
-    -- if server.name == 'efm' then
-    --     local eslint = {
-    --         lintCommand = "eslint_d -f unix --stdin --stdin-filename ${INPUT}",
-    --         lintStdin = true,
-    --         lintFormats = { "%f:%l:%c: %m" },
-    --         lintIgnoreExitCode = true,
-    --         -- formatCommand = "eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}",
-    --         -- formatStdin = true
-    --     }
-    --     local prettier = {
-    --         -- formatCommand = 'npx prettier --stdin-filepath ${INPUT}',
-    --         -- formatCommand = 'prettier --stdin-filepath ${INPUT}',
-    --         formatCommand = 'prettierd ${INPUT}',
-    --         -- formatCommand = "./node_modules/.bin/prettier --stdin-filepath ${INPUT}",
-    --         -- formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}',
-    --         formatStdin = true,
-    --         env = { 'PRETTIERD_LOCAL_PRETTIER_ONLY=1' }
-    --     }
-    --     if is_windows ~= 0 then
-    --         prettier.formatCommand = 'eslint_d --fix-to-stdout --stdin --stdin-filename=${INPUT}'
-    --     end
-    --     opts = {
-    --         -- autostart = false,
-    --         capabilities = capabilities,
-    --         root_dir = require'lspconfig.util'.root_pattern("package.json", '.prettierrc.js', 'prettier.config.js', 'prettier.config.cjs', '.eslintrc.js', '.eslintrc.cjs'),
-    --         filetypes = { "javascript", "typescript", "vue", "html", "css" },
-    --         init_options = { documentFormatting = true },
-    --         settings = {
-    --             rootMarkers = {"package.json", '.prettierrc.js', 'prettier.config.js', 'prettier.config.cjs', '.eslintrc.js', '.eslintrc.cjs'},
-    --             languages = {
-    --                 javascript = { prettier, eslint },
-    --                 typescript = { prettier, eslint },
-    --                 html = { prettier, eslint },
-    --                 vue = { prettier, eslint },
-    --                 css = { prettier,  eslint }
-    --             }
-    --         },
-    --         -- on_attach = function(client)
-    --         --     client.server_capabilities.documentFormattingProvider = false
-    --         -- end
-    --     }
-    -- end
-
-
-    if server.name == 'sumneko_lua' then
-        opts.autostart = false
-        opts.settings = {
-            Lua = {
-                -- runtime = { version = 'LuaJIT', path = runtime_path },
-                diagnostics = { globals = {'vim'} },
-                workspace = { library = vim.api.nvim_get_runtime_file("", true) },
-                telemetry = { enable = false }
-            }
-        }
-        opts.init_options = { formatting = false }
-    end
-
-    if server.name == 'jsonls' then
-        opts.settings = {
-            json = {
-                schemas = require('schemastore').json.schemas {
-                    select = { '.eslintrc', 'package.json', }
-                }
-            }
-        }
-    end
-    server:setup(opts)
-end)
-
--- suppress lsp autotart message
--- local notify = vim.notify
--- vim.notify = function(msg, ...)
---     if msg:match("[lspconfig]") then 
---         return
+--     if server.name == 'tsserver' then
+--         opts.root_dir = require'lspconfig.util'.root_pattern('tsconfig.json', 'package.json')
+--         opts.autostart = false
 --     end
---     notify(msg, ...)
--- end
+
+--     if server.name == 'volar' then
+--         opts.root_dir = require'lspconfig.util'.root_pattern('vite.config.js')
+--         opts.autostart = false
+--     end
+
+--     if server.name == 'denols' then
+--         opts.root_dir = require'lspconfig.util'.root_pattern('deno.json')
+--         opts.autostart = false
+--     end
+
+--     if server.name == 'jdtls' then
+--         opts.autostart = false
+--     end
+
+
 
 local null_ls = require("null-ls")
 null_ls.setup {
     debug = true,
     sources = {
-        null_ls.builtins.formatting.prettierd,
-        null_ls.builtins.diagnostics.eslint_d
+        null_ls.builtins.formatting.prettierd.with({
+            filetypes = { "javascript", "typescript", "vue", "html", "css" },
+            condition = function()
+                return #(vim.fs.find(
+                    { 
+                        ".prettierrc",
+                        ".prettierrc.json",
+                        ".prettierrc.yml",
+                        ".prettierrc.yaml",
+                        ".prettierrc.json5",
+                        ".prettierrc.js",
+                        ".prettierrc.cjs",
+                        ".prettierrc.toml",
+                        "prettier.config.js",
+                        "prettier.config.cjs",
+                        --"package.json"
+                    }, 
+                    { upward = true, stop = vim.fn.expand('%:p:h:h') }
+                   )) > 0
+            end
+        }),
+        null_ls.builtins.diagnostics.eslint_d.with({
+            filetypes = { "javascript", "typescript", "vue", "html", "css" },
+            condition = function()
+                return #(vim.fs.find(
+                    { 
+                        "eslint.config.js",
+                        -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
+                        ".eslintrc",
+                        ".eslintrc.js",
+                        ".eslintrc.cjs",
+                        ".eslintrc.yaml",
+                        ".eslintrc.yml",
+                        ".eslintrc.json",
+                --        "package.json"
+                    }, 
+                    { upward = true, stop = vim.fn.expand('%:p:h:h') }
+                   )) > 0
+            end
+        })
     },
     on_attach = function(client, bufnr)
         -- if client.resolved_capabilities.document_formatting then
@@ -585,12 +569,29 @@ null_ls.setup {
     end
 }
 
+local null_ls_stop = function()
+    local null_ls_client
+    for _, client in ipairs(vim.lsp.get_active_clients()) do
+        if client.name == "null-ls" then
+            null_ls_client = client
+        end
+    end
+    if not null_ls_client then
+        return
+    end
+
+    null_ls_client.stop()
+    vim.diagnostic.reset()
+end
+
+vim.api.nvim_create_user_command("NullLsStop", null_ls_stop, {})
+
 EOF
 
-augroup FormatAutogroup
-  autocmd!
-  autocmd BufWritePre *.js,*.css,*.html,*.vue,*.ts lua vim.lsp.buf.formatting_sync(nil, 1000)
-augroup END
+" augroup FormatAutogroup
+"   autocmd!
+"   autocmd BufWritePre *.js,*.css,*.html,*.vue,*.ts lua vim.lsp.buf.formatting_sync(nil, 1000)
+" augroup END
 
 if executable('lua-format')
     augroup LuaFormatGroup
@@ -616,10 +617,13 @@ set shortmess+=c
 ".test.js filetype
 au BufRead,BufNewFile *.test.js  setlocal filetype=javascript.jest
 
+"colorize
+lua require'colorizer'.setup()
+
 "luasnip
 lua << EOF
 local luasnip = require'luasnip'
-vim.cmd [[ imap <silent><expr> <C-e> luasnip#expandable() ? '<Plug>luasnip-expand-or-jump' : '<C-y>,' ]]
+vim.cmd [[ imap <silent><expr> <C-e> luasnip#expandable() ? '<Plug>luasnip-expand-or-jump' : '' ]]
 vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Plug>luasnip-expand-or-jump' ]]
 vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
 
@@ -631,7 +635,7 @@ luasnip.config.set_config {
 require('luasnip/loaders/from_vscode').load({ 
     paths = { "./snippets", "./plugged/friendly-snippets" }
 })
-require('./snippets/javascript');
+-- require('./snippets/javascript');
 luasnip.filetype_extend("vue", {"html", "javascript", "css"})
 luasnip.filetype_extend("typescript", { "javascript"})
 EOF
@@ -795,8 +799,9 @@ else
     nnoremap <leader>sr <cmd>lua require('telescope.builtin').oldfiles()<cr>
     nnoremap <leader>sc <cmd>lua require('telescope.builtin').commands()<cr>
     nnoremap <leader>sF :call TelescopeFindFiles(expand('<cword>'))<cr>
-    vnoremap <leader>sg :<BS><BS><BS><BS><BS>:call TelescopeGrepVisualSelectedString()<cr>
+    vnoremap <leader>sG :<BS><BS><BS><BS><BS>:call TelescopeGrepVisualSelectedString()<cr>
     vnoremap <leader>sF :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
+    nnoremap <leader>hg :Telescope hg 
 endif
 
 " fzf
@@ -1094,8 +1099,10 @@ endfunction
 " vanilla statusline
 " set noshowmode
 set laststatus=2
-set cmdheight=0
+" set cmdheight=0
 let &statusline = Statusline()
+" hi WinBarContent gui=NONE guifg=SlateBlue 
+" let &winbar = '%#WinBarContent#%=%t'
 "
 
 " map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'

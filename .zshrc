@@ -45,6 +45,10 @@ if [[ $(uname -a) =~ microsoft ]]; then
     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
 fi
 
+if [[ $(uname -a) =~ Linux ]]; then
+    export DISPLAY=$(ip rout list default | awk '{print $3}'):0
+fi
+
 if [ "$(uname -s)" = 'Linux' ]; then
     BPICK="(*x86*linux*)|(*linux-x86*)|(*linux*amd*)|(*linux64*)"
 else
@@ -135,8 +139,8 @@ zinit light dandavison/delta
 zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg" bpick"${BPICK}"
 zinit light BurntSushi/ripgrep
 
-# zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"*linux64*tar*"
-zinit ice from"gh-r" as"program" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
+zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"*linux64*tar*"
+# zinit ice from"gh-r" as"program" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
 zinit light neovim/neovim
 
 

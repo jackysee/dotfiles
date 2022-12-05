@@ -7,6 +7,10 @@
         "prefix": "icv",
         "body": "import $1 from 'common-vue/$1';"
     },
+    "import common-vue3" : {
+        "prefix": "icvv",
+        "body": "import $1 from 'common-vue3/$1';"
+    },
     "import vue" : {
         "prefix": "iv",
         "body": "import { $1 } from 'vue';"
