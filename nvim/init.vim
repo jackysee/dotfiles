@@ -148,7 +148,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'pbrisbin/vim-mkdir'
 Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
-Plug 'markonm/traces.vim'
+" Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
 Plug 'rlue/vim-barbaric'
 " Plug 'junegunn/vim-peekaboo'
@@ -792,15 +792,15 @@ if s:is_windows
     vnoremap <leader>rg :<BS><BS><BS><BS><BS>:call TelescopeGrepVisualSelectedString()<cr>
     vnoremap <leader>F :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
 else
-    nnoremap <leader>sf :call TelescopeFindFiles('')<cr>
-    nnoremap <leader>sl <cmd>lua require('telescope.builtin').live_grep({})<cr>
-    nnoremap <leader>sg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
-    nnoremap <leader>sb <cmd>lua require('telescope.builtin').buffers()<cr>
-    nnoremap <leader>sr <cmd>lua require('telescope.builtin').oldfiles()<cr>
-    nnoremap <leader>sc <cmd>lua require('telescope.builtin').commands()<cr>
-    nnoremap <leader>sF :call TelescopeFindFiles(expand('<cword>'))<cr>
-    vnoremap <leader>sG :<BS><BS><BS><BS><BS>:call TelescopeGrepVisualSelectedString()<cr>
-    vnoremap <leader>sF :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
+    nnoremap <leader>df :call TelescopeFindFiles('')<cr>
+    nnoremap <leader>dl <cmd>lua require('telescope.builtin').live_grep({})<cr>
+    nnoremap <leader>dg <cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Rg: "), use_regex = true })<cr>
+    nnoremap <leader>db <cmd>lua require('telescope.builtin').buffers()<cr>
+    nnoremap <leader>dr <cmd>lua require('telescope.builtin').oldfiles()<cr>
+    nnoremap <leader>dc <cmd>lua require('telescope.builtin').commands()<cr>
+    nnoremap <leader>dF :call TelescopeFindFiles(expand('<cword>'))<cr>
+    vnoremap <leader>dG :<BS><BS><BS><BS><BS>:call TelescopeGrepVisualSelectedString()<cr>
+    vnoremap <leader>dF :<BS><BS><BS><BS><BS>:call TelescopeFindFilesUnderCursor()<cr>
     nnoremap <leader>hg :Telescope hg 
 endif
 
@@ -927,17 +927,8 @@ nmap ySS      <Plug>YSsurround
 xmap gs       <Plug>VSurround
 xmap gS       <Plug>VgSurround
 
-" " lightspeed
-" nmap <expr> f reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_f" : "f"
-" nmap <expr> F reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_F" : "F"
-" nmap <expr> t reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_t" : "t"
-" nmap <expr> T reg_recording() . reg_executing() == "" ? "<Plug>Lightspeed_T" : "T"
-" xmap s <Plug>Lightspeed_x
-" xmap S <Plug>Lightspeed_S
-
 " leap
 lua require('leap').set_default_keymaps()
-
 
 " floaterm
 nnoremap <leader>t :FloatermNew --width=0.85 --height=0.85<cr>
