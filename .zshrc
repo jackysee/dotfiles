@@ -49,10 +49,10 @@ if [[ $(uname -a) =~ Linux ]]; then
     export DISPLAY=$(ip rout list default | awk '{print $3}'):0
 fi
 
-if [ "$(uname -s)" = 'Linux' ]; then
-    BPICK="(*x86*linux*)|(*linux-x86*)|(*linux*amd*)|(*linux64*)"
-else
+if [[ $(uname -s) =~ Darwin ]]; then
     BPICK="(*darwin*amd*)|(*macos*)|(*apple*darwin*)"
+else
+    BPICK="(*x86*linux*)|(*linux-x86*)|(*linux*amd*)|(*linux64*)"
 fi
 
 ## tpm
@@ -103,11 +103,12 @@ zinit snippet OMZL::history.zsh
 
 zinit light-mode for \
     agkozak/zsh-z \
-    zpm-zsh/autoenv
+    zpm-zsh/autoenv 
 
 zinit light-mode lucid wait for \
     changyuheng/zsh-interactive-cd \
-    dominik-schwabe/zsh-fnm
+    dominik-schwabe/zsh-fnm \
+    OMZP::rbenv
 
 zinit ice lucid as"command" from"gh-r" bpick"${BPICK}" mv"lsd* -> lsd" pick"lsd/lsd"
 zinit light Peltoche/lsd
@@ -139,9 +140,11 @@ zinit light dandavison/delta
 zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg" bpick"${BPICK}"
 zinit light BurntSushi/ripgrep
 
-zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"*linux64*tar*"
-# zinit ice from"gh-r" as"program" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
+# zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"*linux64*tar*"
+zinit ice from"gh-r" as"program" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
 zinit light neovim/neovim
+
+
 
 
 if type broot >/dev/null 2>&1; then
@@ -347,3 +350,8 @@ fi
 # zprof
 
 alias luamake=/home/jackys/server/lua-language-server/3rd/luamake/luamake
+
+# fnm
+export PATH="/Users/jackysee/Library/Application Support/fnm:$PATH"
+eval "`fnm env`"
+
