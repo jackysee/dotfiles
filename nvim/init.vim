@@ -77,18 +77,18 @@ call plug#begin(s:path . '/plugged')
 
 " colorscheme
 Plug 'romainl/Apprentice'
-Plug 'junegunn/seoul256.vim'
-Plug 'gruvbox-community/gruvbox'
-Plug 'sainnhe/gruvbox-material'
-Plug 'lifepillar/vim-gruvbox8'
-Plug 'habamax/vim-gruvbit'
-Plug 'arcticicestudio/nord-vim'
-Plug 'haishanh/night-owl.vim'
-Plug 'rakr/vim-one'
-Plug 'ayu-theme/ayu-vim'
-Plug 'NLKNguyen/papercolor-theme'
+" Plug 'junegunn/seoul256.vim'
+" Plug 'gruvbox-community/gruvbox'
+" Plug 'sainnhe/gruvbox-material'
+" Plug 'lifepillar/vim-gruvbox8'
+" Plug 'habamax/vim-gruvbit'
+" Plug 'arcticicestudio/nord-vim'
+" Plug 'haishanh/night-owl.vim'
+" Plug 'rakr/vim-one'
+" Plug 'ayu-theme/ayu-vim'
+" Plug 'NLKNguyen/papercolor-theme'
 Plug 'EdenEast/nightfox.nvim'
-Plug 'folke/tokyonight.nvim'
+" Plug 'folke/tokyonight.nvim'
 
 "start page
 if s:is_fast
@@ -268,10 +268,10 @@ else
     " colorscheme one
     " colorscheme ayu
     " colorscheme PaperColor
-    " colorscheme nightfox
+    colorscheme nightfox
 
-    let g:tokyonight_style = "night"
-    colorscheme tokyonight
+    " let g:tokyonight_style = "night"
+    " colorscheme tokyonight
 
 endif
 
@@ -516,41 +516,35 @@ null_ls.setup {
         null_ls.builtins.formatting.prettierd.with({
             filetypes = { "javascript", "typescript", "vue", "html", "css" },
             condition = function()
-                return #(vim.fs.find(
-                    { 
-                        ".prettierrc",
-                        ".prettierrc.json",
-                        ".prettierrc.yml",
-                        ".prettierrc.yaml",
-                        ".prettierrc.json5",
-                        ".prettierrc.js",
-                        ".prettierrc.cjs",
-                        ".prettierrc.toml",
-                        "prettier.config.js",
-                        "prettier.config.cjs",
-                        --"package.json"
-                    }, 
-                    { upward = true, stop = vim.fn.expand('%:p:h:h') }
-                   )) > 0
+                return require("null-ls.utils").root_pattern(
+                    ".prettierrc",
+                    ".prettierrc.json",
+                    ".prettierrc.yml",
+                    ".prettierrc.yaml",
+                    ".prettierrc.json5",
+                    ".prettierrc.js",
+                    ".prettierrc.cjs",
+                    ".prettierrc.toml",
+                    "prettier.config.js",
+                    "prettier.config.cjs"
+                    --"package.json"
+                )(vim.api.nvim_buf_get_name(0)) ~= nil
             end
         }),
         null_ls.builtins.diagnostics.eslint_d.with({
             filetypes = { "javascript", "typescript", "vue", "html", "css" },
             condition = function()
-                return #(vim.fs.find(
-                    { 
-                        "eslint.config.js",
-                        -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
-                        ".eslintrc",
-                        ".eslintrc.js",
-                        ".eslintrc.cjs",
-                        ".eslintrc.yaml",
-                        ".eslintrc.yml",
-                        ".eslintrc.json",
-                --        "package.json"
-                    }, 
-                    { upward = true, stop = vim.fn.expand('%:p:h:h') }
-                   )) > 0
+                return require("null-ls.utils").root_pattern(
+                    "eslint.config.js",
+                    -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
+                    ".eslintrc",
+                    ".eslintrc.js",
+                    ".eslintrc.cjs",
+                    ".eslintrc.yaml",
+                    ".eslintrc.yml",
+                    ".eslintrc.json",
+                    "package.json"
+                )(vim.api.nvim_buf_get_name(0)) ~= nil
             end
         })
     },

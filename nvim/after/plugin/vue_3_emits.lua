@@ -1,6 +1,6 @@
 -- prerequisite: install treesitter and vue syntax
-local q = require "vim.treesitter.query"
-
+-- local q = require "vim.treesitter.query"
+--
 local function i(value) print(vim.inspect(value)) end
 
 local get_vue_root = function(bufnr)
