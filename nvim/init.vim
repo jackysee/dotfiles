@@ -263,7 +263,7 @@ vim.opt.rtp:prepend(lazypath)
 local fzf_spec = function()
     if vim.fn.isdirectory(vim.env.HOME .. '/.zplugin/plugins/junegunn---fzf') then
         return {
-            name = 'fzf_local',
+            name = 'junegunn/fzf',
             dir = '~/.zplugin/plugins/junegunn---fzf',
             event = 'BufWinEnter'
         }
@@ -272,23 +272,30 @@ local fzf_spec = function()
     end
 end
 
-local spec = {
-    -- 'romainl/Aprentice',
-    -- 'gruvbox-community/gruvbox'
-    -- 'arcticicestudio/nord-vim'
-    -- 'haishanh/night-owl.vim'
-    --  'folke/tokyonight.nvim'
-    { 'EdenEast/nightfox.nvim', config = function() vim.cmd([[colorscheme nightfox]]) end },
+local colorscheme = function(repo, scheme, load)
+    return {
+        repo,
+        lazy = load == false,
+        config = function() 
+            if load then vim.cmd("colorscheme "..scheme) end 
+        end
+    }
+end
 
+local spec = {
+    colorscheme('romainl/Apprentice', 'Apprentice'),
+    colorscheme("haishanh/night-owl.vim", 'night-owl'),
+    colorscheme('folke/tokyonight.nvim', 'tokyonight'),
+    colorscheme('EdenEast/nightfox.nvim', 'nightfox', true),
     {
         'mhinz/vim-startify',
         config = function()
             vim.g.startify_change_to_dir = 0
             vim.g.startify_change_to_vcs_root = 1
             vim.g.startify_lists = {
-                {  header = { '   MRU '..vim.fn.getcwd()}, type = 'dir' },
-                {  header = { '   MRU'}, type = 'files' },
-                {  header = { '   Sessions'}, type = 'sessions' }
+                {  header = { '   MRU '..vim.fn.getcwd() }, type = 'dir' },
+                {  header = { '   MRU' }, type = 'files' },
+                {  header = { '   Sessions' }, type = 'sessions' }
             }
         end
     },
@@ -328,7 +335,7 @@ local spec = {
             vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
             vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
             vim.keymap.set('n', '<leader>y', ':YankyRingHistory<cr>')
-       end 
+       end
     },
     { 'tpope/vim-repeat' },
     {
@@ -367,7 +374,7 @@ local spec = {
     },
     {
         'junegunn/fzf.vim',
-		event = "BufWinEnter",
+        event = "BufWinEnter",
         dependencies = { 'junegunn/fzf' },
         config = function()
             vim.cmd [[
@@ -408,13 +415,13 @@ local spec = {
         end
     },
     fzf_spec(),
-    {  
-        'nvim-lualine/lualine.nvim', 
+    {
+        'nvim-lualine/lualine.nvim',
         dependencies = { 'kyazdani42/nvim-web-devicons' },
         config = function()
             local vcs = function()
                 local status = ''
-                if vim.g.loaded_fugitive then 
+                if vim.g.loaded_fugitive then
                     status = status .. vim.fn.FugitiveHead()
                 end
                 if vim.g.loaded_lawrencium then
@@ -431,10 +438,12 @@ local spec = {
             end
             require('lualine').setup({
                 sections = {
-                    lualine_a = { vcs },
-                    lualine_b = { { 'filename', path = 1 } },
+                    lualine_a = { { 'filename', path = 1 } },
+                    lualine_b = { vcs },
                     lualine_c = {},
-                    lualine_x = { 'MatchupStatusOffscreen', 'diagnostics', 'filetype' },
+                    lualine_x = { 'MatchupStatusOffscreen', 'diagnostics', 'progress' },
+                    lualine_y = { 'location' },
+                    lualine_z = { 'filetype' }
                 },
                 options = { section_separators = '', component_separators = '' }
             })
@@ -646,9 +655,9 @@ local spec = {
             vim.g.db_ui_save_location = '~/.config/db_ui'
         end
     },
-    { 
-        'JoosepAlviste/nvim-ts-context-commentstring', 
-        dependencies =  { 'nvim-treesitter/nvim-treesitter', 'tpope/vim-commentary' } 
+    {
+        'JoosepAlviste/nvim-ts-context-commentstring',
+        dependencies =  { 'nvim-treesitter/nvim-treesitter', 'tpope/vim-commentary' }
     },
     { 'tpope/vim-commentary' },
     { 'windwp/nvim-autopairs', config = true },
@@ -698,8 +707,8 @@ local spec = {
         end
         -- " :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript vim
     },
-    { 
-        'NvChad/nvim-colorizer.lua', 
+    {
+        'NvChad/nvim-colorizer.lua',
         event = "BufReadPre",
         config = {
             filetypes = { "*", "!lazy" },
