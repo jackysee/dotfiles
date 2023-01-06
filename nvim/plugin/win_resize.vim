@@ -51,5 +51,5 @@ function s:WinResize()
     endwhile
 endfun
 
-command -nargs=0 WinResize :call <SID>WinResize()
+command! -nargs=0 WinResize :call <SID>WinResize()
 
