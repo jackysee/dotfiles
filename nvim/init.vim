@@ -284,11 +284,12 @@ end
 
 local spec = {
     colorscheme('romainl/Apprentice', 'Apprentice'),
-    colorscheme("haishanh/night-owl.vim", 'night-owl'),
+    colorscheme('haishanh/night-owl.vim', 'night-owl'),
     colorscheme('folke/tokyonight.nvim', 'tokyonight'),
     colorscheme('EdenEast/nightfox.nvim', 'nightfox', true),
     {
         'mhinz/vim-startify',
+        event = 'BufWinEnter',
         config = function()
             vim.g.startify_change_to_dir = 0
             vim.g.startify_change_to_vcs_root = 1
@@ -301,6 +302,7 @@ local spec = {
     },
     {
         'mbbill/undotree',
+        event = "BufReadPre",
         config = function()
             vim.g.undotree_SetFocusWhenToggle = 1
             vim.g.undotree_ShortIndicators = 1
@@ -308,9 +310,10 @@ local spec = {
         end
     },
     -- vcs
-    { 'tpope/vim-fugitive' },
+    { 'tpope/vim-fugitive', event = 'BufReadPre' },
     {
         'mhinz/vim-signify',
+        event = 'BufReadPre',
         config = function()
             vim.g.signify_realtime = 0
             vim.g.signify_sign_change = '~'
@@ -320,9 +323,9 @@ local spec = {
             vim.keymap.set("n", "<leader>hd", ":SignifyHunkDiff<cr>")
         end
     },
-    { 'ludovicchabant/vim-lawrencium' },
+    { 'ludovicchabant/vim-lawrencium', event = 'BufReadPre' },
 
-    { 'whiteinge/diffconflicts' },
+    { 'whiteinge/diffconflicts', event = 'BufReadPre' },
     {
         'gbprod/yanky.nvim',
         event = "BufReadPost",
@@ -337,7 +340,7 @@ local spec = {
             vim.keymap.set('n', '<leader>y', ':YankyRingHistory<cr>')
        end
     },
-    { 'tpope/vim-repeat' },
+    { 'tpope/vim-repeat', event="BufReadPost" },
     {
         'tpope/vim-surround',
         event = "CursorHold",
@@ -355,20 +358,23 @@ local spec = {
             vim.keymap.set('x', 'gS', '<Plug>VgSurround')
         end
     },
-    { 'tpope/vim-eunuch' },
+    { 'tpope/vim-eunuch', event = "CmdlineEnter" },
     {
         'ggandor/leap.nvim',
+        event="BufReadPost",
         config = function()
             require('leap').set_default_keymaps()
         end
     },
     {
         'ggandor/flit.nvim',
+        event="BufReadPost",
         dependencies = { 'ggandor/leap.nvim' },
         config = true
     },
     {
         'ggandor/leap-spooky.nvim',
+        event="BufReadPost",
         dependencies = { 'ggandor/leap.nvim' },
         config = true
     },
@@ -417,6 +423,7 @@ local spec = {
     fzf_spec(),
     {
         'nvim-lualine/lualine.nvim',
+        event = "VeryLazy",
         dependencies = { 'kyazdani42/nvim-web-devicons' },
         config = function()
             local vcs = function()
@@ -452,6 +459,7 @@ local spec = {
     { 'nvim-lua/plenary.nvim' },
     {
         'jose-elias-alvarez/null-ls.nvim',
+        event = "BufWinEnter",
         dependencies = { 'nvim-lua/plenary.nvim'},
         config = function()
             local null_ls = require("null-ls")
@@ -616,11 +624,12 @@ local spec = {
             })
         end
     },
-    { 'williamboman/mason.nvim', config = true },
-    { 'williamboman/mason-lspconfig.nvim', config = true },
+    { 'williamboman/mason.nvim', config = true, lazy = true },
+    { 'williamboman/mason-lspconfig.nvim', config = true, dependencies = { 'williamboman/mason.nvim' } },
     {
         'neovim/nvim-lspconfig',
-        dependencies = { 'hrsh7th/nvim-cmp' },
+        lazy = true,
+        dependencies = { 'hrsh7th/nvim-cmp', 'williamboman/mason-lspconfig.nvim' },
         config = function()
             local lspconfig = require("lspconfig")
 
@@ -642,13 +651,13 @@ local spec = {
         end
     },
 
-
-    { 'b0o/SchemaStore.nvim' },
+    -- { 'b0o/SchemaStore.nvim', lazy = true },
     { 'kyazdani42/nvim-web-devicons' },
 
     { 'tpope/vim-dadbod' },
     {
         'kristijanhusak/vim-dadbod-ui',
+        cmd = "DBUI",
         dependencies = { 'tpope/vim-dadbod' },
         config = function()
             vim.g.db_ui_debug = 1
@@ -659,8 +668,8 @@ local spec = {
         'JoosepAlviste/nvim-ts-context-commentstring',
         dependencies =  { 'nvim-treesitter/nvim-treesitter', 'tpope/vim-commentary' }
     },
-    { 'tpope/vim-commentary' },
-    { 'windwp/nvim-autopairs', config = true },
+    { 'tpope/vim-commentary', event="BufReadPost" },
+    { 'windwp/nvim-autopairs', config = true, event="InsertCharPre" },
     -- { 'Raimondi/delimitMate' },
     {
         "andymass/vim-matchup",
@@ -669,7 +678,7 @@ local spec = {
             vim.g.matchup_matchparen_offscreen = { method = "status_manual" }
         end
     },
-    { 'arthurxavierx/vim-caser' },
+    { 'arthurxavierx/vim-caser', event = "BufReadPost" },
     { 'christoomey/vim-tmux-navigator' },
     {
         'tmux-plugins/vim-tmux-focus-events',
@@ -684,12 +693,13 @@ local spec = {
             vim.g.barbaric_fcitx_cmd = 'fcitx-remote'
         end
     },
-    { 'wellle/targets.vim' },
-    { 'terryma/vim-expand-region' },
+    { 'wellle/targets.vim', event="BufReadPost" },
+    -- { 'terryma/vim-expand-region' },
     { 'kevinhwang91/nvim-bqf', ft = 'qf' },
 
     {
         'nvim-treesitter/nvim-treesitter',
+        lazy = true,
         build = ':TSUpdate',
         config = function()
             require('nvim-treesitter.configs').setup({

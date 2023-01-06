@@ -263,6 +263,7 @@ local spec = {
 
     {
         'mhinz/vim-startify',
+        event = 'BufWinEnter',
         config = function()
             vim.g.startify_change_to_dir = 0
             vim.g.startify_change_to_vcs_root = 1
@@ -275,6 +276,7 @@ local spec = {
     },
     {
         'mbbill/undotree',
+        event = "BufReadPre",
         config = function()
             vim.g.undotree_SetFocusWhenToggle = 1
             vim.g.undotree_ShortIndicators = 1
@@ -282,9 +284,10 @@ local spec = {
         end
     },
     -- vcs
-    { 'tpope/vim-fugitive' },
+    { 'tpope/vim-fugitive' event = "BufReadPre" },
     {
         'mhinz/vim-signify',
+        event = 'BufReadPre',
         config = function()
             vim.g.signify_realtime = 0
             vim.g.signify_sign_change = '~'
@@ -294,9 +297,9 @@ local spec = {
             vim.keymap.set("n", "<leader>hd", ":SignifyHunkDiff<cr>")
         end
     },
-    { 'ludovicchabant/vim-lawrencium' },
+    { 'ludovicchabant/vim-lawrencium', event = "BufReadPre" },
 
-    { 'whiteinge/diffconflicts' },
+    { 'whiteinge/diffconflicts' , event = 'BufReadPre' },
     {
         'gbprod/yanky.nvim',
         event = "BufReadPost",
@@ -311,7 +314,7 @@ local spec = {
             vim.keymap.set('n', '<leader>y', ':YankyRingHistory<cr>')
        end 
     },
-    { 'tpope/vim-repeat' },
+    { 'tpope/vim-repeat', event = "BufReadPost" },
     {
         'tpope/vim-surround',
         event = "CursorHold",
@@ -329,30 +332,33 @@ local spec = {
             vim.keymap.set('x', 'gS', '<Plug>VgSurround')
         end
     },
-    { 'tpope/vim-eunuch' },
+    { 'tpope/vim-eunuch', event = "CmdlineEnter" },
     {
         'ggandor/leap.nvim',
+        event="BufReadPost",
         config = function()
             require('leap').set_default_keymaps()
         end
     },
     {
         'ggandor/flit.nvim',
+        event="BufReadPost",
         dependencies = { 'ggandor/leap.nvim' },
         config = true
     },
     {
         'ggandor/leap-spooky.nvim',
+        event="BufReadPost",
         dependencies = { 'ggandor/leap.nvim' },
         config = true
     },
     {
-        --CMake, and the Microsoft C++ Build Tools on Windows
         'nvim-telescope/telescope-fzf-native.nvim', 
         build = vim.fn.executable('cmake') == 1 and 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' or 'make'
     },
     {
         'nvim-telescope/telescope.nvim', tag = '0.1.0',
+        event = "BufWinEnter",
         dependencies = {'nvim-lua/plenary.nvim'},
         config = function()
             local actions = require('telescope.actions')
@@ -425,6 +431,7 @@ local spec = {
     },
     {  
         'nvim-lualine/lualine.nvim', 
+        event = "VeryLazy",
         config = function()
             local vcs = function()
                 local status = ''
@@ -457,6 +464,7 @@ local spec = {
     { 'nvim-lua/plenary.nvim' },
     {
         'jose-elias-alvarez/null-ls.nvim',
+        event = "BufWinEnter",
         dependencies = { 'nvim-lua/plenary.nvim'},
         config = function()
             local null_ls = require("null-ls")
@@ -621,10 +629,11 @@ local spec = {
             })
         end
     },
-    { 'williamboman/mason.nvim', config = true },
-    { 'williamboman/mason-lspconfig.nvim', config = true },
+    { 'williamboman/mason.nvim', config = true, lazy = true },
+    { 'williamboman/mason-lspconfig.nvim', config = true, dependencies = { "williamboman/mason.nvim" } },
     {
         'neovim/nvim-lspconfig',
+        lazy = true,
         dependencies = { 'hrsh7th/nvim-cmp' },
         config = function()
             local lspconfig = require("lspconfig")
@@ -648,7 +657,7 @@ local spec = {
     },
 
 
-    { 'b0o/SchemaStore.nvim' },
+    -- { 'b0o/SchemaStore.nvim' },
     -- { 'tpope/vim-dadbod' },
     -- {
     --     'kristijanhusak/vim-dadbod-ui',
@@ -662,9 +671,9 @@ local spec = {
         'JoosepAlviste/nvim-ts-context-commentstring', 
         dependencies =  { 'nvim-treesitter/nvim-treesitter', 'tpope/vim-commentary' } 
     },
-    { 'tpope/vim-commentary' },
+    { 'tpope/vim-commentary', event = "BufReadPost" },
     -- { 'windwp/nvim-autopairs', config = true },
-    { 'Raimondi/delimitMate' },
+    { 'Raimondi/delimitMate', event = "BufReadPost" },
     -- {
     --     "andymass/vim-matchup",
     --     event = "BufReadPost",
@@ -673,9 +682,10 @@ local spec = {
     --     end
     -- },
     -- { 'arthurxavierx/vim-caser' },
-    { 'wellle/targets.vim' },
+    { 'wellle/targets.vim', event = 'BufReadPost' },
     {
         'nvim-treesitter/nvim-treesitter',
+        lazy = true,
         build = ':TSUpdate',
         config = function()
             require('nvim-treesitter.configs').setup({
