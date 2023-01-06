@@ -96,6 +96,7 @@ Plug 'machakann/vim-highlightedyank'
 Plug 'gruvbox-community/gruvbox'
 Plug 'kaicataldo/material.vim'
 Plug 'bluz71/vim-nightfly-guicolors'
+Plug 'NLKNguyen/papercolor-theme'
 
 "start page
 if s:is_fast
@@ -204,11 +205,11 @@ if s:is_windows && s:is_gui
     colorscheme apprentice
     " colorscheme gruvbit
 else
-    " colorscheme nightfly
+    colorscheme nightfly
     
-    let g:gruvbox_invert_selection = '0'
-    set background=dark
-    colorscheme gruvbox
+    " let g:gruvbox_invert_selection = '0'
+    " set background=dark
+    " colorscheme gruvbox
 
     " let g:material_theme_style = 'dark'
     " colorscheme apprentice
@@ -234,6 +235,7 @@ else
     " colorscheme onedark
     " colorscheme railscasts
     " colorscheme material
+    " colorscheme PaperColor
 endif
 
 " highlight SpecialKey guifg=#444444 ctermfg=235
@@ -332,7 +334,6 @@ let g:sneak#s_next = 1
 let g:sneak#label = 1
 let g:sneak#use_ic_scs = 1
 
-
 " netw
 let g:netrw_browse_split=2
 " let g:netrw_banner=0
@@ -353,7 +354,6 @@ nnoremap <leader>w :WinResize<CR>
 " sudo tee save with w!!
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
-
 " Update a buffer's contents on focus if it changed outside of Vim.
 au FocusGained,BufEnter * :checktime
 
@@ -368,7 +368,6 @@ function! s:profile(bang)
     profile file *
   endif
 endfunction
-
 command! -bang Profile call s:profile(<bang>0)
 
 fun! TrimWhitespace()
@@ -379,14 +378,22 @@ endfun
 command! TrimWhitespace call TrimWhitespace()
 
 function! Scratch()
-    split
-    noswapfile hide enew
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    "setlocal nobuflisted
-    "lcd ~
-    file scratch
+    let scr_winnr = bufwinnr('scratch')
+    if winnr() == scr_winnr
+        return
+    endif
+    let bnr = bufexists('scratch')
+    if bnr > 0
+        split scratch
+    else
+        split
+        noswapfile hide enew
+        setlocal buftype=nofile bufhidden=hide nobuflisted
+        "lcd ~
+        file scratch
+    endif
 endfunction
+nnoremap <leader>j :call Scratch()<cr>
 
 " emmet
 imap <C-E> <C-y>,
@@ -473,15 +480,6 @@ function! VisualSelection()
     return selection
 endfunction
 
-function! Escaped(text)
-    call inputsave()
-    let result = escape(a:text, '\\/.*$^~[]')
-    let result = substitute(result, "\n$", "", "")
-    let result = substitute(result, "\n", '\\n', "g")
-    call inputrestore()
-    return result
-endfunction
-
 " leaderF
 if s:is_windows
     nnoremap <leader>f :LeaderfFile<CR>
@@ -559,14 +557,7 @@ endif
 "     let g:ale_scss_prettier_executable = s:prettierexec
 "     let g:ale_vue_prettier_executable = s:prettierexec
 " endif
-
-xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
-xnoremap <leader>pjs :!npx -q prettier --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
-xnoremap <leader>psql :!npx -q sql-formatter-cli
-
-xnoremap <leader>sc :!tw2s<cr>
-
-
+"
 " let s:eslintdirs = ['/src/frontend', '/web', '/frontend']
 " for l in s:eslintdirs
 "     let p = getcwd().l.'/.eslintrc.js'
@@ -595,6 +586,11 @@ xnoremap <leader>sc :!tw2s<cr>
 
 " autocmd BufWritePre *.vue,*.js,*.html ALEFix
 
+xnoremap <leader>pt :!npx -q prettier --stdin-filepath=%:p
+xnoremap <leader>pjs :!npx -q prettier --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
+xnoremap <leader>psql :!npx -q sql-formatter-cli
+
+xnoremap <leader>sc :!tw2s<cr>
 
 
 " vim-vue
@@ -619,10 +615,6 @@ nmap <c-p> <plug>(YoinkPostPasteSwapForward)
 nmap p <plug>(YoinkPaste_p)
 nmap P <plug>(YoinkPaste_P)
 
-" vim-over
-" nnoremap <leader>s :OverCommandLine<cr>%s/
-" xnoremap <leader>s :OverCommandLine<cr>s/
-
 " undotree
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_ShortIndicators = 1
@@ -642,7 +634,6 @@ function! CurDir()
     let curdir = substitute(getcwd(), $HOME, "~", "")
     return curdir
 endfunction
-
 
 function! FugitiveStatus() abort
     if !exists('g:loaded_fugitive')
@@ -812,8 +803,3 @@ let &statusline = Statusline()
 " augroup END
 
 "}}
-
-
-" map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-" \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-" \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
