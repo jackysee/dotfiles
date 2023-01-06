@@ -432,8 +432,8 @@ nmap <leader>gr <Plug>(coc-references)
 nmap <leader>ca  <Plug>(coc-codeaction)
 " Fix autofix problem of current line
 nmap <leader>cf  <Plug>(coc-fix-current)
-nmap <leader>cj  <Plug>(coc-diagnostic-next-error)
-nmap <leader>ck  <Plug>(coc-diagnostic-prev-error)
+nmap <leader>cj  <Plug>(coc-diagnostic-next)
+nmap <leader>ck  <Plug>(coc-diagnostic-prev)
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
 
@@ -639,7 +639,7 @@ function! FugitiveStatus() abort
     if !exists('g:loaded_fugitive')
         return ''
     endif
-    let l:status = fugitive#head()
+    let l:status = FugitiveHead()
     return l:status
     " return l:status == '' ? '': "\ue725".l:status
 endfunction
