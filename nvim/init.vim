@@ -393,7 +393,7 @@ local spec = {
             vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true })
             vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true })
             vim.keymap.set('n', '<leader>z', ':FzfLua ');
-            vim.api.nvim_create_user_command("Rg", function(opts) f.grep_project(opts.args) end, { nargs = '*'})
+            vim.api.nvim_create_user_command("Rg", function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
         end
     },
     {
