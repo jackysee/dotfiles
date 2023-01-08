@@ -399,7 +399,7 @@ local spec = {
     {
         'nvim-lualine/lualine.nvim',
         event = "VeryLazy",
-        dependencies = { 'kyazdani42/nvim-web-devicons' },
+        dependencies = { 'nvim-tree/nvim-web-devicons' },
         config = function()
             local vcs = function()
                 local status = ''
@@ -627,7 +627,7 @@ local spec = {
     },
 
     -- { 'b0o/SchemaStore.nvim', lazy = true },
-    { 'kyazdani42/nvim-web-devicons' },
+    { 'nvim-tree/nvim-web-devicons' },
 
     { 'tpope/vim-dadbod' },
     {
