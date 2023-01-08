@@ -170,17 +170,6 @@ function! CopyMatches(reg)
 endfunction
 command! -register CopyMatches call CopyMatches(<q-reg>)
 
-function! VisualSelection()
-    let [line_start, column_start] = getpos("'<")[1:2]
-    let [line_end, column_end] = getpos("'>")[1:2]
-    let lines = getline(line_start, line_end)
-    if len(lines) == 0
-        return ''
-    endif
-    let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
-    let lines[0] = lines[0][column_start - 1:]
-    return join(lines, "\n")
-endfunction
 
 
 " auto create folder when saving files
@@ -277,7 +266,10 @@ local colorscheme = function(repo, scheme, load)
         repo,
         lazy = load == false,
         config = function() 
-            if load then vim.cmd("colorscheme "..scheme) end 
+            if load then 
+                vim.cmd("colorscheme "..scheme) 
+                vim.cmd("set termguicolors")
+            end 
         end
     }
 end
@@ -359,6 +351,7 @@ local spec = {
         end
     },
     { 'tpope/vim-eunuch', event = "CmdlineEnter" },
+    { 'elihunter173/dirbuf.nvim', event = "CmdlineEnter" },
     {
         'ggandor/leap.nvim',
         event="BufReadPost",
@@ -378,49 +371,31 @@ local spec = {
         dependencies = { 'ggandor/leap.nvim' },
         config = true
     },
-    {
-        'junegunn/fzf.vim',
+    fzf_spec(),
+    { 
+        'ibhagwan/fzf-lua',
         event = "BufWinEnter",
-        dependencies = { 'junegunn/fzf' },
+        dependencies = { 'nvim-tree/nvim-web-devicons', 'junegunn/fzf' },
         config = function()
-            vim.cmd [[
-                " fzf
-                function! s:build_quickfix_list(lines)
-                  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
-                  copen
-                  cc
-                endfunction
-
-                let $FZF_DEFAULT_OPTS = ' --reverse'
-                let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
-                let g:fzf_colors =
-                            \ { 'fg': ['fg', 'Normal'],
-                            \ 'bg': ['bg', 'Normal']}
-                let g:fzf_action = {
-                    \ 'ctrl-q': function('s:build_quickfix_list'),
-                    \ 'ctrl-t': 'tab split',
-                    \ 'ctrl-x': 'split',
-                    \ 'ctrl-v': 'vsplit'
-                    \ }
-                nnoremap <leader>f :Files<cr>
-                command! -bang -nargs=? -complete=dir FilesSearch
-                            \ call fzf#vim#files('',
-                            \   fzf#vim#with_preview({'options':['--query='.<q-args>]}), <bang>0)
-                nnoremap <leader>F :FilesSearch '<c-r><c-w><cr>
-                vnoremap <leader>F :<BS><BS><BS><BS><BS>FilesSearch '<c-r>=VisualSelection()<cr><cr>
-                nnoremap <leader>r :History<cr>
-                nnoremap <leader>b :Buffers<cr>
-                nnoremap <leader>ag :Ag <c-r><c-w><cr>
-                command! -bang -nargs=* Rg
-                  \ call fzf#vim#grep(
-                  \   "rg --column --line-number --no-heading --color=always --smart-case --trim -- ".shellescape(<q-args>), 1,
-                  \   fzf#vim#with_preview('right', 'ctrl-/'), <bang>0)
-                nnoremap <leader>rg :Rg <c-r><c-w><cr>
-                vnoremap <leader>rg :<BS><BS><BS><BS><BS>Rg <c-r>=VisualSelection()<cr><cr>
-            ]]
+            local f = require('fzf-lua');
+            local files = function(txt) 
+                f.files({ fzf_opts = { ['--query'] = vim.fn.shellescape(txt) } })
+            end
+            f.setup({ 
+                winopts = { height=0.9, width=0.9 },
+                files = { actions = { ["ctrl-x"] = f.actions.file_split } }
+            })
+            vim.keymap.set('n', '<leader>f', f.files, { silent = true })
+            vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true });
+            vim.keymap.set('v', '<leader>F', function() files("'"..f.utils.get_visual_selection()) end, { silent = true });
+            vim.keymap.set('n', '<leader>b', f.buffers, { silent = true })
+            vim.keymap.set('n', '<leader>o', f.oldfiles, { silent = true })
+            vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true })
+            vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true })
+            vim.keymap.set('n', '<leader>z', ':FzfLua ');
+            vim.api.nvim_create_user_command("Rg", function(opts) f.grep_project(opts.args) end, { nargs = '*'})
         end
     },
-    fzf_spec(),
     {
         'nvim-lualine/lualine.nvim',
         event = "VeryLazy",
@@ -741,7 +716,7 @@ local spec = {
         }
     },
     { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
-    { 'elmcast/elm-vim', ft = 'elm' },
+    { 'elmcast/elm-vim', ft = 'elm' }
 }
 
 require("lazy").setup({
