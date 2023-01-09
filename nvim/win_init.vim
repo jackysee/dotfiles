@@ -43,6 +43,13 @@ let &undodir= s:path . '/undo'
 " auto reload vimrc when editing it
 autocmd! bufwritepost init.vim source $MYVIMRC
 
+if g:nvy
+    au GUIEnter * simalt ~x
+    set guifont=Source_Code_Pro:h10
+    set linespace=1
+    set t_ut=
+endif
+
 highlight NonText guifg=#444444 guibg=NONE gui=NONE cterm=NONE
 highlight SpecialKey guifg=#444444 guibg=NONE gui=NONE cterm=NONE
 
@@ -240,7 +247,7 @@ function! Vue_Refactoring()
 endfunction
 autocmd FileType vue call Vue_Refactoring()
 
-" execute "source " . s:path  . '/statusline.vim'
+execute "source " . s:path  . '/statusline.vim'
 
 " plugins managed by lazy.nvim
 lua << EOF
@@ -260,20 +267,6 @@ local spec = {
     { 'folke/tokyonight.nvim', config = function() vim.cmd([[colorscheme tokyonight ]]) end },
     -- { 'romainl/Apprentice', config = function() vim.cmd([[colorscheme apprentice ]]) end },
     -- { 'EdenEast/nightfox.nvim', config = function() vim.cmd([[colorscheme nightfox]]) end },
-
-    {
-        'mhinz/vim-startify',
-        event = 'BufWinEnter',
-        config = function()
-            vim.g.startify_change_to_dir = 0
-            vim.g.startify_change_to_vcs_root = 1
-            vim.g.startify_lists = {
-                {  header = { '   MRU '..vim.fn.getcwd()}, type = 'dir' },
-                {  header = { '   MRU'}, type = 'files' },
-                {  header = { '   Sessions'}, type = 'sessions' }
-            }
-        end
-    },
     {
         'mbbill/undotree',
         event = "BufReadPre",
@@ -284,7 +277,7 @@ local spec = {
         end
     },
     -- vcs
-    { 'tpope/vim-fugitive' event = "BufReadPre" },
+    { 'tpope/vim-fugitive', event = "BufReadPre" },
     {
         'mhinz/vim-signify',
         event = 'BufReadPre',
@@ -311,7 +304,7 @@ local spec = {
             -- vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
             vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
             vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
-       end 
+       end
     },
     { 'tpope/vim-repeat', event = "BufReadPost" },
     {
@@ -352,7 +345,7 @@ local spec = {
         config = true
     },
     {
-        'nvim-telescope/telescope-fzf-native.nvim', 
+        'nvim-telescope/telescope-fzf-native.nvim',
         build = vim.fn.executable('cmake') == 1 and 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' or 'make'
     },
     {
@@ -369,7 +362,7 @@ local spec = {
                     },
                     layout_strategy = "flex",
                     -- border = false,
-                    path_display = {'truncate'}, 
+                    path_display = {'truncate'},
                     sorting_strategy = "ascending",
                     mappings = {
                         i =  {
@@ -428,38 +421,6 @@ local spec = {
             vim.keymap.set('v', '<leader>F', function() findFiles(vtext()) end)
             vim.keymap.set('n', '<leader>y', ':FzfLua yank_history');
             vim.api.nvim_create_user_command("Rg", function(opts) grep(opts.args) end, { nargs = '*'})
-        end
-    },
-    {  
-        'nvim-lualine/lualine.nvim', 
-        event = "VeryLazy",
-        config = function()
-            local vcs = function()
-                local status = ''
-                if vim.g.loaded_fugitive then 
-                    status = status .. vim.fn.FugitiveHead()
-                end
-                if vim.g.loaded_lawrencium then
-                    status = status .. vim.fn['lawrencium#statusline']()
-                end
-                if vim.b.sy.stats then
-                    for i,v in ipairs({'+','-','~'}) do
-                        if vim.b.sy.stats[i] > 0 then
-                            status = status .. v .. vim.b.sy.stats[i]
-                        end
-                    end
-                end
-                return status
-            end
-            require('lualine').setup({
-                sections = {
-                    lualine_a = { vcs },
-                    lualine_b = { { 'filename', path = 1 } },
-                    lualine_c = {},
-                    lualine_x = {  'diagnostics', 'filetype' },
-                },
-                options = { section_separators = '', component_separators = '' }
-            })
         end
     },
     { 'nvim-lua/plenary.nvim' },
@@ -630,7 +591,11 @@ local spec = {
             })
         end
     },
-    { 'williamboman/mason.nvim', config = true, lazy = true },
+    {
+        'williamboman/mason.nvim',
+        cmd = { "MasonInstall", "MasonUninstall", "Mason", "MasonUninstallAll", "MasonLog" },
+        config = true
+    },
     { 'williamboman/mason-lspconfig.nvim', config = true, dependencies = { "williamboman/mason.nvim" } },
     {
         'neovim/nvim-lspconfig',
@@ -657,32 +622,13 @@ local spec = {
         end
     },
 
-
-    -- { 'b0o/SchemaStore.nvim' },
-    -- { 'tpope/vim-dadbod' },
-    -- {
-    --     'kristijanhusak/vim-dadbod-ui',
-    --     dependencies = { 'tpope/vim-dadbod' },
-    --     config = function()
-    --         vim.g.db_ui_debug = 1
-    --         vim.g.db_ui_save_location = '~/.config/db_ui'
-    --     end
-    -- },
-    { 
-        'JoosepAlviste/nvim-ts-context-commentstring', 
-        dependencies =  { 'nvim-treesitter/nvim-treesitter', 'tpope/vim-commentary' } 
+    { 'christoomey/vim-tmux-navigator' },
+    {
+        'JoosepAlviste/nvim-ts-context-commentstring',
+        dependencies =  { 'nvim-treesitter/nvim-treesitter', 'tpope/vim-commentary' }
     },
     { 'tpope/vim-commentary', event = "BufReadPost" },
-    -- { 'windwp/nvim-autopairs', config = true },
     { 'Raimondi/delimitMate', event = "BufReadPost" },
-    -- {
-    --     "andymass/vim-matchup",
-    --     event = "BufReadPost",
-    --     config = function()
-    --         vim.g.matchup_matchparen_offscreen = { method = "status_manual" }
-    --     end
-    -- },
-    -- { 'arthurxavierx/vim-caser' },
     { 'wellle/targets.vim', event = 'BufReadPost' },
     {
         'nvim-treesitter/nvim-treesitter',

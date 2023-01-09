@@ -145,7 +145,9 @@ Plug 'svermeulen/vim-yoink'
 Plug 'haya14busa/vim-asterisk'
 Plug 'markonm/traces.vim'
 Plug 'mbbill/undotree'
-Plug 'rlue/vim-barbaric'
+if !s:is_windows 
+    Plug 'rlue/vim-barbaric'
+endif
 Plug 'junegunn/vim-peekaboo'
 
 
@@ -202,8 +204,8 @@ let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 
 if s:is_windows && s:is_gui
-    colorscheme apprentice
-    " colorscheme gruvbit
+    " colorscheme apprentice
+    colorscheme gruvbit
 else
     colorscheme nightfly
     
@@ -622,7 +624,9 @@ nnoremap <F5> :UndotreeToggle<cr>
 
 " vim-barbaric
 " let g:barbaric_ime = 'fcitx'
-let g:barbaric_fcitx_cmd = 'fcitx-remote'
+if !s:is_windows 
+    let g:barbaric_fcitx_cmd = 'fcitx-remote'
+endif
 
 "dadbod-ui
 let g:db_ui_debug = 1
