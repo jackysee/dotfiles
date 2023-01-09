@@ -21,6 +21,7 @@ set scrolloff=1
 set sidescrolloff=5
 set display+=lastline
 set lazyredraw
+set timeoutlen=300
 if executable('rg')
     set grepprg=rg\ --vimgrep
     set grepformat=%f:%l:%c:%m
@@ -386,16 +387,16 @@ local spec = {
                 winopts = { height=0.9, width=0.9 },
                 files = { actions = { ["ctrl-x"] = f.actions.file_split } }
             })
-            vim.keymap.set('n', '<leader>f', f.files, { silent = true })
-            vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true });
-            vim.keymap.set('v', '<leader>F', function() files("'"..f.utils.get_visual_selection()) end, { silent = true });
-            vim.keymap.set('n', '<leader>b', f.buffers, { silent = true })
-            vim.keymap.set('n', '<leader>o', f.oldfiles, { silent = true })
-            vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true })
-            vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true })
-            vim.keymap.set('n', '<leader>z', ':FzfLua ');
+            vim.keymap.set('n', '<leader>f', f.files, { silent = true, desc = "fzf files" })
+            vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true, desc = "exact file match <cword>"});
+            vim.keymap.set('v', '<leader>F', function() files("'"..f.utils.get_visual_selection()) end, { silent = true, desc = "exact file match selection" });
+            vim.keymap.set('n', '<leader>b', f.buffers, { silent = true, desc = "buffers" })
+            vim.keymap.set('n', '<leader>o', f.oldfiles, { silent = true, desc = "oldfiles" })
+            vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true, desc = "rg <cword>" })
+            vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = "rg selection" })
+            vim.keymap.set('n', '<leader>z', ':FzfLua ', { desc = "cmd :FzfLua "});
             vim.api.nvim_create_user_command("Rg", function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
-            vim.keymap.set('n', '<leader>y', function() require('fzf_yanky').fzf_yanky() end, { silent = true })
+            vim.keymap.set('n', '<leader>y', function() require('fzf_yanky').fzf_yanky() end, { silent = true, desc = "yank ring history" })
         end
     },
     { 'nvim-lua/plenary.nvim' },
@@ -683,7 +684,8 @@ local spec = {
         }
     },
     { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
-    { 'elmcast/elm-vim', ft = 'elm' }
+    { 'elmcast/elm-vim', ft = 'elm' },
+    { "folke/which-key.nvim", config = true, event = "VeryLazy" },
 }
 
 require("lazy").setup({

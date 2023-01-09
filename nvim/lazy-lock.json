@@ -48,5 +48,6 @@
   "vim-surround": { "branch": "master", "commit": "3d188ed2113431cf8dac77be61b842acb64433d9" },
   "vim-tmux-focus-events": { "branch": "master", "commit": "b1330e04ffb95ede8e02b2f7df1f238190c67056" },
   "vim-tmux-navigator": { "branch": "master", "commit": "9337b6d5d417e8006c09f1faadb5069296c8da02" },
+  "which-key.nvim": { "branch": "main", "commit": "85f69b07afce4ea77c58ae9a3aeb4e6c918b4d34" },
   "yanky.nvim": { "branch": "main", "commit": "83bb1dc935b126b59acbd22225a421f0f38a7cde" }
 }
