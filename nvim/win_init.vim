@@ -43,7 +43,8 @@ let &undodir= s:path . '/undo'
 " auto reload vimrc when editing it
 autocmd! bufwritepost init.vim source $MYVIMRC
 
-if g:nvy
+
+if exists('g:nvy')
     au GUIEnter * simalt ~x
     set guifont=Source_Code_Pro:h10
     set linespace=1
@@ -351,7 +352,7 @@ local spec = {
     {
         'nvim-telescope/telescope.nvim', tag = '0.1.0',
         event = "BufWinEnter",
-        dependencies = {'nvim-lua/plenary.nvim'},
+        dependencies = {'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-fzf-native.nvim'},
         config = function()
             local actions = require('telescope.actions')
             require('telescope').setup({
