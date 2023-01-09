@@ -377,6 +377,7 @@ local spec = {
         event = "BufWinEnter",
         dependencies = { 'nvim-tree/nvim-web-devicons', 'junegunn/fzf' },
         config = function()
+            vim.env.FZF_DEFAULT_OPTS = nil
             local f = require('fzf-lua');
             local files = function(txt)
                 f.files({ fzf_opts = { ['--query'] = vim.fn.shellescape(txt) } })
