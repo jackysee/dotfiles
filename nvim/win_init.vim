@@ -311,7 +311,6 @@ local spec = {
             -- vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
             vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
             vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
-            vim.keymap.set('n', '<leader>y', ':YankyRingHistory<cr>')
        end 
     },
     { 'tpope/vim-repeat', event = "BufReadPost" },
@@ -390,6 +389,7 @@ local spec = {
                 }
             })
             require('telescope').load_extension('fzf')
+            require('telescope').load_extension('yank_history')
             local builtin = require('telescope.builtin');
             local findFiles = function(txt)
                 builtin.find_files({
@@ -420,12 +420,13 @@ local spec = {
 
             vim.keymap.set('n', '<leader>f', function() findFiles(nil) end)
             vim.keymap.set('n', '<leader>F', function() findFiles(vim.fn.expand('<cword>')) end)
-            vim.keymap.set('n', '<leader>r', function() builtin.oldfiles() end)
+            vim.keymap.set('n', '<leader>o', function() builtin.oldfiles() end)
             vim.keymap.set('n', '<leader>b', function() builtin.buffers() end)
             vim.keymap.set('n', '<leader>lg', function() builtin.live_grep({}) end)
             vim.keymap.set('n', '<leader>rg', function() grep(vim.fn.expand('<cword>')) end)
             vim.keymap.set('v', '<leader>rg', function() grep(vtext()) end)
             vim.keymap.set('v', '<leader>F', function() findFiles(vtext()) end)
+            vim.keymap.set('n', '<leader>y', ':FzfLua yank_history');
             vim.api.nvim_create_user_command("Rg", function(opts) grep(opts.args) end, { nargs = '*'})
         end
     },

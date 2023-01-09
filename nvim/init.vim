@@ -265,11 +265,11 @@ local colorscheme = function(repo, scheme, load)
     return {
         repo,
         lazy = load == false,
-        config = function() 
-            if load then 
-                vim.cmd("colorscheme "..scheme) 
+        config = function()
+            if load then
+                vim.cmd("colorscheme "..scheme)
                 vim.cmd("set termguicolors")
-            end 
+            end
         end
     }
 end
@@ -329,7 +329,7 @@ local spec = {
             vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
             vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
             vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
-            vim.keymap.set('n', '<leader>y', ':YankyRingHistory<cr>')
+            -- vim.keymap.set('n', '<leader>y', ':YankyRingHistory<cr>')
        end
     },
     { 'tpope/vim-repeat', event="BufReadPost" },
@@ -372,16 +372,16 @@ local spec = {
         config = true
     },
     fzf_spec(),
-    { 
+    {
         'ibhagwan/fzf-lua',
         event = "BufWinEnter",
         dependencies = { 'nvim-tree/nvim-web-devicons', 'junegunn/fzf' },
         config = function()
             local f = require('fzf-lua');
-            local files = function(txt) 
+            local files = function(txt)
                 f.files({ fzf_opts = { ['--query'] = vim.fn.shellescape(txt) } })
             end
-            f.setup({ 
+            f.setup({
                 winopts = { height=0.9, width=0.9 },
                 files = { actions = { ["ctrl-x"] = f.actions.file_split } }
             })
@@ -394,6 +394,7 @@ local spec = {
             vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true })
             vim.keymap.set('n', '<leader>z', ':FzfLua ');
             vim.api.nvim_create_user_command("Rg", function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
+            vim.keymap.set('n', '<leader>y', function() require('fzf_yanky').fzf_yanky() end, { silent = true })
         end
     },
     {
@@ -420,8 +421,8 @@ local spec = {
             end
             require('lualine').setup({
                 sections = {
-                    lualine_a = { { 'filename', path = 1 } },
-                    lualine_b = { vcs },
+                    lualine_a = { vcs },
+                    lualine_b = { { 'filename', path = 1 } },
                     lualine_c = {},
                     lualine_x = { 'MatchupStatusOffscreen', 'diagnostics', 'progress' },
                     lualine_y = { 'location' },
