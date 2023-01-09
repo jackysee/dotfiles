@@ -238,7 +238,7 @@ function! Vue_Refactoring()
 endfunction
 autocmd FileType vue call Vue_Refactoring()
 
-" execute "source " . s:path  . '/statusline.vim'
+execute "source " . s:path  . '/statusline.vim'
 
 " plugins managed by lazy.nvim
 lua << EOF
@@ -395,41 +395,6 @@ local spec = {
             vim.keymap.set('n', '<leader>z', ':FzfLua ');
             vim.api.nvim_create_user_command("Rg", function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
             vim.keymap.set('n', '<leader>y', function() require('fzf_yanky').fzf_yanky() end, { silent = true })
-        end
-    },
-    {
-        'nvim-lualine/lualine.nvim',
-        event = "VeryLazy",
-        dependencies = { 'nvim-tree/nvim-web-devicons' },
-        config = function()
-            local vcs = function()
-                local status = ''
-                if vim.g.loaded_fugitive then
-                    status = status .. vim.fn.FugitiveHead()
-                end
-                if vim.g.loaded_lawrencium then
-                    status = status .. vim.fn['lawrencium#statusline']()
-                end
-                if vim.b.sy.stats then
-                    for i,v in ipairs({'+','-','~'}) do
-                        if vim.b.sy.stats[i] > 0 then
-                            status = status .. v .. vim.b.sy.stats[i]
-                        end
-                    end
-                end
-                return status
-            end
-            require('lualine').setup({
-                sections = {
-                    lualine_a = { vcs },
-                    lualine_b = { { 'filename', path = 1 } },
-                    lualine_c = {},
-                    lualine_x = { 'MatchupStatusOffscreen', 'diagnostics', 'progress' },
-                    lualine_y = { 'location' },
-                    lualine_z = { 'filetype' }
-                },
-                options = { section_separators = '', component_separators = '' }
-            })
         end
     },
     { 'nvim-lua/plenary.nvim' },

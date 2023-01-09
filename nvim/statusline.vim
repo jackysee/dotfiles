@@ -143,8 +143,8 @@ function! RefreshStatusline()
 endfunction
 
 " vanilla statusline
-" set laststatus=2
-" let &statusline = Statusline()
+set laststatus=2
+let &statusline = Statusline()
 " set noshowmode
 " set cmdheight=0
 " hi WinBarContent gui=NONE guifg=SlateBlue 
