@@ -427,7 +427,7 @@ local spec = {
     { 'nvim-lua/plenary.nvim' },
     {
         'jose-elias-alvarez/null-ls.nvim',
-        event = "BufWinEnter",
+        event = "BufReadPre",
         dependencies = { 'nvim-lua/plenary.nvim'},
         config = function()
             local null_ls = require("null-ls")
@@ -503,7 +503,6 @@ local spec = {
         end
     },
 
-    { 'rafamadriz/friendly-snippets', event = "InsertCharPre" },
     {
         'L3MON4D3/LuaSnip',
         dependencies = { 'rafamadriz/friendly-snippets' },
@@ -527,11 +526,6 @@ local spec = {
         end
     },
 
-
-    { 'saadparwaiz1/cmp_luasnip', dependencies = { 'L3MON4D3/LuaSnip' }, event = "InsertCharPre" },
-    { 'hrsh7th/cmp-buffer' },
-    { 'hrsh7th/cmp-nvim-lsp' },
-    { 'hrsh7th/cmp-path' },
     {
         'hrsh7th/nvim-cmp',
         event = "InsertEnter",
@@ -597,11 +591,14 @@ local spec = {
         cmd = { "MasonInstall", "MasonUninstall", "Mason", "MasonUninstallAll", "MasonLog" },
         config = true
     },
-    { 'williamboman/mason-lspconfig.nvim', config = true, dependencies = { "williamboman/mason.nvim" } },
     {
         'neovim/nvim-lspconfig',
         lazy = true,
-        dependencies = { 'hrsh7th/nvim-cmp' },
+        dependencies = { 
+            'hrsh7th/nvim-cmp', 
+            'williamboman/mason.nvim',
+            'williamboman/mason-lspconfig.nvim' 
+        },
         config = function()
             local lspconfig = require("lspconfig")
 
@@ -624,17 +621,14 @@ local spec = {
     },
 
     { 'christoomey/vim-tmux-navigator' },
-    {
-        'JoosepAlviste/nvim-ts-context-commentstring',
-        dependencies =  { 'nvim-treesitter/nvim-treesitter', 'tpope/vim-commentary' }
-    },
+    { 'JoosepAlviste/nvim-ts-context-commentstring' },
     { 'tpope/vim-commentary', event = "BufReadPost" },
     { 'Raimondi/delimitMate', event = "BufReadPost" },
     { 'wellle/targets.vim', event = 'BufReadPost' },
     {
         'nvim-treesitter/nvim-treesitter',
-        lazy = true,
         build = ':TSUpdate',
+        event = 'BufReadPost',
         config = function()
             require('nvim-treesitter.configs').setup({
                 -- context_commentstring = { enable = true, enable_autocmd = false },
