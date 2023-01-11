@@ -141,7 +141,7 @@ zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg" bpick"
 zinit light BurntSushi/ripgrep
 
 # zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"*linux64*tar*"
-zinit ice from"gh-r" as"program" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
+zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
 zinit light neovim/neovim
 
 
