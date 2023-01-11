@@ -239,7 +239,7 @@ function! Vue_Refactoring()
 endfunction
 autocmd FileType vue call Vue_Refactoring()
 
-execute "source " . s:path  . '/statusline.vim'
+autocmd User VeryLazy execute "source " . s:path  . '/statusline.vim'
 
 " plugins managed by lazy.nvim
 lua << EOF
@@ -675,6 +675,17 @@ local spec = {
     { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
     { 'elmcast/elm-vim', ft = 'elm' },
     { "folke/which-key.nvim", config = true, event = "VeryLazy" },
+    { 
+        "folke/persistence.nvim",  
+        event = "BufReadPre", 
+        config = function()
+            local l = require('persistence');
+            l.setup()
+            vim.keymap.set("n", "<leader>qs", function() l.load() end, { desc = "restore session for cwd" } )
+            vim.keymap.set("n", "<leader>ql", function() l.load({ last = true }) end, { desc = "restore last session" } )
+            vim.keymap.set("n", "<leader>qd", function() l.stop({ last = true }) end, { desc = "stop persist session" } )
+        end
+    }
 }
 
 require("lazy").setup({
