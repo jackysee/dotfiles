@@ -265,7 +265,7 @@ end
 local colorscheme = function(repo, scheme, load)
     return {
         repo,
-        lazy = load == false,
+        lazy = load ~= true,
         config = function()
             if load then
                 vim.cmd("colorscheme "..scheme)
@@ -282,7 +282,7 @@ local spec = {
     colorscheme('EdenEast/nightfox.nvim', 'nightfox', true),
     {
         'mhinz/vim-startify',
-        event = 'BufWinEnter',
+        event = 'VimEnter',
         config = function()
             vim.g.startify_change_to_dir = 0
             vim.g.startify_change_to_vcs_root = 1
@@ -596,7 +596,6 @@ local spec = {
     -- { 'b0o/SchemaStore.nvim', lazy = true },
     { 'nvim-tree/nvim-web-devicons' },
 
-    { 'tpope/vim-dadbod' },
     {
         'kristijanhusak/vim-dadbod-ui',
         cmd = "DBUI",
@@ -606,7 +605,6 @@ local spec = {
             vim.g.db_ui_save_location = '~/.config/db_ui'
         end
     },
-    { 'JoosepAlviste/nvim-ts-context-commentstring' },
     { 'tpope/vim-commentary', event="BufReadPost" },
     { 'windwp/nvim-autopairs', config = true, event="InsertCharPre" },
     -- { 'Raimondi/delimitMate' },
@@ -618,9 +616,10 @@ local spec = {
         end
     },
     { 'arthurxavierx/vim-caser', event = "BufReadPost" },
-    { 'christoomey/vim-tmux-navigator' },
+    { 'christoomey/vim-tmux-navigator', event = "BufReadPost" },
     {
         'tmux-plugins/vim-tmux-focus-events',
+        event = "BufReadPost",
         config = function()
             vim.g.tmux_navigator_disable_when_zoomed = 1
         end
@@ -633,6 +632,7 @@ local spec = {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
         event = 'BufReadPost',
+        dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
         config = function()
             require('nvim-treesitter.configs').setup({
                 -- context_commentstring = { enable = true, enable_autocmd = false },
