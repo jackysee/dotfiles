@@ -115,7 +115,7 @@ nnoremap [q :cprev<cr>
 
 " netw
 let g:netrw_browse_split=2
-nnoremap <leader>pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 35<CR>
+" nnoremap <leader>pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 35<CR>
 
 "textobj for bracket function like block (linewise)
 xnoremap <silent> af :<c-u>normal! g_v%V<cr>
@@ -175,12 +175,12 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
 
 " auto create folder when saving files
 lua << EOF
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-    pattern = "*",
-    group = vim.api.nvim_create_augroup("auto_create_dir", { clear = true }),
+vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+    pattern = '*',
+    group = vim.api.nvim_create_augroup('auto_create_dir', { clear = true }),
     callback = function(ctx)
-        local dir = vim.fn.fnamemodify(ctx.file, ":p:h")
-        vim.fn.mkdir(dir, "p")
+        local dir = vim.fn.fnamemodify(ctx.file, ':p:h')
+        vim.fn.mkdir(dir, 'p')
     end
 })
 EOF
@@ -233,20 +233,20 @@ nnoremap <leader>w :WinResize<CR>
 
 " vue3_emits
 function! Vue_Refactoring()
-    lua vim.api.nvim_create_user_command("VueEmits", function() require('vue_3_emits').get_emits() end, {})
+    lua vim.api.nvim_create_user_command('VueEmits', function() require('vue_3_emits').get_emits() end, {})
     nnoremap <leader>ve A,<CR><C-O>:VueEmits<cr><esc>==
     vnoremap <leader>vm :s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>
 endfunction
 autocmd FileType vue call Vue_Refactoring()
 
-autocmd User VeryLazy execute "source " . s:path  . '/statusline.vim'
+autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
 
 " plugins managed by lazy.nvim
 lua << EOF
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", lazypath })
-    vim.fn.system({ "git", "-C", lazypath, "checkout", "tags/stable" }) -- last stable release
+    vim.fn.system({ 'git', 'clone', '--filter=blob:none', 'https://github.com/folke/lazy.nvim.git', lazypath })
+    vim.fn.system({ 'git', '-C', lazypath, 'checkout', 'tags/stable' }) -- last stable release
 end
 vim.opt.rtp:prepend(lazypath)
 
@@ -258,7 +258,7 @@ local fzf_spec = function()
             event = 'BufWinEnter'
         }
     else
-        return { 'junegunn/fzf', event = "BufWinEnter" }
+        return { 'junegunn/fzf', event = 'BufWinEnter' }
     end
 end
 
@@ -268,8 +268,8 @@ local colorscheme = function(repo, scheme, load)
         lazy = load ~= true,
         config = function()
             if load then
-                vim.cmd("colorscheme "..scheme)
-                vim.cmd("set termguicolors")
+                vim.cmd('colorscheme '..scheme)
+                vim.cmd('set termguicolors')
             end
         end
     }
@@ -280,22 +280,31 @@ local spec = {
     colorscheme('haishanh/night-owl.vim', 'night-owl'),
     colorscheme('folke/tokyonight.nvim', 'tokyonight'),
     colorscheme('EdenEast/nightfox.nvim', 'nightfox', true),
+    -- {
+    --     'mhinz/vim-startify',
+    --     event = 'VimEnter',
+    --     config = function()
+    --         vim.g.startify_change_to_dir = 0
+    --         vim.g.startify_change_to_vcs_root = 1
+    --         vim.g.startify_lists = {
+    --             {  header = { '   MRU '..vim.fn.getcwd() }, type = 'dir' },
+    --             {  header = { '   MRU' }, type = 'files' },
+    --             {  header = { '   Sessions' }, type = 'sessions' }
+    --         }
+    --     end
+    -- },
     {
-        'mhinz/vim-startify',
+        'goolord/alpha-nvim',
         event = 'VimEnter',
         config = function()
-            vim.g.startify_change_to_dir = 0
-            vim.g.startify_change_to_vcs_root = 1
-            vim.g.startify_lists = {
-                {  header = { '   MRU '..vim.fn.getcwd() }, type = 'dir' },
-                {  header = { '   MRU' }, type = 'files' },
-                {  header = { '   Sessions' }, type = 'sessions' }
-            }
+            local section = require('alpha.themes.startify').section
+            section.header.val = require('util').cowsay(require('alpha.fortune')())
+            require('alpha').setup(require('alpha.themes.startify').config)
         end
     },
     {
         'mbbill/undotree',
-        event = "BufReadPre",
+        event = 'BufReadPre',
         config = function()
             vim.g.undotree_SetFocusWhenToggle = 1
             vim.g.undotree_ShortIndicators = 1
@@ -312,8 +321,8 @@ local spec = {
             vim.g.signify_sign_change = '~'
             vim.g.signify_update_on_focusgained = 1
             vim.g.signify_priority = 5
-            vim.keymap.set("n", "<leader>hu", ":SignifyHunkUndo<cr>")
-            vim.keymap.set("n", "<leader>hd", ":SignifyHunkDiff<cr>")
+            vim.keymap.set('n', '<leader>hu', ':SignifyHunkUndo<cr>')
+            vim.keymap.set('n', '<leader>hd', ':SignifyHunkDiff<cr>')
         end
     },
     { 'ludovicchabant/vim-lawrencium', event = 'BufReadPre' },
@@ -321,22 +330,22 @@ local spec = {
     { 'whiteinge/diffconflicts', event = 'BufReadPre' },
     {
         'gbprod/yanky.nvim',
-        event = "BufReadPost",
+        event = 'BufReadPost',
         config = function()
             require('yanky').setup()
-            vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
-            vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-            vim.keymap.set({"n","x"}, "gp", "<Plug>(YankyGPutAfter)")
-            vim.keymap.set({"n","x"}, "gP", "<Plug>(YankyGPutBefore)")
-            vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
-            vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
+            vim.keymap.set({'n','x'}, 'p', '<Plug>(YankyPutAfter)')
+            vim.keymap.set({'n','x'}, 'P', '<Plug>(YankyPutBefore)')
+            vim.keymap.set({'n','x'}, 'gp', '<Plug>(YankyGPutAfter)')
+            vim.keymap.set({'n','x'}, 'gP', '<Plug>(YankyGPutBefore)')
+            vim.keymap.set('n', '<c-n>', '<Plug>(YankyCycleForward)')
+            vim.keymap.set('n', '<c-p>', '<Plug>(YankyCycleBackward)')
             -- vim.keymap.set('n', '<leader>y', ':YankyRingHistory<cr>')
        end
     },
-    { 'tpope/vim-repeat', event="BufReadPost" },
+    { 'tpope/vim-repeat', event='BufReadPost' },
     {
         'tpope/vim-surround',
-        event = "CursorHold",
+        event = 'BufReadPost',
         config = function()
             vim.g.surround_no_mappings = 1
             vim.keymap.set('n', 'ds', '<Plug>Dsurround')
@@ -351,31 +360,31 @@ local spec = {
             vim.keymap.set('x', 'gS', '<Plug>VgSurround')
         end
     },
-    { 'tpope/vim-eunuch', event = "CmdlineEnter" },
-    { 'elihunter173/dirbuf.nvim', event = "CmdlineEnter" },
+    { 'tpope/vim-eunuch', event = 'CmdlineEnter' },
+    { 'elihunter173/dirbuf.nvim', event = 'CmdlineEnter' },
     {
         'ggandor/leap.nvim',
-        event="BufReadPost",
+        event='BufReadPost',
         config = function()
             require('leap').set_default_keymaps()
         end
     },
     {
         'ggandor/flit.nvim',
-        event="BufReadPost",
+        event='BufReadPost',
         dependencies = { 'ggandor/leap.nvim' },
         config = true
     },
     {
         'ggandor/leap-spooky.nvim',
-        event="BufReadPost",
+        event='BufReadPost',
         dependencies = { 'ggandor/leap.nvim' },
         config = true
     },
     fzf_spec(),
     {
         'ibhagwan/fzf-lua',
-        event = "BufWinEnter",
+        event = 'BufWinEnter',
         dependencies = { 'nvim-tree/nvim-web-devicons', 'junegunn/fzf' },
         config = function()
             vim.env.FZF_DEFAULT_OPTS = ' --reverse' 
@@ -385,70 +394,70 @@ local spec = {
             end
             f.setup({
                 winopts = { height=0.9, width=0.9 },
-                files = { actions = { ["ctrl-x"] = f.actions.file_split } }
+                files = { actions = { ['ctrl-x'] = f.actions.file_split } }
             })
-            vim.keymap.set('n', '<leader>f', f.files, { silent = true, desc = "fzf files" })
-            vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true, desc = "exact file match <cword>"});
-            vim.keymap.set('v', '<leader>F', function() files("'"..f.utils.get_visual_selection()) end, { silent = true, desc = "exact file match selection" });
-            vim.keymap.set('n', '<leader>b', f.buffers, { silent = true, desc = "buffers" })
-            vim.keymap.set('n', '<leader>o', f.oldfiles, { silent = true, desc = "oldfiles" })
-            vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true, desc = "rg <cword>" })
-            vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = "rg selection" })
-            vim.keymap.set('n', '<leader>z', ':FzfLua ', { desc = "cmd :FzfLua "});
-            vim.api.nvim_create_user_command("Rg", function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
-            vim.keymap.set('n', '<leader>y', function() require('fzf_yanky').fzf_yanky() end, { silent = true, desc = "yank ring history" })
+            vim.keymap.set('n', '<leader>f', f.files, { silent = true, desc = 'fzf files' })
+            vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true, desc = 'exact file match <cword>'});
+            vim.keymap.set('v', '<leader>F', function() files("'"..f.utils.get_visual_selection()) end, { silent = true, desc = 'exact file match selection' });
+            vim.keymap.set('n', '<leader>b', f.buffers, { silent = true, desc = 'buffers' })
+            vim.keymap.set('n', '<leader>o', f.oldfiles, { silent = true, desc = 'oldfiles' })
+            vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true, desc = 'rg <cword>' })
+            vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = 'rg selection' })
+            vim.keymap.set('n', '<leader>z', ':FzfLua ', { desc = 'cmd :FzfLua '});
+            vim.api.nvim_create_user_command('Rg', function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
+            vim.keymap.set('n', '<leader>y', function() require('fzf_yanky').fzf_yanky() end, { silent = true, desc = 'yank ring history' })
         end
     },
     { 'nvim-lua/plenary.nvim' },
     {
         'jose-elias-alvarez/null-ls.nvim',
-        event = "BufReadPre",
+        event = 'BufReadPre',
         dependencies = { 'nvim-lua/plenary.nvim'},
         config = function()
-            local null_ls = require("null-ls")
+            local null_ls = require('null-ls')
             null_ls.setup {
                 debug = true,
                 sources = {
                     null_ls.builtins.formatting.prettierd.with({
-                        filetypes = { "javascript", "typescript", "vue", "html", "css" },
+                        filetypes = { 'javascript', 'typescript', 'vue', 'html', 'css' },
                         condition = function()
-                            return require("null-ls.utils").root_pattern(
-                                ".prettierrc",
-                                ".prettierrc.json",
-                                ".prettierrc.yml",
-                                ".prettierrc.yaml",
-                                ".prettierrc.json5",
-                                ".prettierrc.js",
-                                ".prettierrc.cjs",
-                                ".prettierrc.toml",
-                                "prettier.config.js",
-                                "prettier.config.cjs"
-                                --"package.json"
+                            return require('null-ls.utils').root_pattern(
+                                '.prettierrc',
+                                '.prettierrc.json',
+                                '.prettierrc.yml',
+                                '.prettierrc.yaml',
+                                '.prettierrc.json5',
+                                '.prettierrc.js',
+                                '.prettierrc.cjs',
+                                '.prettierrc.toml',
+                                'prettier.config.js',
+                                'prettier.config.cjs'
+                                --'package.json'
                             )(vim.api.nvim_buf_get_name(0)) ~= nil
                         end
                     }),
                     null_ls.builtins.diagnostics.eslint_d.with({
-                        filetypes = { "javascript", "typescript", "vue", "html", "css" },
+                        filetypes = { 'javascript', 'typescript', 'vue', 'html', 'css' },
                         condition = function()
-                            return require("null-ls.utils").root_pattern(
-                                "eslint.config.js",
+                            return require('null-ls.utils').root_pattern(
+                                'eslint.config.js',
                                 -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
-                                ".eslintrc",
-                                ".eslintrc.js",
-                                ".eslintrc.cjs",
-                                ".eslintrc.yaml",
-                                ".eslintrc.yml",
-                                ".eslintrc.json",
-                                "package.json"
+                                '.eslintrc',
+                                '.eslintrc.js',
+                                '.eslintrc.cjs',
+                                '.eslintrc.yaml',
+                                '.eslintrc.yml',
+                                '.eslintrc.json',
+                                'package.json'
                             )(vim.api.nvim_buf_get_name(0)) ~= nil
                         end
                     })
                 },
                 on_attach = function(client, bufnr)
                     -- if client.resolved_capabilities.document_formatting then
-                    if client.supports_method("textDocument/formatting") then
+                    if client.supports_method('textDocument/formatting') then
                         vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-                        vim.api.nvim_create_autocmd("BufWritePre", {
+                        vim.api.nvim_create_autocmd('BufWritePre', {
                             group = augroup,
                             buffer = bufnr,
                             callback = function()
@@ -462,7 +471,7 @@ local spec = {
             local null_ls_stop = function()
                 local null_ls_client
                 for _, client in ipairs(vim.lsp.get_active_clients()) do
-                    if client.name == "null-ls" then
+                    if client.name == 'null-ls' then
                         null_ls_client = client
                     end
                 end
@@ -474,15 +483,15 @@ local spec = {
                 vim.diagnostic.reset()
             end
 
-            vim.api.nvim_create_user_command("NullLsStop", null_ls_stop, {})
+            vim.api.nvim_create_user_command('NullLsStop', null_ls_stop, {})
         end
     },
 
-    -- { 'rafamadriz/friendly-snippets', event = "InsertCharPre" },
+    -- { 'rafamadriz/friendly-snippets', event = 'InsertCharPre' },
     {
         'L3MON4D3/LuaSnip',
         dependencies = { 'rafamadriz/friendly-snippets' },
-        event = "InsertCharPre",
+        event = 'InsertCharPre',
         config = function()
             local luasnip = require('luasnip')
             vim.cmd [[ imap <silent><expr> <C-e> luasnip#expandable() ? '<Plug>luasnip-expand-or-jump' : '' ]]
@@ -491,21 +500,21 @@ local spec = {
 
             luasnip.config.set_config {
                 history = true,
-                -- updateevents = "TextChanged,TextChangedI",
-                store_selection_keys = "<Tab>"
+                -- updateevents = 'TextChanged,TextChangedI',
+                store_selection_keys = '<Tab>'
             }
             require('luasnip/loaders/from_vscode').lazy_load();
-            require('luasnip/loaders/from_vscode').lazy_load({ paths = { "./snippets" } });
+            require('luasnip/loaders/from_vscode').lazy_load({ paths = { './snippets' } });
             -- require('./snippets/javascript');
-            luasnip.filetype_extend("vue", {"html", "javascript", "css"})
-            luasnip.filetype_extend("typescript", { "javascript"})
+            luasnip.filetype_extend('vue', {'html', 'javascript', 'css'})
+            luasnip.filetype_extend('typescript', { 'javascript'})
         end
     },
 
 
     {
         'hrsh7th/nvim-cmp',
-        event = "InsertEnter",
+        event = 'InsertEnter',
         dependencies = {
             'saadparwaiz1/cmp_luasnip',
             'hrsh7th/cmp-buffer',
@@ -538,24 +547,24 @@ local spec = {
                 },
                 sources = {
                     {
-                        name = "buffer" ,
+                        name = 'buffer' ,
                         option = {
                             get_bufnrs = function()
                                 return vim.api.nvim_list_bufs()
                             end
                         }
                     },
-                    { name = "path" },
-                    { name = "nvim_lsp" },
-                    { name = "luasnip" }
+                    { name = 'path' },
+                    { name = 'nvim_lsp' },
+                    { name = 'luasnip' }
                 },
                 formatting = {
                     format = function(entry, vim_item)
                         vim_item.menu = ({
-                            buffer = "[Buffer]",
-                            nvim_lsp = "[LSP]",
-                            path = "[Path]",
-                            luasnip = "[LuaSnip]",
+                            buffer = '[Buffer]',
+                            nvim_lsp = '[LSP]',
+                            path = '[Path]',
+                            luasnip = '[LuaSnip]',
                         })[entry.source.name]
                         return vim_item
                     end
@@ -563,17 +572,17 @@ local spec = {
             })
         end
     },
-    { 'williamboman/mason.nvim', config = true, cmd = "Mason" },
+    { 'williamboman/mason.nvim', config = true, cmd = 'Mason' },
     {
         'neovim/nvim-lspconfig',
-        event = "BufReadPre",
+        event = 'BufReadPre',
         dependencies = { 
             'hrsh7th/nvim-cmp', 
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim' 
         },
         config = function()
-            local lspconfig = require("lspconfig")
+            local lspconfig = require('lspconfig')
 
             vim.diagnostic.config({ virtual_text = true, signs = true });
 
@@ -598,33 +607,33 @@ local spec = {
 
     {
         'kristijanhusak/vim-dadbod-ui',
-        cmd = "DBUI",
+        cmd = 'DBUI',
         dependencies = { 'tpope/vim-dadbod' },
         config = function()
             vim.g.db_ui_debug = 1
             vim.g.db_ui_save_location = '~/.config/db_ui'
         end
     },
-    { 'tpope/vim-commentary', event="BufReadPost" },
-    { 'windwp/nvim-autopairs', config = true, event="InsertCharPre" },
-    -- { 'Raimondi/delimitMate' },
+    { 'tpope/vim-commentary', event='BufReadPost' },
+    { 'windwp/nvim-autopairs', event='InsertCharPre' },
+    -- { 'Raimondi/delimitMate', event = 'InsertCharPre' },
     {
-        "andymass/vim-matchup",
-        event = "BufReadPost",
+        'andymass/vim-matchup',
+        event = 'BufReadPost',
         config = function()
-            vim.g.matchup_matchparen_offscreen = { method = "status_manual" }
+            vim.g.matchup_matchparen_offscreen = { method = 'status_manual' }
         end
     },
-    { 'arthurxavierx/vim-caser', event = "BufReadPost" },
-    { 'christoomey/vim-tmux-navigator', event = "BufReadPost" },
+    { 'arthurxavierx/vim-caser', event = 'BufReadPost' },
+    { 'christoomey/vim-tmux-navigator', event = 'BufReadPost' },
     {
         'tmux-plugins/vim-tmux-focus-events',
-        event = "BufReadPost",
+        event = 'BufReadPost',
         config = function()
             vim.g.tmux_navigator_disable_when_zoomed = 1
         end
     },
-    { 'wellle/targets.vim', event="BufReadPost" },
+    { 'wellle/targets.vim', event='BufReadPost' },
     -- { 'terryma/vim-expand-region' },
     { 'kevinhwang91/nvim-bqf', ft = 'qf' },
 
@@ -641,7 +650,7 @@ local spec = {
                 query_linter = {
                     enable = true,
                     use_virtual_text = true,
-                    lint_events = { "BufWrite", "CursorHold" }
+                    lint_events = { 'BufWrite', 'CursorHold' }
                 },
                 matchup = { enable = true },
                 ensure_installed = { 'css', 'html', 'javascript', 'json', 'lua', 'python', 'regex', 'scss', 'vue', 'ruby', 'vim', 'typescript', 'bash'}
@@ -651,14 +660,14 @@ local spec = {
     },
     {
         'NvChad/nvim-colorizer.lua',
-        event = "BufReadPre",
+        event = 'BufReadPre',
         config = {
-            filetypes = { "*", "!lazy" },
-            buftype = { "*", "!prompt", "!nofile" },
+            filetypes = { '*', '!lazy' },
+            buftype = { '*', '!prompt', '!nofile' },
             user_default_options = {
                 RGB = true, -- #RGB hex codes
                 RRGGBB = true, -- #RRGGBB hex codes
-                names = false, -- "Name" codes like Blue
+                names = false, -- 'Name' codes like Blue
                 RRGGBBAA = true, -- #RRGGBBAA hex codes
                 AARRGGBB = false, -- 0xAARRGGBB hex codes
                 rgb_fn = true, -- CSS rgb() and rgba() functions
@@ -667,28 +676,28 @@ local spec = {
                 css_fn = true, -- Enable all CSS *functions*: rgb_fn, hsl_fn
                 -- Available modes: foreground, background
                 -- Available modes for `mode`: foreground, background,  virtualtext
-                mode = "background", -- Set the display mode.
-                virtualtext = "■",
+                mode = 'background', -- Set the display mode.
+                virtualtext = '■',
             },
         }
     },
     { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
     { 'elmcast/elm-vim', ft = 'elm' },
-    { "folke/which-key.nvim", config = true, event = "VeryLazy" },
+    { 'folke/which-key.nvim', config = true, event = 'VeryLazy' },
     { 
-        "folke/persistence.nvim",  
-        event = "BufReadPre", 
+        'folke/persistence.nvim',  
+        event = 'VimEnter', 
         config = function()
             local l = require('persistence');
             l.setup()
-            vim.keymap.set("n", "<leader>qs", function() l.load() end, { desc = "restore session for cwd" } )
-            vim.keymap.set("n", "<leader>ql", function() l.load({ last = true }) end, { desc = "restore last session" } )
-            vim.keymap.set("n", "<leader>qd", function() l.stop({ last = true }) end, { desc = "stop persist session" } )
+            vim.keymap.set('n', '<leader>qs', function() l.load() end, { desc = 'restore session for cwd' } )
+            vim.keymap.set('n', '<leader>ql', function() l.load({ last = true }) end, { desc = 'restore last session' } )
+            vim.keymap.set('n', '<leader>qd', function() l.stop({ last = true }) end, { desc = 'stop persist session' } )
         end
     }
 }
 
-require("lazy").setup({
+require('lazy').setup({
     spec = spec,
     rtp = { disabled_plugins = {'matchit', 'matchparen'} }
 })

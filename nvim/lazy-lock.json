@@ -1,6 +1,7 @@
 {
   "Apprentice": { "branch": "master", "commit": "9942d0bb0a5d82f7a24450b00051c1f2cc008659" },
   "LuaSnip": { "branch": "master", "commit": "5d57303efde86fcb0959c52b1a6d40f923940f34" },
+  "alpha-nvim": { "branch": "main", "commit": "21a0f2520ad3a7c32c0822f943368dc063a569fb" },
   "cmp-buffer": { "branch": "main", "commit": "3022dbc9166796b644a841a02de8dd1cc1d311fa" },
   "cmp-nvim-lsp": { "branch": "main", "commit": "59224771f91b86d1de12570b4070fe4ad7cd1eeb" },
   "cmp-path": { "branch": "main", "commit": "91ff86cd9c29299a64f968ebb45846c485725f23" },
@@ -44,7 +45,6 @@
   "vim-matchup": { "branch": "master", "commit": "db5120dd9887c988de7cd973ddb951e465d413e5" },
   "vim-repeat": { "branch": "master", "commit": "24afe922e6a05891756ecf331f39a1f6743d3d5a" },
   "vim-signify": { "branch": "master", "commit": "a05e63ba72411977f5087c27c1564c9287bfab66" },
-  "vim-startify": { "branch": "master", "commit": "81e36c352a8deea54df5ec1e2f4348685569bed2" },
   "vim-surround": { "branch": "master", "commit": "3d188ed2113431cf8dac77be61b842acb64433d9" },
   "vim-tmux-focus-events": { "branch": "master", "commit": "b1330e04ffb95ede8e02b2f7df1f238190c67056" },
   "vim-tmux-navigator": { "branch": "master", "commit": "cdd66d6a37d991bba7997d593586fc51a5b37aa8" },

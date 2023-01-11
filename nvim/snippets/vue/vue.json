@@ -15,6 +15,14 @@
         "prefix": "iv",
         "body": "import { $1 } from 'vue';"
     },
+    "import pinia": {
+        "prefix": "ip",
+        "body": "import { $1 } from 'pinia';"
+    },
+    "import vue-router" :{
+        "prefix": "ir",
+        "body": "import { $1 } from 'vue-router';"
+    },
     "vue sfc": {
         "prefix":"vvue",
         "body": [
