@@ -259,15 +259,24 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local colorscheme = function(repo, scheme, load)
+    return {
+        repo,
+        lazy = load ~= true,
+        config = function()
+            if load then
+                vim.cmd("colorscheme "..scheme)
+                vim.cmd("set termguicolors")
+            end
+        end
+    }
+end
+
 local spec = {
-    -- 'romainl/Apprentice',
-    -- 'gruvbox-community/gruvbox'
-    -- 'arcticicestudio/nord-vim'
-    -- 'haishanh/night-owl.vim'
-    --  'folke/tokyonight.nvim'
-    { 'folke/tokyonight.nvim', config = function() vim.cmd([[colorscheme tokyonight ]]) end },
-    -- { 'romainl/Apprentice', config = function() vim.cmd([[colorscheme apprentice ]]) end },
-    -- { 'EdenEast/nightfox.nvim', config = function() vim.cmd([[colorscheme nightfox]]) end },
+    colorscheme('romainl/Apprentice', 'Apprentice'),
+    colorscheme('haishanh/night-owl.vim', 'night-owl'),
+    colorscheme('folke/tokyonight.nvim', 'tokyonight', true),
+    colorscheme('EdenEast/nightfox.nvim', 'nightfox'),
     {
         'mbbill/undotree',
         event = "BufReadPre",
@@ -347,6 +356,7 @@ local spec = {
     },
     {
         'nvim-telescope/telescope-fzf-native.nvim',
+        lazy = true,
         build = vim.fn.executable('cmake') == 1 and 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' or 'make'
     },
     {
@@ -620,8 +630,6 @@ local spec = {
         end
     },
 
-    { 'christoomey/vim-tmux-navigator' },
-    { 'JoosepAlviste/nvim-ts-context-commentstring' },
     { 'tpope/vim-commentary', event = "BufReadPost" },
     { 'Raimondi/delimitMate', event = "BufReadPost" },
     { 'wellle/targets.vim', event = 'BufReadPost' },
@@ -629,6 +637,7 @@ local spec = {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
         event = 'BufReadPost',
+        dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
         config = function()
             require('nvim-treesitter.configs').setup({
                 -- context_commentstring = { enable = true, enable_autocmd = false },
