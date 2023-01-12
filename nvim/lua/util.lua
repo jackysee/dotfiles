@@ -28,4 +28,19 @@ M.cowsay = function(lines)
     return l
 end
 
+M.vtext = function()
+    vim.cmd [[ normal! : ]] --to update visual marks using command mode
+    local vstart = vim.fn.getpos("'<")
+    local vend = vim.fn.getpos("'>")
+    local lines = vim.fn.getline(vstart[2], vend[2])
+    if #lines == 0 then return "" end
+    local txt = ""
+    for k,v in ipairs(lines) do
+        local i = k == 1 and vstart[3] or 1
+        local j = #lines == k and vend[3] or nil
+        if vim.o.selection == "exclusive" and j ~= nil then j = j - 1 end
+        txt = txt .. v.sub(v, i, j)
+    end
+end
+
 return M

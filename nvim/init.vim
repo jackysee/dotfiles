@@ -263,9 +263,11 @@ local fzf_spec = function()
 end
 
 local colorscheme = function(repo, scheme, load)
+    local event = 'VeryLazy'
+    if load == true then event = nil end
     return {
         repo,
-        lazy = load ~= true,
+        event = event,
         config = function()
             if load then
                 vim.cmd('colorscheme '..scheme)
@@ -346,8 +348,10 @@ local spec = {
     {
         'tpope/vim-surround',
         event = 'BufReadPost',
-        config = function()
+        init = function() 
             vim.g.surround_no_mappings = 1
+        end,
+        config = function()
             vim.keymap.set('n', 'ds', '<Plug>Dsurround')
             vim.keymap.set('n', 'cs', '<Plug>Csurround')
             vim.keymap.set('n', 'cS', '<Plug>CSurround')
@@ -408,85 +412,8 @@ local spec = {
             vim.keymap.set('n', '<leader>y', function() require('fzf_yanky').fzf_yanky() end, { silent = true, desc = 'yank ring history' })
         end
     },
-    { 'nvim-lua/plenary.nvim' },
-    {
-        'jose-elias-alvarez/null-ls.nvim',
-        event = 'BufReadPre',
-        dependencies = { 'nvim-lua/plenary.nvim'},
-        config = function()
-            local null_ls = require('null-ls')
-            null_ls.setup {
-                debug = true,
-                sources = {
-                    null_ls.builtins.formatting.prettierd.with({
-                        filetypes = { 'javascript', 'typescript', 'vue', 'html', 'css' },
-                        condition = function()
-                            return require('null-ls.utils').root_pattern(
-                                '.prettierrc',
-                                '.prettierrc.json',
-                                '.prettierrc.yml',
-                                '.prettierrc.yaml',
-                                '.prettierrc.json5',
-                                '.prettierrc.js',
-                                '.prettierrc.cjs',
-                                '.prettierrc.toml',
-                                'prettier.config.js',
-                                'prettier.config.cjs'
-                                --'package.json'
-                            )(vim.api.nvim_buf_get_name(0)) ~= nil
-                        end
-                    }),
-                    null_ls.builtins.diagnostics.eslint_d.with({
-                        filetypes = { 'javascript', 'typescript', 'vue', 'html', 'css' },
-                        condition = function()
-                            return require('null-ls.utils').root_pattern(
-                                'eslint.config.js',
-                                -- https://eslint.org/docs/user-guide/configuring/configuration-files#configuration-file-formats
-                                '.eslintrc',
-                                '.eslintrc.js',
-                                '.eslintrc.cjs',
-                                '.eslintrc.yaml',
-                                '.eslintrc.yml',
-                                '.eslintrc.json',
-                                'package.json'
-                            )(vim.api.nvim_buf_get_name(0)) ~= nil
-                        end
-                    })
-                },
-                on_attach = function(client, bufnr)
-                    -- if client.resolved_capabilities.document_formatting then
-                    if client.supports_method('textDocument/formatting') then
-                        vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-                        vim.api.nvim_create_autocmd('BufWritePre', {
-                            group = augroup,
-                            buffer = bufnr,
-                            callback = function()
-                                vim.lsp.buf.format({ bufnr = bufnr })
-                            end,
-                        })
-                    end
-                end
-            }
-
-            local null_ls_stop = function()
-                local null_ls_client
-                for _, client in ipairs(vim.lsp.get_active_clients()) do
-                    if client.name == 'null-ls' then
-                        null_ls_client = client
-                    end
-                end
-                if not null_ls_client then
-                    return
-                end
-
-                null_ls_client.stop()
-                vim.diagnostic.reset()
-            end
-
-            vim.api.nvim_create_user_command('NullLsStop', null_ls_stop, {})
-        end
-    },
-
+    -- { 'nvim-lua/plenary.nvim' },
+    require('null_ls_spec'),
     -- { 'rafamadriz/friendly-snippets', event = 'InsertCharPre' },
     {
         'L3MON4D3/LuaSnip',
@@ -603,7 +530,7 @@ local spec = {
     },
 
     -- { 'b0o/SchemaStore.nvim', lazy = true },
-    { 'nvim-tree/nvim-web-devicons' },
+    -- { 'nvim-tree/nvim-web-devicons' },
 
     {
         'kristijanhusak/vim-dadbod-ui',
