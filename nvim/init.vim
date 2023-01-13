@@ -409,7 +409,8 @@ local spec = {
             vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = 'rg selection' })
             vim.keymap.set('n', '<leader>z', ':FzfLua ', { desc = 'cmd :FzfLua '});
             vim.api.nvim_create_user_command('Rg', function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
-            vim.keymap.set('n', '<leader>y', function() require('fzf_yanky').fzf_yanky() end, { silent = true, desc = 'yank ring history' })
+            vim.keymap.set('n', '<leader>y', function() require('fzf_util').yanky() end, { silent = true, desc = 'yank ring history' })
+            vim.keymap.set('n', '<leader>s', function() require('fzf_util').persistence_session() end, { silent = true, desc = 'sessions' })
         end
     },
     -- { 'nvim-lua/plenary.nvim' },
@@ -515,17 +516,22 @@ local spec = {
 
             local capabilities = vim.lsp.protocol.make_client_capabilities()
             capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+            capabilities.textDocument.completion.completionItem.snippetSupport = true
 
             local on_attach = function(client)
                 client.server_capabilities.documentFormattingProvider = false
             end
 
-            lspconfig.denols.setup {
+            lspconfig.denols.setup ({
                 root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'),
                 init_options = { formatting = false },
                 capabilities = capabilities,
                 on_attach = on_attach
-            }
+            })
+            lspconfig.emmet_ls.setup({
+                capabilities = capabilities,
+                filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'vue' }
+            })
         end
     },
 
@@ -608,7 +614,8 @@ local spec = {
             },
         }
     },
-    { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
+    -- { 'leafOfTree/vim-vue-plugin', ft = { 'vue' } },
+    -- { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
     { 'elmcast/elm-vim', ft = 'elm' },
     { 'folke/which-key.nvim', config = true, event = 'VeryLazy' },
     { 

@@ -1,4 +1,4 @@
-function fzf_yanky()
+function yanky()
     local f = require('fzf-lua');
     local contents = require('yanky.history').all()
 
@@ -47,4 +47,32 @@ function fzf_yanky()
     f.fzf_exec(entries, opts)
 end
 
-return { fzf_yanky = fzf_yanky }
+function persistence_session()
+    local f = require('fzf-lua');
+    local p = require('persistence')
+    local dir = require('persistence.config').options.dir
+    local list = p.list() 
+    local entries = {}
+    for k,v in ipairs(list) do
+        table.insert(entries, v:gsub(dir, ''):gsub('%%', '/'))
+    end
+
+    local opts = {
+        fzf_opts = { ["--no-multi"] = "" },
+        actions = {
+            ["default"] = function(args)
+                local sfile = dir .. args[1]:gsub('/', '%%')
+                if sfile and vim.fn.filereadable(sfile) ~= 0 then
+                   vim.cmd("silent! source " .. vim.fn.fnameescape(sfile))
+                end
+            end
+        },
+        prompt = "Sessions❯ "
+    }
+    f.fzf_exec(entries, opts)
+end
+
+return { 
+    yanky = yanky,
+    persistence_session = persistence_session
+}
