@@ -54,14 +54,14 @@ function persistence_session()
     local list = p.list() 
     local entries = {}
     for k,v in ipairs(list) do
-        table.insert(entries, v:gsub(dir, ''):gsub('%%', '/'))
+        table.insert(entries, (v:gsub(dir, ''):gsub('%%', '/')))
     end
 
     local opts = {
         fzf_opts = { ["--no-multi"] = "" },
         actions = {
             ["default"] = function(args)
-                local sfile = dir .. args[1]:gsub('/', '%%')
+                local sfile = dir .. (args[1]:gsub('/', '%%'))
                 if sfile and vim.fn.filereadable(sfile) ~= 0 then
                    vim.cmd("silent! source " .. vim.fn.fnameescape(sfile))
                 end
