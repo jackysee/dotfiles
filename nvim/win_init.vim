@@ -1,10 +1,9 @@
 " copy the following to c:/users/username/AppData/Local/nvim/init.vim
-" set runtimepath^=/settings/dotfiles/nvim
-" set runtimepath+=/settings/dotfiles/nvim/after
-" let &packpath=&runtimepath
 " source /settings/dotfiles/nvim/win_init.vim
 
 " Constants
+let g:config_path = expand('%:p:h') . '\nvim'
+exe 'set runtimepath^='.g:config_path
 let s:path = expand('<sfile>:p:h')
 let mapleader = " "
 
@@ -248,7 +247,14 @@ function! Vue_Refactoring()
 endfunction
 autocmd FileType vue call Vue_Refactoring()
 
-execute "source " . s:path  . "/statusline.vim"
+autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
+
+" window navigation
+nnoremap <C-h> <C-W>h
+nnoremap <C-j> <C-W>j
+nnoremap <C-k> <C-W>k
+nnoremap <C-l> <C-W>l
+
 
 " plugins managed by lazy.nvim
 lua << EOF
@@ -260,9 +266,11 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local colorscheme = function(repo, scheme, load)
+    local event = 'VeryLazy'
+    if load == true then event = nil end
     return {
         repo,
-        lazy = load ~= true,
+        event = event,
         config = function()
             if load then
                 vim.cmd("colorscheme "..scheme)
@@ -320,8 +328,10 @@ local spec = {
     {
         "tpope/vim-surround",
         event = "CursorHold",
-        config = function()
+        init = function()
             vim.g.surround_no_mappings = 1
+        end,
+        config = function()
             vim.keymap.set("n", "ds", "<Plug>Dsurround")
             vim.keymap.set("n", "cs", "<Plug>Csurround")
             vim.keymap.set("n", "cS", "<Plug>CSurround")
@@ -365,6 +375,8 @@ local spec = {
         dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope-fzf-native.nvim"},
         config = function()
             local t = require("telescope");
+            local actions = require('telescope.actions')
+            local builtin = require('telescope.builtin')
             t.setup({
                 defaults = {
                     layout_config = {
@@ -377,8 +389,8 @@ local spec = {
                     sorting_strategy = "ascending",
                     mappings = {
                         i =  {
-                            ["<esc>"] = t.actions.close,
-                            ["<C-q>"] = t.actions.smart_send_to_qflist + t.actions.open_qflist
+                            ["<esc>"] = actions.close,
+                            ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist
                         }
                     }
                 },
@@ -395,20 +407,20 @@ local spec = {
             t.load_extension("fzf")
             t.load_extension("yank_history")
             local findFiles = function(txt)
-                t.builtin.find_files({
+                builtin.find_files({
                     find_command = { "rg", "--files" },
                     search_file = txt
                 })
             end
             local grep = function(txt)
-                t.builtin.grep_string({ search = txt, use_regex = true })
+                builtin.grep_string({ search = txt, use_regex = true })
             end
             local vtext = require("util").vtext;
             vim.keymap.set("n", "<leader>f", function() findFiles(nil) end)
             vim.keymap.set("n", "<leader>F", function() findFiles(vim.fn.expand("<cword>")) end)
-            vim.keymap.set("n", "<leader>o", function() t.builtin.oldfiles() end)
-            vim.keymap.set("n", "<leader>b", function() t.builtin.buffers() end)
-            vim.keymap.set("n", "<leader>lg", function() t.builtin.live_grep({}) end)
+            vim.keymap.set("n", "<leader>o", function() builtin.oldfiles() end)
+            vim.keymap.set("n", "<leader>b", function() builtin.buffers() end)
+            vim.keymap.set("n", "<leader>lg", function() builtin.live_grep({}) end)
             vim.keymap.set("n", "<leader>rg", function() grep(vim.fn.expand("<cword>")) end)
             vim.keymap.set("v", "<leader>rg", function() grep(vtext()) end)
             vim.keymap.set("v", "<leader>F", function() findFiles(vtext()) end)
@@ -562,9 +574,12 @@ local spec = {
     { "mattn/emmet-vim" , ft = {"javascript", "javascript.jsx", "vue", "html", "css", "scss", "sass" }}
 }
 
-require("lazy").setup({
-    spec = spec,
-    -- rtp = { disabled_plugins = {"matchit", "matchparen"} }
+require("lazy").setup(spec, {
+    performance = {
+        rtp = {
+            paths = { vim.g.config_path }
+        }
+    }
 })
 
 EOF

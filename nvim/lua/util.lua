@@ -17,7 +17,7 @@ M.cowsay = function(lines)
     local l = {}
     table.insert(l, '*'..string.rep('-',len+1)..'*')
     for _,v in ipairs(lines) do
-        if _ ~= 1 then
+        if _ ~= 1 or (_ == 1 and v:gsub("%s+", "") ~= "" ) then
             table.insert(l, '|'..v..string.rep(' ', len - #v)..' |')
         end
     end
