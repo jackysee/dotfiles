@@ -78,6 +78,9 @@ set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
 
 " Shortcuts / mappings
 
+nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>
+nnoremap <leader><leader> <c-^>
+
 " paste on visual mode without chaning original register
 vnoremap <leader>p "_dP
 xnoremap <leader>p "_dP
@@ -155,11 +158,19 @@ set shortmess+=c
 vnoremap J :m '>+1<cr>gv=gv
 vnoremap K :m '<-2<cr>gv=gv
 
-xnoremap <leader>pt :!npx -q prettierd --stdin-filepath=%:p
-xnoremap <leader>pjs :!npx -q prettierd --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
-xnoremap <leader>psql :!npx -q sql-formatter-cli
+function! VisualSelection()
+    let [lnum1, col1] = getpos("'<")[1:2]
+    let [lnum2, col2] = getpos("'>")[1:2]
+    let lines = getline(lnum1, lnum2)         
+    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+    let lines[0] = lines[0][col1 - 1:]
+    return join(lines, "\n")
+endfunction
 
-xnoremap <leader>sc :!tw2s<cr>
+command! -range Prettier '<,'>!npx -q prettierd %:p
+command! -range PrettierJs '<,'>!npx -q prettierd %:p --parser=babel --trailing-comma=none --tab-width=2
+command! -range SqlFormat '<,'>!npx -q sql-formatter-cli
+command! -range Tw2s '<,'>!tw2s
 
 " ~/.vim/plugin/win_resize.vim
 nnoremap <leader>w :WinResize<CR>
