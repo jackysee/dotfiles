@@ -41,10 +41,6 @@ if executable('xsel')
           \ }
 endif
 
-
-nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>
-nnoremap <leader><leader> <c-^>
-
 set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
 
 set undofile
@@ -74,14 +70,22 @@ autocmd BufEnter *.jsp set ft=html.jsp
 
 let g:vimsyn_embed = 'l'
 
+" Encoding
+set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
 
 " Shortcuts / mappings
 
 " paste on visual mode without chaning original register
-vnoremap p "_dP
+vnoremap <leader>p "_dP
+xnoremap <leader>p "_dP
+vnoremap <leader>d "_d
+nnoremap <leader>d "_d
 
 " reselect pasted selection
-nnoremap gp `[v`]
+nnoremap gy `[v`]
 
 "; :
 nnoremap ; :
@@ -91,12 +95,6 @@ nnoremap < ,
 " indent in visual model
 vnoremap < <gv
 vnoremap > >gv
-
-" Encoding
-set encoding=utf-8
-set termencoding=utf-8
-set fileencoding=utf-8
-set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
 
 " open file
 cnoremap %% <C-R>=fnameescape(expand('%:h')).'/'<cr>
@@ -112,7 +110,6 @@ execute 'nnoremap <silent> <leader>vv :vsp '.s:path.'/init.vim<CR>'
 nnoremap ]q :cnext<cr>
 nnoremap [q :cprev<cr>
 
-
 " netw
 let g:netrw_browse_split=2
 " nnoremap <leader>pv :wincmd v <bar>  :wincmd h <bar> :Ex <bar> :vertical resize 35<CR>
@@ -125,14 +122,60 @@ onoremap <silent> af :<c-u>normal! g_v%V<cr>
 nnoremap <leader>dg :diffget<CR>
 nnoremap <leader>dp :diffput<CR>
 
-
 " sudo tee save with w!!
 cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
+" Add semi colon at end of line
+noremap <leader>; g_a;<Esc>
+
+" vim-asterisk-like behavior
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *N
+nnoremap # #N
+
+
+"lsp
+nmap <leader>ck  <cmd>lua vim.diagnostic.goto_prev()<cr>
+nmap <leader>cj  <cmd>lua vim.diagnostic.goto_next()<cr>
+nnoremap <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
+nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
+nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <leader>K <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <leader>gi <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <leader>gr <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
+" nnoremap <leader>gs <cmd>lua vim.lsp.buf.signature_help()<CR>
+inoremap <c-s> <cmd>lua vim.lsp.buf.signature_help()<CR>
+set completeopt=menuone,noselect
+set shortmess+=c
+
+
+" Move visual selection
+vnoremap J :m '>+1<cr>gv=gv
+vnoremap K :m '<-2<cr>gv=gv
+
+xnoremap <leader>pt :!npx -q prettierd --stdin-filepath=%:p
+xnoremap <leader>pjs :!npx -q prettierd --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
+xnoremap <leader>psql :!npx -q sql-formatter-cli
+
+xnoremap <leader>sc :!tw2s<cr>
+
+" ~/.vim/plugin/win_resize.vim
+nnoremap <leader>w :WinResize<CR>
+
+" vue3_emits
+function! Vue_Refactoring()
+    lua vim.api.nvim_create_user_command('VueEmits', function() require('vue_3_emits').get_emits() end, {})
+    nnoremap <leader>ve A,<CR><C-O>:VueEmits<cr><esc>==
+    vnoremap <leader>vm :s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>
+endfunction
+autocmd FileType vue call Vue_Refactoring()
+
 augroup numbertoggle
-  autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave,WinEnter,CmdlineLeave * if &nu && mode() != "i" | set rnu   | endif
-  autocmd BufLeave,FocusLost,InsertEnter,WinLeave,CmdlineEnter *   if &nu                  | set nornu | redraw | endif
+    autocmd!
+    autocmd BufEnter,FocusGained,InsertLeave,WinEnter,CmdlineLeave * if &nu && mode() != "i" | set rnu   | endif
+    autocmd BufLeave,FocusLost,InsertEnter,WinLeave,CmdlineEnter *   if &nu                  | set nornu | redraw | endif
 augroup END
 
 " Update a buffer's contents on focus if it changed outside of Vim.
@@ -164,81 +207,20 @@ endfunction
 nnoremap <leader>j :call Scratch()<cr>
 
 function! CopyMatches(reg)
-  let hits = []
-  %s//\=len(add(hits, submatch(0))) ? submatch(0) : ''/gne
-  let reg = empty(a:reg) ? '+' : a:reg
-  execute 'let @'.reg.' = join(hits, "\n") . "\n"'
+    let hits = []
+    %s//\=len(add(hits, submatch(0))) ? submatch(0) : ''/gne
+    let reg = empty(a:reg) ? '+' : a:reg
+    execute 'let @'.reg.' = join(hits, "\n") . "\n"'
 endfunction
 command! -register CopyMatches call CopyMatches(<q-reg>)
 
-
-
-" auto create folder when saving files
-lua << EOF
-vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
-    pattern = '*',
-    group = vim.api.nvim_create_augroup('auto_create_dir', { clear = true }),
-    callback = function(ctx)
-        local dir = vim.fn.fnamemodify(ctx.file, ':p:h')
-        vim.fn.mkdir(dir, 'p')
-    end
-})
-EOF
-
-" Add semi colon at end of line
-noremap <leader>; g_a;<Esc>
-
-" vim-asterisk-like behavior
-nnoremap n nzz
-nnoremap N Nzz
-nnoremap * *N
-nnoremap # #N
-
-
-"lsp
-nmap <leader>ck  <cmd>lua vim.diagnostic.goto_prev()<cr>
-nmap <leader>cj  <cmd>lua vim.diagnostic.goto_next()<cr>
-nnoremap <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
-nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
-nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <leader>K <cmd>lua vim.lsp.buf.hover()<CR>
-nnoremap <leader>gi <cmd>lua vim.lsp.buf.implementation()<CR>
-nnoremap <leader>gr <cmd>lua vim.lsp.buf.references()<CR>
-nnoremap <leader>rn <cmd>lua vim.lsp.buf.rename()<CR>
-" nnoremap <leader>gs <cmd>lua vim.lsp.buf.signature_help()<CR>
-inoremap <c-s> <cmd>lua vim.lsp.buf.signature_help()<CR>
-set completeopt=menuone,noselect
-set shortmess+=c
+augroup auto_create_dir
+    autocmd!
+    autocmd BufWritePre * call mkdir(expand('%:p:h'), 'p')
+augroup END
 
 ".test.js filetype
 au BufRead,BufNewFile *.test.js  setlocal filetype=javascript.jest
-
-" Move visual selection
-vnoremap J :m '>+1<cr>gv=gv
-vnoremap K :m '<-2<cr>gv=gv
-
-xnoremap <leader>pt :!npx -q prettierd --stdin-filepath=%:p
-xnoremap <leader>pjs :!npx -q prettierd --stdin-filepath=%:p --parser=babel --trailing-comma=none --tab-width=4
-xnoremap <leader>psql :!npx -q sql-formatter-cli
-
-xnoremap <leader>sc :!tw2s<cr>
-
-
-" paste without polluting register
-xnoremap <leader>p "_dP
-vnoremap <leader>d "_d
-nnoremap <leader>d "_d
-
-" ~/.vim/plugin/win_resize.vim
-nnoremap <leader>w :WinResize<CR>
-
-" vue3_emits
-function! Vue_Refactoring()
-    lua vim.api.nvim_create_user_command('VueEmits', function() require('vue_3_emits').get_emits() end, {})
-    nnoremap <leader>ve A,<CR><C-O>:VueEmits<cr><esc>==
-    vnoremap <leader>vm :s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>
-endfunction
-autocmd FileType vue call Vue_Refactoring()
 
 autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
 
