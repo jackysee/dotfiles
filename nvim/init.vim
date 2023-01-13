@@ -51,7 +51,7 @@ set undofile
 let &undodir= s:path . '/undo'
 
 " auto reload vimrc when editing it
-autocmd! bufwritepost init.vim source $MYVIMRC
+" autocmd! bufwritepost init.vim source $MYVIMRC
 
 highlight NonText guifg=#444444 guibg=NONE gui=NONE cterm=NONE
 highlight SpecialKey guifg=#444444 guibg=NONE gui=NONE cterm=NONE
@@ -194,6 +194,7 @@ nnoremap N Nzz
 nnoremap * *N
 nnoremap # #N
 
+
 "lsp
 nmap <leader>ck  <cmd>lua vim.diagnostic.goto_prev()<cr>
 nmap <leader>cj  <cmd>lua vim.diagnostic.goto_next()<cr>
@@ -333,16 +334,15 @@ local spec = {
     {
         'gbprod/yanky.nvim',
         event = 'BufReadPost',
-        config = function()
-            require('yanky').setup()
-            vim.keymap.set({'n','x'}, 'p', '<Plug>(YankyPutAfter)')
-            vim.keymap.set({'n','x'}, 'P', '<Plug>(YankyPutBefore)')
-            vim.keymap.set({'n','x'}, 'gp', '<Plug>(YankyGPutAfter)')
-            vim.keymap.set({'n','x'}, 'gP', '<Plug>(YankyGPutBefore)')
-            vim.keymap.set('n', '<c-n>', '<Plug>(YankyCycleForward)')
-            vim.keymap.set('n', '<c-p>', '<Plug>(YankyCycleBackward)')
-            -- vim.keymap.set('n', '<leader>y', ':YankyRingHistory<cr>')
-       end
+        keys = {
+            {'p', '<Plug>(YankyPutAfter)', mode = {'n', 'x'}},
+            {'P', '<Plug>(YankyPutBefore)', mode = {'n', 'x'}},
+            {'gp', '<Plug>(YankyGPutAfter)', mode = {'n', 'x'}},
+            {'gP', '<Plug>(YankyGPutBefore)', mode = {'n', 'x'}},
+            {'<c-n>', '<Plug>(YankyCycleForward)'},
+            {'<c-p>', '<Plug>(YankyCycleBackward)'}
+        },
+        config = true
     },
     { 'tpope/vim-repeat', event='BufReadPost' },
     {
@@ -351,18 +351,18 @@ local spec = {
         init = function() 
             vim.g.surround_no_mappings = 1
         end,
-        config = function()
-            vim.keymap.set('n', 'ds', '<Plug>Dsurround')
-            vim.keymap.set('n', 'cs', '<Plug>Csurround')
-            vim.keymap.set('n', 'cS', '<Plug>CSurround')
-            vim.keymap.set('n', 'ys', '<Plug>Ysurround')
-            vim.keymap.set('n', 'yS', '<Plug>YSurround')
-            vim.keymap.set('n', 'yss', '<Plug>Yssurround')
-            vim.keymap.set('n', 'ySs', '<Plug>YSsurround')
-            vim.keymap.set('n', 'ySS', '<Plug>YSsurround')
-            vim.keymap.set('x', 'gs', '<Plug>VSurround')
-            vim.keymap.set('x', 'gS', '<Plug>VgSurround')
-        end
+        keys = {
+            {'ds', '<Plug>Dsurround'},
+            {'cs', '<Plug>Csurround'},
+            {'cS', '<Plug>CSurround'},
+            {'ys', '<Plug>Ysurround'},
+            {'yS', '<Plug>YSurround'},
+            {'yss', '<Plug>Yssurround'},
+            {'ySs', '<Plug>YSsurround'},
+            {'ySS', '<Plug>YSsurround'},
+            {'gs', '<Plug>VSurround'},
+            {'gS', '<Plug>VgSurround'}
+        }
     },
     { 'tpope/vim-eunuch', event = 'CmdlineEnter' },
     { 'elihunter173/dirbuf.nvim', event = 'CmdlineEnter' },
