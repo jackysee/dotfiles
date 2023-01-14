@@ -610,7 +610,17 @@ local spec = {
     -- { 'leafOfTree/vim-vue-plugin', ft = { 'vue' } },
     -- { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
     { 'elmcast/elm-vim', ft = 'elm' },
-    { 'folke/which-key.nvim', config = true, event = 'VeryLazy' },
+    { 
+        'folke/which-key.nvim', 
+        event = 'VeryLazy',
+        config = function()
+            local presets = require("which-key.plugins.presets")
+            presets.operators["v"] = nil
+            presets.operators["d"] = nil
+            presets.operators["c"] = nil
+            require('which-key').setup()
+        end
+    },
     { 
         'folke/persistence.nvim',  
         event = 'VimEnter', 
