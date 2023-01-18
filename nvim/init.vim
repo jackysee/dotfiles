@@ -512,6 +512,8 @@ local spec = {
             'williamboman/mason-lspconfig.nvim' 
         },
         config = function()
+            require("mason-lspconfig").setup({ ensure_installed = {"emmet_ls"} })
+
             local lspconfig = require('lspconfig')
 
             vim.diagnostic.config({ virtual_text = true, signs = true });
