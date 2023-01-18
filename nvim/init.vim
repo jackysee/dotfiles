@@ -645,7 +645,8 @@ local spec = {
 
 require('lazy').setup({
     spec = spec,
-    rtp = { disabled_plugins = {'matchit', 'matchparen'} }
+    rtp = { disabled_plugins = {'matchit', 'matchparen'} },
+    install = { colorscheme = {"codeschool"} }
 })
 
 EOF
