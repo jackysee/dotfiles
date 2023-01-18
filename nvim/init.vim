@@ -176,10 +176,18 @@ command! -range Tw2s '<,'>!tw2s
 nnoremap <leader>w :WinResize<CR>
 
 " vue3_emits
+"
 function! Vue_Refactoring()
-    lua vim.api.nvim_create_user_command('VueEmits', function() require('vue_3_emits').get_emits() end, {})
-    nnoremap <leader>ve A,<CR><C-O>:VueEmits<cr><esc>==
-    vnoremap <leader>vm :s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>
+    lua require('vue_3_refactoring').setup()
+    nnoremap <leader>vem A,<CR><C-O><Plug>VueEmit<cr><esc>==
+    vnoremap <leader>vmv <Plug>VueModelValue
+    nnoremap <leader>vcp <Plug>VueComputed
+    nnoremap <leader>vmt <Plug>VueMethod
+    nnoremap <leader>vpr <Plug>VueProps
+    nnoremap <leader>vrf <Plug>VueRef
+    nnoremap <leader>vmd <Plug>VueVModel
+    nnoremap <leader>vdp <Plug>VueDeep
+    nnoremap <leader>vva <Plug>VueDotValue 
 endfunction
 autocmd FileType vue call Vue_Refactoring()
 
@@ -276,6 +284,7 @@ local spec = {
     colorscheme('haishanh/night-owl.vim', 'night-owl'),
     colorscheme('folke/tokyonight.nvim', 'tokyonight'),
     colorscheme('EdenEast/nightfox.nvim', 'nightfox', true),
+    colorscheme('whatyouhide/vim-gotham', 'gotham'),
     -- {
     --     'mhinz/vim-startify',
     --     event = 'VimEnter',
@@ -353,8 +362,8 @@ local spec = {
             {'yss', '<Plug>Yssurround'},
             {'ySs', '<Plug>YSsurround'},
             {'ySS', '<Plug>YSsurround'},
-            {'gs', '<Plug>VSurround'},
-            {'gS', '<Plug>VgSurround'}
+            {'gs', '<Plug>VSurround', mode = "x" },
+            {'gS', '<Plug>VgSurround', mode = "x" }
         }
     },
     { 'tpope/vim-eunuch', event = 'CmdlineEnter' },

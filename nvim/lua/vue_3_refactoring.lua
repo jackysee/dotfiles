@@ -72,4 +72,31 @@ M.get_emits = function(bufnr)
     vim.api.nvim_paste(txt, 'CR', 1)
 end
 
+local t = function(s)
+    return vim.api.nvim_replace_termcodes(s, true, true, true)
+end
+
+local keymap = function(mode, name, seq)
+    vim.keymap.set(mode, '<Plug>'..name, function()
+        if type(seq) == 'function' then
+            seq()
+        else
+            vim.fn.execute('norm! '..t(seq))
+        end
+        vim.fn['repeat#set'](t('<Plug>'..name), -1)
+    end)
+end
+
+M.setup = function()
+    keymap('n', 'VueEmit', M.get_emits)
+    keymap('n', 'VueDotValue', 'df.ea.value<esc>')
+    keymap('v', 'VueModelValue', ':s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>')
+    keymap('n', 'VueComputed', '^iconst <esc>f(i = computed(<esc>f)a => <esc>f{%a)<esc>a)<esc>r;')
+    keymap('n', 'VueMethod', '^iconst <esc>f(i = <esc>f)a => <esc>f{%')
+    keymap('n', 'VueProps', '^iconst <esc>f:r=f{<Plug>Ysurrounda})f(idefineProps<esc>')
+    keymap('n', 'VueRef', '^iconst <esc>f:xi = <esc>w<Plug>Ysurroundt,)iref<esc>:s/,$//<cr>:s/$/;/<cr>:noh<cr>^')
+    keymap('n', 'VueVModel', 'iv-model<esc>f.dt=<esc>')
+    keymap('n', 'VueDeep', 'ctd:<esc>f <Plug>Ysurroundt{)')
+end
+
 return M
