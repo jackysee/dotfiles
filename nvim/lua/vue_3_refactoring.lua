@@ -92,11 +92,11 @@ M.setup = function()
     keymap('n', 'VueDotValue', 'df.ea.value<esc>')
     keymap('v', 'VueModelValue', ':s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>')
     keymap('n', 'VueComputed', '^:silent! s/:\\s\\+.*{/(){<cr>iconst <esc>f(i = <esc>f(vf{%<Plug>VSurround)f(icomputed<esc>f{i=> <esc>f{%:silent! s/,\\?$/;/<cr>:noh<cr>')
-    keymap('n', 'VueMethod', '^:silent! s/:\\s\\+.*{/(){<cr>iconst <esc>f(i = <esc>f{i=> <esc>f{%:silent! s/,\\?$/;/<cr>:noh<cr>')
+    keymap('n', 'VueMethod', '^:silent! s/:\\s\\+.*{/(){<cr>iconst <esc>f(i = <esc>>f{i=> <esc>f{%:silent! s/,\\?$/;/<cr>:noh<cr>')
     keymap('n', 'VueProps', '^iconst <esc>f:r=f{<Plug>Ysurrounda})f(idefineProps<esc>')
     keymap('n', 'VueRef', '^iconst <esc>f:xi = <esc>w<Plug>Ysurroundt,)iref<esc>:s/,$//<cr>:s/$/;/<cr>:noh<cr>^')
     keymap('n', 'VueVModel', 'iv-model<esc>f.dt=<esc>')
-    keymap('n', 'VueDeep', 'ctd:<esc>f <Plug>Ysurroundt{)')
+    keymap('n', 'VueDeep', 'ctd:<esc>f v/.\\(,$\\|{$\\)\\@=<cr><Plug>VSurround):noh<cr>')
 end
 
 return M
