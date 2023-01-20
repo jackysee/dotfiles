@@ -81,6 +81,7 @@ local keymap = function(mode, name, seq)
         if type(seq) == 'function' then
             seq()
         else
+            seq = ':<c-u>let b:old_search=@/<cr>' .. seq  .. ':let @/=b:old_search<cr>'
             vim.fn.execute('norm! '..t(seq))
         end
         vim.fn['repeat#set'](t('<Plug>'..name), -1)
@@ -90,13 +91,13 @@ end
 M.setup = function()
     keymap('n', 'VueEmit', M.get_emits)
     keymap('n', 'VueDotValue', 'df.ea.value<esc>')
-    keymap('v', 'VueModelValue', ':s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>')
-    keymap('n', 'VueComputed', '^:silent! s/:\\s\\+.*{/(){<cr>iconst <esc>f(i = <esc>f(vf{%<Plug>VSurround)f(icomputed<esc>f{i=> <esc>f{%:silent! s/,\\?$/;/<cr>:noh<cr>')
-    keymap('n', 'VueMethod', '^:silent! s/:\\s\\+.*{/(){<cr>iconst <esc>f(i = <esc>>f{i=> <esc>f{%:silent! s/,\\?$/;/<cr>:noh<cr>')
-    keymap('n', 'VueProps', '^iconst <esc>f:r=f{<Plug>Ysurrounda})f(idefineProps<esc>')
-    keymap('n', 'VueRef', '^iconst <esc>f:xi = <esc>w<Plug>Ysurroundt,)iref<esc>:s/,$//<cr>:s/$/;/<cr>:noh<cr>^')
+    keymap('v', 'VueModelValue', 'gv:s/:value/:modelValue/g<cr>gv:s/@input/@update:modelValue/g<cr>')
+    keymap('n', 'VueComputed', '^:silent! s/:\\s\\+.*{/(){<cr>iconst <esc>f(i = <esc>f(vf{%<Plug>VSurround)f(icomputed<esc>f{i=> <esc>f{%:silent! s/,\\?$/;/<cr>')
+    keymap('n', 'VueMethod', '^:silent! s/:\\s\\+.*{/(){<cr>iconst <esc>f(i = <esc>f{i=> <esc>f{%:silent! s/,\\?$/;/<cr>')
+    keymap('n', 'VueProps', '^iconst <esc>f:xi =<esc>f{<Plug>Ysurrounda})f(idefineProps<esc>f{%:s/,$/;<cr>')
+    keymap('n', 'VueRef', '^:silent! s/,\\?$/;/<cr>iconst <esc>f:xi = <esc>w<Plug>Ysurroundt;)iref<esc>^')
     keymap('n', 'VueVModel', 'iv-model<esc>f.dt=<esc>')
-    keymap('n', 'VueDeep', 'ctd:<esc>f v/.\\(,$\\|{$\\)\\@=<cr><Plug>VSurround):noh<cr>')
+    keymap('n', 'VueDeep', 'ctd:<esc>f v/.\\(,$\\|{$\\)\\@=<cr><Plug>VSurround)')
 end
 
 return M
