@@ -89,12 +89,22 @@ function _G.lsp_error()
     return ""
 end
 
+function is_empty(str)
+    return str == nil or string.len(str) == 0
+end
+
+function _G.statusline_file_icon()
+    if is_empty(vim.api.nvim_buf_get_name(0)) or not vim.g.nvim_web_devicons then
+        return ""
+    end
+    return require("nvim-web-devicons").get_icon(vim.fn.expand("%"), nil, { default = true }) .. " "
+end
+
 EOF
 
 function! LspStatus() abort
     return v:lua.lsp_progress() . v:lua.lsp_error()
 endfunction
-
 
 function! ModifiedStatus()
     return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -104,9 +114,17 @@ function! ReadonlyStatus()
 endfunction
 
 function! FilenameStatus()
-    return ReadonlyStatus() .
-            \ ('' != expand('%:t') ? expand('%:p:.') : '[No Name]') .
-            \ ('' != ModifiedStatus() ? ModifiedStatus() : '')
+    let filename = '[No Name]'
+    if expand('%:t') != ''
+        let filename = expand('%:p:.')
+        let sep = has('win64') ? '\\' : '/'
+        let paths = split(filename, sep)
+        if len(paths) > 4
+            let filename = '.../' . join(paths[-3:], sep)
+        endif
+        let filename = v:lua.statusline_file_icon() . filename
+    endif
+    return ReadonlyStatus() . filename . ModifiedStatus()
 endfunction
 
 function! LineInfoStatus()
