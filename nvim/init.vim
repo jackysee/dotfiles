@@ -285,6 +285,7 @@ local spec = {
     colorscheme('folke/tokyonight.nvim', 'tokyonight'),
     colorscheme('EdenEast/nightfox.nvim', 'nightfox', true),
     colorscheme('whatyouhide/vim-gotham', 'gotham'),
+    colorscheme('JoosepAlviste/palenightfall.nvim', 'palenightfall'),
     -- {
     --     'mhinz/vim-startify',
     --     event = 'VimEnter',
@@ -424,7 +425,7 @@ local spec = {
         event = 'InsertCharPre',
         config = function()
             local luasnip = require('luasnip')
-            vim.cmd [[ imap <silent><expr> <C-e> luasnip#expandable() ? '<Plug>luasnip-expand-or-jump' : '' ]]
+            vim.cmd [[ imap <silent><expr> <C-e> luasnip#expandable() ? '<Plug>luasnip-expand-or-jump' : '<C-e>' ]]
             vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Plug>luasnip-expand-or-jump' ]]
             vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
 
