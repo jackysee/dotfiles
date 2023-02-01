@@ -368,7 +368,13 @@ local spec = {
         }
     },
     { 'tpope/vim-eunuch', event = 'CmdlineEnter' },
-    { 'elihunter173/dirbuf.nvim', event = 'CmdlineEnter' },
+    { 
+        'elihunter173/dirbuf.nvim', 
+        event = 'CmdlineEnter', 
+        init = function()  --prevent default mapping of -
+            vim.keymap.set('n', '-', '-') 
+        end
+    },
     {
         'ggandor/leap.nvim',
         event='BufReadPost',
@@ -403,17 +409,18 @@ local spec = {
                 winopts = { height=0.9, width=0.9 },
                 files = { actions = { ['ctrl-x'] = f.actions.file_split } }
             })
-            vim.keymap.set('n', '<leader>f', f.files, { silent = true, desc = 'fzf files' })
+            vim.keymap.set('n', '<leader>ff', f.files, { silent = true, desc = 'fzf files' })
             vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true, desc = 'exact file match <cword>'});
             vim.keymap.set('v', '<leader>F', function() files("'"..f.utils.get_visual_selection()) end, { silent = true, desc = 'exact file match selection' });
-            vim.keymap.set('n', '<leader>b', f.buffers, { silent = true, desc = 'buffers' })
-            vim.keymap.set('n', '<leader>o', f.oldfiles, { silent = true, desc = 'oldfiles' })
+            vim.keymap.set('n', '<leader>bb', f.buffers, { silent = true, desc = 'buffers' })
+            vim.keymap.set('n', '<leader>bl', f.blines, { silent = true, desc = 'blines' })
+            vim.keymap.set('n', '<leader>fo', f.oldfiles, { silent = true, desc = 'oldfiles' })
             vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true, desc = 'rg <cword>' })
             vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = 'rg selection' })
             vim.keymap.set('n', '<leader>z', ':FzfLua ', { desc = 'cmd :FzfLua '});
             vim.api.nvim_create_user_command('Rg', function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
-            vim.keymap.set('n', '<leader>y', function() require('fzf_util').yanky() end, { silent = true, desc = 'yank ring history' })
-            vim.keymap.set('n', '<leader>s', function() require('fzf_util').persistence_session() end, { silent = true, desc = 'sessions' })
+            vim.keymap.set('n', '<leader>fy', function() require('fzf_util').yanky() end, { silent = true, desc = 'yank ring history' })
+            vim.keymap.set('n', '<leader>fs', function() require('fzf_util').persistence_session() end, { silent = true, desc = 'sessions' })
         end
     },
     -- { 'nvim-lua/plenary.nvim' },
@@ -630,7 +637,9 @@ local spec = {
             presets.operators["v"] = nil
             presets.operators["d"] = nil
             presets.operators["c"] = nil
-            require('which-key').setup()
+            require('which-key').setup({
+               triggers_blacklist = { c = {"w", "%"} }
+            })
         end
     },
     { 
