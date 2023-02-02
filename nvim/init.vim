@@ -22,6 +22,7 @@ set sidescrolloff=5
 set display+=lastline
 set lazyredraw
 set timeoutlen=300
+autocmd FileType * setlocal fo-=c fo-=r fo-=o
 if executable('rg')
     set grepprg=rg\ --vimgrep
     set grepformat=%f:%l:%c:%m
