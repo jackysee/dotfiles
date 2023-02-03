@@ -265,7 +265,9 @@ local fzf_spec = function()
     end
 end
 
-local colorscheme = function(repo, scheme, load, cb)
+local use_colorscheme = 'edge'
+local colorscheme = function(repo, scheme, cb)
+    local load = use_colorscheme == scheme
     local event = 'VeryLazy'
     if load == true then event = nil end
     return {
@@ -288,11 +290,11 @@ local spec = {
     colorscheme('EdenEast/nightfox.nvim', 'nightfox'),
     colorscheme('whatyouhide/vim-gotham', 'gotham'),
     colorscheme('JoosepAlviste/palenightfall.nvim', 'palenightfall'),
-    colorscheme('sainnhe/gruvbox-material', 'gruvbox-material', false, function()
+    colorscheme('sainnhe/gruvbox-material', 'gruvbox-material', function()
         vim.g.gruvbox_material_background = 'hard'
         vim.g.gruvbox_material_better_performance = 1
     end),
-    colorscheme('sainnhe/edge', 'edge', true),
+    colorscheme('sainnhe/edge', 'edge'),
 
     -- {
     --     'mhinz/vim-startify',
@@ -550,7 +552,7 @@ local spec = {
             })
             lspconfig.emmet_ls.setup({
                 capabilities = capabilities,
-                filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'vue' }
+                filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'vue', 'jsp' }
             })
         end
     },
