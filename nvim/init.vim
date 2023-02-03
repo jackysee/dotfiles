@@ -285,9 +285,15 @@ local spec = {
     colorscheme('romainl/Apprentice', 'Apprentice'),
     colorscheme('haishanh/night-owl.vim', 'night-owl'),
     colorscheme('folke/tokyonight.nvim', 'tokyonight'),
-    colorscheme('EdenEast/nightfox.nvim', 'nightfox', true),
+    colorscheme('EdenEast/nightfox.nvim', 'nightfox'),
     colorscheme('whatyouhide/vim-gotham', 'gotham'),
     colorscheme('JoosepAlviste/palenightfall.nvim', 'palenightfall'),
+    colorscheme('sainnhe/gruvbox-material', 'gruvbox-material', false, function()
+        vim.g.gruvbox_material_background = 'hard'
+        vim.g.gruvbox_material_better_performance = 1
+    end),
+    colorscheme('sainnhe/edge', 'edge', true),
+
     -- {
     --     'mhinz/vim-startify',
     --     event = 'VimEnter',

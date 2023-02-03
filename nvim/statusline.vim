@@ -128,7 +128,7 @@ function! FilenameStatus()
 endfunction
 
 function! LineInfoStatus()
-    return '%-10(%3l:%c%)%P'
+    return '%P %-8(%3l:%c%)'
 endfunction
 
 function! AddBracket(s)
