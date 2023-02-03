@@ -265,7 +265,7 @@ local fzf_spec = function()
     end
 end
 
-local colorscheme = function(repo, scheme, load)
+local colorscheme = function(repo, scheme, load, cb)
     local event = 'VeryLazy'
     if load == true then event = nil end
     return {
@@ -273,6 +273,7 @@ local colorscheme = function(repo, scheme, load)
         event = event,
         config = function()
             if load then
+                if cb then cb() end
                 vim.cmd('colorscheme '..scheme)
                 vim.cmd('set termguicolors')
             end
