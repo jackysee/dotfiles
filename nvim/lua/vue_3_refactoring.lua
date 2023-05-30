@@ -98,6 +98,9 @@ M.setup = function()
     keymap('n', 'VueRef', '^:silent! s/,\\?$/;/<cr>iconst <esc>f:xi = <esc>w<Plug>Ysurroundt;)iref<esc>^')
     keymap('n', 'VueVModel', 'iv-model<esc>f.dt=<esc>')
     keymap('n', 'VueDeep', 'ctd:<esc>f v/.\\(,$\\|{$\\)\\@=<cr><Plug>VSurround)')
+    keymap('n', 'VueDeep2', 'dw<esc>v/.\\(,$\\|{$\\)\\@=<cr><Plug>VSurround)i:deep<esc>')
+    keymap('n', 'VueSlot', 'df=<Plug>Dsurround"dwvatV<Plug>VSurround<template v-slot:<c-r>-<cr>')
+    keymap('n', 'VueSlot2', 'df=<Plug>Dsurround"dwva<V<Plug>VSurround<template v-slot:<c-r>-<cr>')
 end
 
 return M

@@ -22,7 +22,7 @@ set sidescrolloff=5
 set display+=lastline
 set lazyredraw
 set timeoutlen=300
-autocmd FileType * setlocal fo-=c fo-=r fo-=o
+" autocmd FileType * setlocal fo-=c fo-=r fo-=o
 if executable('rg')
     set grepprg=rg\ --vimgrep
     set grepformat=%f:%l:%c:%m
@@ -131,6 +131,7 @@ cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
 
 " Add semi colon at end of line
 noremap <leader>; g_a;<Esc>
+noremap <leader>, g_a,<Esc>
 
 " vim-asterisk-like behavior
 nnoremap n nzz
@@ -188,9 +189,12 @@ function! Vue_Refactoring()
     nnoremap <leader>vrf <Plug>VueRef
     nnoremap <leader>vmd <Plug>VueVModel
     nnoremap <leader>vdp <Plug>VueDeep
-    nnoremap <leader>vva <Plug>VueDotValue 
+    nnoremap <leader>vdd <Plug>VueDeep2
+    nnoremap <leader>vsl <Plug>VueSlot
+    nnoremap <leader>vso <Plug>VueSlot2
 endfunction
 autocmd FileType vue call Vue_Refactoring()
+autocmd FileType css call Vue_Refactoring()
 
 augroup numbertoggle
     autocmd!
@@ -265,7 +269,7 @@ local fzf_spec = function()
     end
 end
 
-local use_colorscheme = 'edge'
+local use_colorscheme = 'nightfox'
 local colorscheme = function(repo, scheme, cb)
     local load = use_colorscheme == scheme
     local event = 'VeryLazy'
@@ -417,7 +421,9 @@ local spec = {
             end
             f.setup({
                 winopts = { height=0.9, width=0.9 },
-                files = { actions = { ['ctrl-x'] = f.actions.file_split } }
+                files = { actions = { ['ctrl-x'] = f.actions.file_split } },
+                global_git_icons = false,
+                global_file_icons = false
             })
             vim.keymap.set('n', '<leader>ff', f.files, { silent = true, desc = 'fzf files' })
             vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true, desc = 'exact file match <cword>'});
@@ -530,7 +536,7 @@ local spec = {
             'williamboman/mason-lspconfig.nvim' 
         },
         config = function()
-            require("mason-lspconfig").setup({ ensure_installed = {"emmet_ls"} })
+            require("mason-lspconfig").setup()
 
             local lspconfig = require('lspconfig')
 
@@ -550,9 +556,10 @@ local spec = {
                 capabilities = capabilities,
                 on_attach = on_attach
             })
-            lspconfig.emmet_ls.setup({
+
+            lspconfig.tailwindcss.setup({
                 capabilities = capabilities,
-                filetypes = { 'html', 'typescriptreact', 'javascriptreact', 'css', 'sass', 'scss', 'less', 'vue', 'jsp' }
+                on_attach = on_attach
             })
         end
     },
@@ -595,7 +602,7 @@ local spec = {
     {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
-        event = 'BufReadPost',
+        event = 'BufReadPre',
         dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
         config = function()
             require('nvim-treesitter.configs').setup({
@@ -637,7 +644,7 @@ local spec = {
         }
     },
     -- { 'leafOfTree/vim-vue-plugin', ft = { 'vue' } },
-    -- { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
+    { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
     { 'elmcast/elm-vim', ft = 'elm' },
     { 
         'folke/which-key.nvim', 
