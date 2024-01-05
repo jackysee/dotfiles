@@ -33,6 +33,8 @@ export KEYTIMEOUT=25
 export WSL_HOST=$(tail -1 /etc/resolv.conf | cut -d' ' -f2)
 export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
 export ANDROID_SDK_ROOT=/opt/android-sdk
+export ANDROID_HOME=/opt/android-sdk
+export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
 
 stty -ixon
 
@@ -40,12 +42,11 @@ if command -v xset > /dev/null; then
     xset r rate 250 250
 fi
 
-
-if [[ $(uname -a) =~ microsoft ]]; then
+if [[ $(uname -a) =~ WSL2 ]]; then
+    export DISPLAY=:0
+elif [[ $(uname -a) =~ microsoft ]]; then
     export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
-fi
-
-if [[ $(uname -a) =~ Linux ]]; then
+elif [[ $(uname -a) =~ Linux ]]; then
     export DISPLAY=$(ip rout list default | awk '{print $3}'):0
 fi
 
@@ -110,8 +111,8 @@ zinit light-mode lucid wait for \
     dominik-schwabe/zsh-fnm \
     OMZP::rbenv
 
-zinit ice lucid as"command" from"gh-r" bpick"${BPICK}" mv"lsd* -> lsd" pick"lsd/lsd"
-zinit light Peltoche/lsd
+zinit ice lucid as"command" from"gh-r" bpick"(*x86_64*linux*musl*)" mv"lsd* -> lsd" pick"lsd/lsd"
+zinit light lsd-rs/lsd
 
 zinit ice atclone"./install --xdg --no-update-rc --completion --key-bindings" atpull"%atclone" as"program" pick="bin/fzf" multisrc"shell/{key-bindings,completion}.zsh"
 zinit light junegunn/fzf
@@ -145,16 +146,14 @@ zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nv
 zinit light neovim/neovim
 
 
-
-
-if type broot >/dev/null 2>&1; then
-  eval "$(broot --print-shell-function zsh)"
-fi
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure
 
 zinit ice as'program' from'gh-r' mv'starship* -> starship' atload'eval $(starship init zsh)'
 zinit light starship/starship
+
+zinit ice as'program' from'gh-r' mv'lf* -> lf' bpick"${BPICK}"
+zinit light gokcehan/lf
 
 
 zinit wait lucid for \

@@ -11,7 +11,7 @@
 [delta]
     features = line-numbers decorations 
     whitespace-error-style = 22 reverse
-    syntax-theme = nord
+    syntax-theme = Nord
 [delta "decorations"]
     commit-decoration-style = bold yellow box ul
     file-style = bold yellow ul
@@ -25,12 +25,15 @@
     l = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
     ca = !git add -A && git commit -a -v
 [merge]
-    tool = diffconflicts
-[mergetool "diffconflicts"]
-    cmd = 'vim -c DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'
-    trustExitCode = true
+    tool = nvimdiff1
+[mergetool "nvimdiff1"]
+    hideResolved = true
+    prompt = false
     keepBackup = false
-
+; [mergetool "diffconflicts"]
+;     cmd = 'nvim -c :DiffConflicts "$MERGED" "$BASE" "$LOCAL" "$REMOTE"'
+;     trustExitCode = true
+;     keepBackup = false
 [include]
     path = ~/.gitconfig.local
 

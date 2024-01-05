@@ -127,7 +127,8 @@ nnoremap <leader>dg :diffget<CR>
 nnoremap <leader>dp :diffput<CR>
 
 " sudo tee save with w!!
-cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+" cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+cnoreabbrev w!! SudaWrite
 
 " Add semi colon at end of line
 noremap <leader>; g_a;<Esc>
@@ -270,6 +271,7 @@ local fzf_spec = function()
 end
 
 local use_colorscheme = 'nightfox'
+-- local use_colorscheme = 'flexoki'
 local colorscheme = function(repo, scheme, cb)
     local load = use_colorscheme == scheme
     local event = 'VeryLazy'
@@ -299,6 +301,7 @@ local spec = {
         vim.g.gruvbox_material_better_performance = 1
     end),
     colorscheme('sainnhe/edge', 'edge'),
+    colorscheme('stevedylandev/flexoki-nvim', 'flexoki'),
 
     -- {
     --     'mhinz/vim-startify',
@@ -331,6 +334,7 @@ local spec = {
             vim.keymap.set('n', '<F5>', ':UndotreeToggle<cr>')
         end
     },
+    { 'lambdalisue/suda.vim', event = 'BufReadPre' },
     -- vcs
     { 'tpope/vim-fugitive', event = 'BufReadPre' },
     {
@@ -347,7 +351,7 @@ local spec = {
     },
     { 'ludovicchabant/vim-lawrencium', event = 'BufReadPre' },
 
-    { 'whiteinge/diffconflicts', event = 'BufReadPre' },
+    { 'whiteinge/diffconflicts', event = 'BufWinEnter' },
     {
         'gbprod/yanky.nvim',
         event = 'BufReadPost',
@@ -444,7 +448,9 @@ local spec = {
     -- { 'rafamadriz/friendly-snippets', event = 'InsertCharPre' },
     {
         'L3MON4D3/LuaSnip',
+        -- version = 'v2.*',
         dependencies = { 'rafamadriz/friendly-snippets' },
+        -- build = "make install_jsregexp",
         event = 'InsertCharPre',
         config = function()
             local luasnip = require('luasnip')
@@ -457,11 +463,11 @@ local spec = {
                 -- updateevents = 'TextChanged,TextChangedI',
                 store_selection_keys = '<Tab>'
             }
+            luasnip.filetype_extend('vue', {'html', 'javascript', 'css'})
+            luasnip.filetype_extend('typescript', { 'javascript'})
             require('luasnip/loaders/from_vscode').lazy_load();
             require('luasnip/loaders/from_vscode').lazy_load({ paths = { './snippets' } });
             -- require('./snippets/javascript');
-            luasnip.filetype_extend('vue', {'html', 'javascript', 'css'})
-            luasnip.filetype_extend('typescript', { 'javascript'})
         end
     },
 
@@ -607,7 +613,7 @@ local spec = {
         config = function()
             require('nvim-treesitter.configs').setup({
                 -- context_commentstring = { enable = true, enable_autocmd = false },
-                context_commentstring = { enable = true },
+                -- context_commentstring = { enable = true },
                 highlight = { enable = true },
                 query_linter = {
                     enable = true,
@@ -623,7 +629,7 @@ local spec = {
     {
         'NvChad/nvim-colorizer.lua',
         event = 'BufReadPre',
-        config = {
+        opts = {
             filetypes = { '*', '!lazy' },
             buftype = { '*', '!prompt', '!nofile' },
             user_default_options = {

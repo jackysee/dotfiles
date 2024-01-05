@@ -1,5 +1,6 @@
 return {
-    "jose-elias-alvarez/null-ls.nvim",
+    -- "jose-elias-alvarez/null-ls.nvim",
+    "nvimtools/none-ls.nvim",
     event = "BufReadPre",
     dependencies = { "nvim-lua/plenary.nvim"},
     config = function()
@@ -36,8 +37,8 @@ return {
                         ".eslintrc.cjs",
                         ".eslintrc.yaml",
                         ".eslintrc.yml",
-                        ".eslintrc.json",
-                        "package.json"
+                        ".eslintrc.json"
+                        -- "package.json"
                         )(vim.api.nvim_buf_get_name(0)) ~= nil
                     end
                 })

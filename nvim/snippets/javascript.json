@@ -1,4 +1,10 @@
 {
+    "console.log": {
+        "prefix": "cl",
+        "body": [
+            "console.log($1);"
+        ]
+    },
     "no-console": {
         "prefix": "noc",
         "body": [

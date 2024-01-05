@@ -2,16 +2,23 @@
 
 [ui]
 merge = diffconflicts
+# merge = nvimdiff1
 editor = vim -u ~/.vim/minivimrc
 
 [merge-tools]
-diffconflicts.executable=vim
+nvimdiff1.executable = nvim
+# nvimdiff1.args = -d $base $local $output $other +close +close
+nvimdiff1.args = -d $local $other
+# nvimdiff1.premerge=keep
+nvimdiff1.check=conflicts
+nvimdiff1.priority=99
+diffconflicts.executable=nvim
 diffconflicts.args=-c "let g:diffconflicts_vcs='hg'" -c DiffConflicts $output $base $local $other
 diffconflicts.premerge=keep
 diffconflicts.check=conflicts
 diffconflicts.priority=99
 
-vimdiff.executable = vimdiff
+vimdiff.executable = nvim
 vimdiff.args = -d -c "set modifiable" -c "set write" -c "wincmd J"  $output -M $local $base $other
 # vimdiff.args = -d $output -M $local $base $other
 vimdiff.premerge = keep

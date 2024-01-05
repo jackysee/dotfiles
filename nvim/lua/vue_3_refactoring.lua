@@ -17,11 +17,11 @@ M.get_js_root = function(script_txt)
     return tree:root()
 end
 
-M.vue_query = vim.treesitter.parse_query("vue", [[
+M.vue_query = vim.treesitter.query.parse("vue", [[
     (script_element (raw_text) @script)
 ]])
 
-M.js_query = vim.treesitter.parse_query("javascript", [[
+M.js_query = vim.treesitter.query.parse("javascript", [[
     (call_expression
        (member_expression
            property: (property_identifier) @p (#eq? @p "$emit"))
@@ -29,11 +29,11 @@ M.js_query = vim.treesitter.parse_query("javascript", [[
     )
 ]])
 
-M.template_query = vim.treesitter.parse_query("vue", [[
+M.template_query = vim.treesitter.query.parse("vue", [[
  ((attribute_value) @attr (#contains? @attr "$emit"))
 ]])
 
-M.template_js_query = vim.treesitter.parse_query("javascript", [[
+M.template_js_query = vim.treesitter.query.parse("javascript", [[
      (call_expression
        function:(identifier) @f (#eq? @f "$emit")
        (arguments (string (string_fragment) @event)))
