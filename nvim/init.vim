@@ -290,7 +290,6 @@ local colorscheme = function(repo, scheme, cb)
     }
 end
 
-vim.g.zenbones_compat = 1
 local spec = {
     colorscheme('romainl/Apprentice', 'Apprentice'),
     colorscheme('haishanh/night-owl.vim', 'night-owl'),
@@ -474,7 +473,6 @@ local spec = {
         end
     },
 
-
     {
         'hrsh7th/nvim-cmp',
         event = 'InsertEnter',
@@ -534,6 +532,17 @@ local spec = {
                     end
                 }
             })
+
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'sql', 'mysql', 'plsql' },
+                callback = function()
+                    cmp.setup.buffer({ 
+                        sources = {
+                            { name = 'vim-dadbod-completion' }
+                        }
+                    })
+                end
+            })
         end
     },
     { 'williamboman/mason.nvim', config = true, cmd = 'Mason' },
@@ -585,26 +594,13 @@ local spec = {
     {
         'kristijanhusak/vim-dadbod-ui',
         cmd = 'DBUI',
-        dependencies = { 'tpope/vim-dadbod' },
+        dependencies = { 
+            'tpope/vim-dadbod', 
+            'kristijanhusak/vim-dadbod-completion' 
+        },
         config = function()
             vim.g.db_ui_debug = 1
             vim.g.db_ui_save_location = '~/.config/db_ui'
-        end
-    },
-    { 
-        'kristijanhusak/vim-dadbod-completion',
-        dependencies = { 'tpope/vim-dadbod' },
-        config = function() 
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = { 'sql', 'mysql', 'plsql' },
-                callback = function()
-                    vim.schedule(function() 
-                        require('cmp').setup.buffer({ 
-                            sources = {{ name = 'vim-dadbod-completion' }}
-                        })
-                    end)
-                end
-            })
         end
     },
     { 'tpope/vim-commentary', event='BufReadPost' },
