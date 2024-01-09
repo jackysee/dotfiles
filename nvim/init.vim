@@ -270,8 +270,9 @@ local fzf_spec = function()
     end
 end
 
-local use_colorscheme = 'nightfox'
+-- local use_colorscheme = 'nightfox'
 -- local use_colorscheme = 'flexoki'
+local use_colorscheme = 'catppuccin-macchiato'
 local colorscheme = function(repo, scheme, cb)
     local load = use_colorscheme == scheme
     local event = 'VeryLazy'
@@ -289,6 +290,7 @@ local colorscheme = function(repo, scheme, cb)
     }
 end
 
+vim.g.zenbones_compat = 1
 local spec = {
     colorscheme('romainl/Apprentice', 'Apprentice'),
     colorscheme('haishanh/night-owl.vim', 'night-owl'),
@@ -302,7 +304,7 @@ local spec = {
     end),
     colorscheme('sainnhe/edge', 'edge'),
     colorscheme('stevedylandev/flexoki-nvim', 'flexoki'),
-
+    colorscheme('catppuccin/nvim', 'catppuccin-macchiato'),
     -- {
     --     'mhinz/vim-startify',
     --     event = 'VimEnter',
@@ -435,6 +437,7 @@ local spec = {
             vim.keymap.set('n', '<leader>bb', f.buffers, { silent = true, desc = 'buffers' })
             vim.keymap.set('n', '<leader>bl', f.blines, { silent = true, desc = 'blines' })
             vim.keymap.set('n', '<leader>fo', f.oldfiles, { silent = true, desc = 'oldfiles' })
+            vim.keymap.set('n', '<leader>lg', f.live_grep, { silent = true, desc = 'livegrep' })
             vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true, desc = 'rg <cword>' })
             vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = 'rg selection' })
             vim.keymap.set('n', '<leader>z', ':FzfLua ', { desc = 'cmd :FzfLua '});
@@ -525,6 +528,7 @@ local spec = {
                             nvim_lsp = '[LSP]',
                             path = '[Path]',
                             luasnip = '[LuaSnip]',
+                            ["vim-dadbod-completion"] = '[DB]',
                         })[entry.source.name]
                         return vim_item
                     end
@@ -570,6 +574,11 @@ local spec = {
         end
     },
 
+    {
+        "folke/trouble.nvim",
+        dependencies = { "nvim-tree/nvim-web-devicons" },
+    },
+
     -- { 'b0o/SchemaStore.nvim', lazy = true },
     -- { 'nvim-tree/nvim-web-devicons' },
 
@@ -580,6 +589,22 @@ local spec = {
         config = function()
             vim.g.db_ui_debug = 1
             vim.g.db_ui_save_location = '~/.config/db_ui'
+        end
+    },
+    { 
+        'kristijanhusak/vim-dadbod-completion',
+        dependencies = { 'tpope/vim-dadbod' },
+        config = function() 
+            vim.api.nvim_create_autocmd('FileType', {
+                pattern = { 'sql', 'mysql', 'plsql' },
+                callback = function()
+                    vim.schedule(function() 
+                        require('cmp').setup.buffer({ 
+                            sources = {{ name = 'vim-dadbod-completion' }}
+                        })
+                    end)
+                end
+            })
         end
     },
     { 'tpope/vim-commentary', event='BufReadPost' },
