@@ -149,8 +149,8 @@ zinit light neovim/neovim
 # zinit ice pick"async.zsh" src"pure.zsh"
 # zinit light sindresorhus/pure
 
-zinit ice as'program' from'gh-r' mv'starship* -> starship' atload'eval $(starship init zsh)'
-zinit light starship/starship
+zinit ice as'program' from'gh-r' atload'eval "$(starship init zsh)"'
+zinit load starship/starship
 
 zinit ice as'program' from'gh-r' mv'lf* -> lf' bpick"${BPICK}"
 zinit light gokcehan/lf

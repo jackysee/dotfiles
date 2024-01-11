@@ -472,7 +472,6 @@ local spec = {
             -- require('./snippets/javascript');
         end
     },
-
     {
         'hrsh7th/nvim-cmp',
         event = 'InsertEnter',
