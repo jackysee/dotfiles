@@ -272,13 +272,15 @@ end
 
 -- local use_colorscheme = 'nightfox'
 -- local use_colorscheme = 'flexoki'
-local use_colorscheme = 'catppuccin-macchiato'
-local colorscheme = function(repo, scheme, cb)
+-- local use_colorscheme = 'catppuccin-macchiato'
+local use_colorscheme = 'none'
+local colorscheme = function(repo, scheme, cb, dependencies)
     local load = use_colorscheme == scheme
     local event = 'VeryLazy'
     if load == true then event = nil end
     return {
         repo,
+        dependencies = dependencies,
         event = event,
         config = function()
             if load then
@@ -304,6 +306,15 @@ local spec = {
     colorscheme('sainnhe/edge', 'edge'),
     colorscheme('stevedylandev/flexoki-nvim', 'flexoki'),
     colorscheme('catppuccin/nvim', 'catppuccin-macchiato'),
+    {
+        "mcchrish/zenbones.nvim",
+        dependencies = "rktjmp/lush.nvim",
+        event = "VeryLazy",
+        config = function()
+            vim.cmd('colorscheme nordbones')
+            vim.cmd('set termguicolors')
+        end
+    },
     -- {
     --     'mhinz/vim-startify',
     --     event = 'VimEnter',
@@ -621,7 +632,22 @@ local spec = {
             vim.g.tmux_navigator_disable_when_zoomed = 1
         end
     },
-    { 'wellle/targets.vim', event='BufReadPost' },
+    {
+        'wellle/targets.vim', event='BufReadPost',
+        config = function()
+            vim.api.nvim_create_autocmd('User' , {
+              -- group = 'mappings_control',
+              pattern = 'targets#mappings#user',
+              callback = function()
+                vim.cmd [[
+                  call targets#mappings#extend({
+                    \ 'a': {'argument': [{'o': '[({[]', 'c': '[]})]', 's': ','}]},
+                    \ })
+                ]]
+              end,
+            })
+        end
+    },
     -- { 'terryma/vim-expand-region' },
     { 'kevinhwang91/nvim-bqf', ft = 'qf' },
 
