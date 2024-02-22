@@ -131,8 +131,8 @@ nnoremap <leader>dp :diffput<CR>
 cnoreabbrev w!! SudaWrite
 
 " Add semi colon at end of line
-noremap <leader>; g_a;<Esc>
-noremap <leader>, g_a,<Esc>
+noremap <leader>; m`A;<Esc>``
+noremap <leader>, m`A,<Esc>``
 
 " vim-asterisk-like behavior
 nnoremap n nzz
@@ -311,7 +311,7 @@ local spec = {
         dependencies = "rktjmp/lush.nvim",
         event = "VeryLazy",
         config = function()
-            vim.cmd('colorscheme nordbones')
+            vim.cmd('colorscheme rosebones')
             vim.cmd('set termguicolors')
         end
     },

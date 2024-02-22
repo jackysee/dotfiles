@@ -24,5 +24,21 @@
     "import vue" : {
         "prefix": "iv",
         "body": "import { $1 } from 'vue';"
+    },
+    "import pinia": {
+        "prefix": "ip",
+        "body": "import { $1 } from 'pinia';"
+    },
+    "import vue-router" :{
+        "prefix": "ir",
+        "body": "import { $1 } from 'vue-router';"
+    },
+    "import constants": {
+        "prefix": "ics",
+        "body": "import { $1 } from '@/constant';"
+    },
+    "import message": {
+        "prefix": "ims",
+        "body": "import { getMessage as \\$t$1 } from '@/utils/message';"
     }
 }

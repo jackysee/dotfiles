@@ -6,12 +6,16 @@ if(myArgs.length === 0) {
     return;
 }
 
-const id = `ic_${myArgs[0]}_black_24px.svg`;
+// const id = `ic_${myArgs[0]}_black_24px.svg`;
+const id = myArgs[0];
 
-https.get(`https://storage.googleapis.com/material-icons/external-assets/v2/icons/svg/${id}`, response => {
+// https.get(`https://storage.googleapis.com/material-icons/external-assets/v2/icons/svg/${id}`, response => {
+https.get(`https://api.iconify.design/${id}.svg`, response => {
     let body = '';
     response.on('data', c => body += c);
     response.on('end', () => {
+        body = body.replace('height="1em" ', '');
+        body = body.replace('width="1em" ', '');
         body = body.replace('height="24" ', '');
         body = body.replace('width="24" ', '');
         body = body.replace('fill="#000000" ', '');

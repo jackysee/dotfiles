@@ -270,7 +270,7 @@ hgr() {
 
 hgcom () {
   local files
-  files=$(hg status | fzf -m --preview 'hg diff --color=always {2}' --bind '?:toggle-preview')
+  files=$(hg status | fzf -m --reverse --preview 'hg diff --color=always {2}' --bind '?:toggle-preview')
   if [ "$files" ]; then
     hg ci $(echo "$files" | awk '{print $2}')
   fi

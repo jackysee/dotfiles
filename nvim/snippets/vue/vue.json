@@ -23,6 +23,14 @@
         "prefix": "ir",
         "body": "import { $1 } from 'vue-router';"
     },
+    "import constants": {
+        "prefix": "ics",
+        "body": "import { $1 } from '@/constant';"
+    },
+    "import message": {
+        "prefix": "ims",
+        "body": "import { getMessage as \\$t$1 } from '@/utils/message';"
+    },
     "vue sfc": {
         "prefix":"vvue",
         "body": [
