@@ -2,7 +2,7 @@
 " source /settings/dotfiles/nvim/win_init.vim
 
 " Constants
-let g:config_path = expand('%:p:h') . '\nvim'
+let g:config_path = expand('<sfile>:p:h')
 exe 'set runtimepath^='.g:config_path
 let s:path = expand('<sfile>:p:h')
 let mapleader = " "
@@ -40,7 +40,7 @@ set undofile
 let &undodir= s:path . '/undo'
 
 " auto reload vimrc when editing it
-autocmd! bufwritepost init.vim source $MYVIMRC
+autocmd! bufwritepost win_init.vim source $MYVIMRC
 
 
 if exists('g:nvy')
@@ -103,7 +103,7 @@ map <leader>ev :vsp %%
 map <leader>et :tabe %%
 
 " edit vimrc
-execute 'nnoremap <silent> <leader>vv :vsp '.s:path.'/init.vim<CR>'
+execute 'nnoremap <silent> <leader>vv :vsp '.s:path.'/win_init.vim<CR>'
 
 "quick fix
 nnoremap ]q :cnext<cr>
@@ -370,7 +370,7 @@ local spec = {
         build = vim.fn.executable("cmake") == 1 and "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build" or "make"
     },
     {
-        "nvim-telescope/telescope.nvim", tag = "0.1.0",
+        "nvim-telescope/telescope.nvim",
         event = "BufWinEnter",
         dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope-fzf-native.nvim"},
         config = function()
@@ -558,7 +558,7 @@ local spec = {
         config = function()
             require("nvim-treesitter.configs").setup({
                 -- context_commentstring = { enable = true, enable_autocmd = false },
-                context_commentstring = { enable = true },
+                -- context_commentstring = { enable = true },
                 highlight = { enable = true },
                 query_linter = {
                     enable = true,
@@ -581,5 +581,12 @@ require("lazy").setup(spec, {
         }
     }
 })
+
+vim.deprecate = function() end
+
+if vim.g.neovide then
+    vim.g.neovide_cursor_animation_length = 0
+    vim.o.guifont = "Consolas:h11"
+end
 
 EOF
