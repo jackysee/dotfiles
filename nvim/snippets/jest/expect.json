@@ -1,0 +1,27 @@
+{
+  "expect": {
+    "prefix": "e",
+    "body": "expect($0)",
+    "description": "expect actual value"
+  },
+  "expect.assertions": {
+    "prefix": "ea",
+    "body": "expect.assertions($0)",
+    "description": "expects the test to make the indicated number of assertions (useful for async)"
+  },
+  "expect.hasAssertions": {
+    "prefix": "eha",
+    "body": "expect.hasAssertions()$0",
+    "description": "expects the test to make at least one assertion (useful for async)"
+  },
+  "expect.rejects": {
+    "prefix": "erj",
+    "body": "expect($1).rejects$0",
+    "description": "expect promise rejects to"
+  },
+  "expect.resolves": {
+    "prefix": "ers",
+    "body": "expect($1).resolves$0",
+    "description": "expect promise resolves to"
+  }
+}

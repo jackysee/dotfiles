@@ -2,13 +2,13 @@ return {
     -- "jose-elias-alvarez/null-ls.nvim",
     "nvimtools/none-ls.nvim",
     event = "BufReadPre",
-    dependencies = { "nvim-lua/plenary.nvim"},
+    dependencies = { "nvim-lua/plenary.nvim", "nvimtools/none-ls-extras.nvim" },
     config = function()
         local null_ls = require("null-ls")
         null_ls.setup {
             debug = true,
             sources = {
-                null_ls.builtins.formatting.prettierd.with({
+                null_ls.builtins.formatting.prettier.with({
                     filetypes = { "javascript", "typescript", "vue", "html", "css" },
                     condition = function()
                         return require("null-ls.utils").root_pattern(
@@ -26,7 +26,7 @@ return {
                         )(vim.api.nvim_buf_get_name(0)) ~= nil
                     end
                 }),
-                null_ls.builtins.diagnostics.eslint_d.with({
+                require('none-ls.diagnostics.eslint_d').with({
                     filetypes = { "javascript", "typescript", "vue", "html", "css" },
                     condition = function()
                         return require("null-ls.utils").root_pattern(

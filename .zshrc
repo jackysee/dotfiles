@@ -35,20 +35,22 @@ export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export ANDROID_HOME=/opt/android-sdk
 export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
+export BROWSER=~/.local/bin/win_chrome
 
 stty -ixon
+
+if [[ $(uname -a) =~ WSL2 ]]; then
+    # export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):1
+elif [[ $(uname -a) =~ microsoft ]]; then
+    # export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
+elif [[ $(uname -a) =~ Linux ]]; then
+    export DISPLAY=$(ip rout list default | awk '{print $3}'):0
+fi
 
 if command -v xset > /dev/null; then
     xset r rate 250 250
 fi
 
-if [[ $(uname -a) =~ WSL2 ]]; then
-    export DISPLAY=:0
-elif [[ $(uname -a) =~ microsoft ]]; then
-    export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
-elif [[ $(uname -a) =~ Linux ]]; then
-    export DISPLAY=$(ip rout list default | awk '{print $3}'):0
-fi
 
 if [[ $(uname -s) =~ Darwin ]]; then
     BPICK="(*darwin*amd*)|(*macos*)|(*apple*darwin*)"
@@ -354,5 +356,10 @@ alias luamake=/home/jackys/server/lua-language-server/3rd/luamake/luamake
 if [[ $(uname -s) =~ Darwin ]]; then
     export PATH="/Users/jackysee/Library/Application Support/fnm:$PATH"
     eval "`fnm env`"
+fi
+
+# pyenv
+if type pyenv > /dev/null; then
+    eval "$(pyenv init -)"
 fi
 

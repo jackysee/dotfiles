@@ -1,0 +1,17 @@
+{
+  "describe": {
+    "prefix": ["d", "desc"],
+    "body": "describe('${1:group}', () => {\n\t$0\n})",
+    "description": "creates a describe block"
+  },
+  "describe.only": {
+    "prefix": "do",
+    "body": "describe.only('${1:group}', () => {\n\t$0\n})",
+    "description": "creates a describe block that runs only"
+  },
+  "describe.skip": {
+    "prefix": "ds",
+    "body": "describe.skip('${1:group}', () => {\n\t$0\n})",
+    "description": "creates a describe block that will be skipped"
+  }
+}

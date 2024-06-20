@@ -19,7 +19,27 @@
       },
       {
         "language": "jest",
-        "path": "./jest.json"
+        "path": "./jest/jest.json"
+      },
+      {
+        "language": "jest",
+        "path": "./jest/assertion.json"
+      },
+      {
+        "language": "jest",
+        "path": "./jest/describe.json"
+      },
+      {
+        "language": "jest",
+        "path": "./jest/expect.json"
+      },
+      {
+        "language": "jest",
+        "path": "./jest/it.json"
+      },
+      {
+        "language": "jest",
+        "path": "./jest/test.json"
       }
     ]
   }

@@ -27,19 +27,35 @@ if executable('rg')
     set grepprg=rg\ --vimgrep
     set grepformat=%f:%l:%c:%m
 endif
-if executable('xsel')
+
+" if executable('xsel')
+"     let g:clipboard = {
+"           \   'name': 'xsel_override',
+"           \   'copy': {
+"           \      '+': 'xsel --input --clipboard',
+"           \      '*': 'xsel --input --primary',
+"           \    },
+"           \   'paste': {
+"           \      '+': 'xsel --output --clipboard',
+"           \      '*': 'xsel --output --primary',
+"           \   },
+"           \   'cache_enabled': 1,
+"           \ }
+" endif
+"
+if executable('/mnt/c/windows/system32/clip.exe')
     let g:clipboard = {
-          \   'name': 'xsel_override',
-          \   'copy': {
-          \      '+': 'xsel --input --clipboard',
-          \      '*': 'xsel --input --primary',
-          \    },
-          \   'paste': {
-          \      '+': 'xsel --output --clipboard',
-          \      '*': 'xsel --output --primary',
-          \   },
-          \   'cache_enabled': 1,
-          \ }
+        \   'name': 'WslClipboard',
+        \   'copy': {
+        \      '+': '/mnt/c/Windows/System32/clip.exe',
+        \      '*': '/mnt/c/Windows/System32/clip.exe',
+        \    },
+        \   'paste': {
+        \      '+': '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -noprofile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+        \      '*': '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -noprofile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+        \   },
+        \   'cache_enabled': 0,
+        \ }
 endif
 
 set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
@@ -246,6 +262,7 @@ augroup END
 
 ".test.js filetype
 au BufRead,BufNewFile *.test.js  setlocal filetype=javascript.jest
+au BufRead,BufNewFile *.spec.js  setlocal filetype=javascript.jest
 
 autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
 
@@ -377,6 +394,22 @@ local spec = {
         },
         config = true
     },
+    -- {
+    --     'svermeulen/vim-yoink',
+    --     event = 'BufReadPost',
+    --     keys = {
+    --         {'p', '<Plug>(YoinkPaste_p)', mode = {'n', 'x'}},
+    --         {'P', '<Plug>(YoinkPaste_P)', mode = {'n', 'x'}},
+    --         {'gp', '<Plug>(YoinkPaste_gp)', mode = {'n', 'x'}},
+    --         {'gP', '<Plug>(YoinkPaste_gP)', mode = {'n', 'x'}},
+    --         {'<c-n>', '<Plug>(YoinkPostPasteSwapBack)'},
+    --         {'<c-p>', '<Plug>(YoinkPostPasteSwapForward)'}
+    --     },
+    --     config = function()
+    --         vim.cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank() ]]
+    --     end
+    --     -- config = true
+    -- },
     { 'tpope/vim-repeat', event='BufReadPost' },
     {
         'tpope/vim-surround',
@@ -433,7 +466,8 @@ local spec = {
             vim.env.FZF_DEFAULT_OPTS = ' --reverse' 
             local f = require('fzf-lua');
             local files = function(txt)
-                f.files({ fzf_opts = { ['--query'] = vim.fn.shellescape(txt) } })
+                -- f.files({ fzf_opts = { ['--query'] = vim.fn.shellescape(txt) } })
+                f.files({ fzf_opts = { ['--query'] = txt } })
             end
             f.setup({
                 winopts = { height=0.9, width=0.9 },
@@ -454,6 +488,7 @@ local spec = {
             vim.api.nvim_create_user_command('Rg', function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
             vim.keymap.set('n', '<leader>fy', function() require('fzf_util').yanky() end, { silent = true, desc = 'yank ring history' })
             vim.keymap.set('n', '<leader>fs', function() require('fzf_util').persistence_session() end, { silent = true, desc = 'sessions' })
+            vim.keymap.set('n', '<leader>fh', f.help_tags, { silent = true, desc = 'help tags' })
         end
     },
     -- { 'nvim-lua/plenary.nvim' },
@@ -548,7 +583,8 @@ local spec = {
                 callback = function()
                     cmp.setup.buffer({ 
                         sources = {
-                            { name = 'vim-dadbod-completion' }
+                            { name = 'vim-dadbod-completion' },
+                            { name = 'buffer' }
                         }
                     })
                 end
@@ -589,6 +625,21 @@ local spec = {
             lspconfig.tailwindcss.setup({
                 capabilities = capabilities,
                 on_attach = on_attach
+            })
+
+            local read_exec_path = function(exec_name)
+                local handle = io.popen("which " .. exec_name)
+                local result = handle:read("*a"):gsub("\n", "")
+                handle:close()
+                return result
+            end
+
+            lspconfig.pyright.setup({
+                settings = {
+                    python = {
+                        pythonPath = read_exec_path("python")
+                    }
+                }
             })
         end
     },
@@ -698,6 +749,7 @@ local spec = {
     -- { 'leafOfTree/vim-vue-plugin', ft = { 'vue' } },
     { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
     { 'elmcast/elm-vim', ft = 'elm' },
+    { 'alunny/pegjs-vim', ft= 'pegjs' },
     { 
         'folke/which-key.nvim', 
         event = 'VeryLazy',
@@ -721,7 +773,16 @@ local spec = {
             vim.keymap.set('n', '<leader>ql', function() l.load({ last = true }) end, { desc = 'restore last session' } )
             vim.keymap.set('n', '<leader>qd', function() l.stop({ last = true }) end, { desc = 'stop persist session' } )
         end
-    }
+    },
+    -- {
+    --     "keaising/im-select.nvim",
+    --     config = function()
+    --         require("im_select").setup({
+    --             keep_quiet_on_no_binary = true,
+    --             async_switch_im = true
+    --         })
+    --     end
+    -- }
 }
 
 require('lazy').setup({

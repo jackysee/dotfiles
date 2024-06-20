@@ -1,0 +1,27 @@
+{
+  "it": {
+    "prefix": ["i", "it"],
+    "body": "it('${1:should}', () => {\n\t$0\n})",
+    "description": "creates an it block"
+  },
+  "it.only": {
+    "prefix": "io",
+    "body": "it.only('${1:should}', () => {\n\t$0\n})",
+    "description": "creates an it block that runs only"
+  },
+  "it.skip": {
+    "prefix": "is",
+    "body": "it.skip('${1:should}', () => {\n\t$0\n})",
+    "description": "creates an it block that will be skipped"
+  },
+  "it.todo": {
+    "prefix": "itd",
+    "body": "it.todo('${0:should}')",
+    "description": "creates a test placeholder"
+  },
+  "it:async": {
+    "prefix": "ia",
+    "body": "it('${1:should}', async () => {\n\t$0\n})",
+    "description": "creates an it block with async callback function"
+  }
+}
