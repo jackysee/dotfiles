@@ -43,20 +43,20 @@ endif
 "           \ }
 " endif
 "
-if executable('/mnt/c/windows/system32/clip.exe')
-    let g:clipboard = {
-        \   'name': 'WslClipboard',
-        \   'copy': {
-        \      '+': '/mnt/c/Windows/System32/clip.exe',
-        \      '*': '/mnt/c/Windows/System32/clip.exe',
-        \    },
-        \   'paste': {
-        \      '+': '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -noprofile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-        \      '*': '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -noprofile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-        \   },
-        \   'cache_enabled': 0,
-        \ }
-endif
+" if executable('/mnt/c/windows/system32/clip.exe')
+"     let g:clipboard = {
+"         \   'name': 'WslClipboard',
+"         \   'copy': {
+"         \      '+': '/mnt/c/Windows/System32/clip.exe',
+"         \      '*': '/mnt/c/Windows/System32/clip.exe',
+"         \    },
+"         \   'paste': {
+"         \      '+': '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -noprofile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+"         \      '*': '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -noprofile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+"         \   },
+"         \   'cache_enabled': 0,
+"         \ }
+" endif
 
 set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
 
@@ -89,7 +89,7 @@ let g:vimsyn_embed = 'l'
 
 " Encoding
 set encoding=utf-8
-set termencoding=utf-8
+" set termencoding=utf-8
 set fileencoding=utf-8
 set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
 
@@ -149,6 +149,10 @@ cnoreabbrev w!! SudaWrite
 " Add semi colon at end of line
 noremap <leader>; m`A;<Esc>``
 noremap <leader>, m`A,<Esc>``
+
+" new line
+noremap <leader>o o<Esc>k
+noremap <leader>O O<Esc>j
 
 " vim-asterisk-like behavior
 nnoremap n nzz
@@ -310,6 +314,7 @@ local colorscheme = function(repo, scheme, cb, dependencies)
 end
 
 local spec = {
+    { import = "config.plugins" },
     colorscheme('romainl/Apprentice', 'Apprentice'),
     colorscheme('haishanh/night-owl.vim', 'night-owl'),
     colorscheme('folke/tokyonight.nvim', 'tokyonight'),
@@ -431,72 +436,23 @@ local spec = {
         }
     },
     { 'tpope/vim-eunuch', event = 'CmdlineEnter' },
-    { 
-        'elihunter173/dirbuf.nvim', 
-        event = 'CmdlineEnter', 
-        init = function()  --prevent default mapping of -
-            vim.keymap.set('n', '-', '-') 
-        end
-    },
     {
-        'ggandor/leap.nvim',
-        event='BufReadPost',
-        config = function()
-            require('leap').set_default_keymaps()
-        end
+        "folke/flash.nvim",
+        event = "VeryLazy",
+        opts = {
+            modes = { search = { enabled = true }}
+        },
+        keys = {
+            { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+            { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+            { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+            { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+            { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+        },
     },
-    {
-        'ggandor/flit.nvim',
-        event='BufReadPost',
-        dependencies = { 'ggandor/leap.nvim' },
-        config = true
-    },
-    {
-        'ggandor/leap-spooky.nvim',
-        event='BufReadPost',
-        dependencies = { 'ggandor/leap.nvim' },
-        config = true
-    },
-    fzf_spec(),
-    {
-        'ibhagwan/fzf-lua',
-        event = 'BufWinEnter',
-        dependencies = { 'nvim-tree/nvim-web-devicons', 'junegunn/fzf' },
-        config = function()
-            vim.env.FZF_DEFAULT_OPTS = ' --reverse' 
-            local f = require('fzf-lua');
-            local files = function(txt)
-                -- f.files({ fzf_opts = { ['--query'] = vim.fn.shellescape(txt) } })
-                f.files({ fzf_opts = { ['--query'] = txt } })
-            end
-            f.setup({
-                winopts = { height=0.9, width=0.9 },
-                files = { actions = { ['ctrl-x'] = f.actions.file_split } },
-                global_git_icons = false,
-                global_file_icons = false
-            })
-            vim.keymap.set('n', '<leader>ff', f.files, { silent = true, desc = 'fzf files' })
-            vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true, desc = 'exact file match <cword>'});
-            vim.keymap.set('v', '<leader>F', function() files("'"..f.utils.get_visual_selection()) end, { silent = true, desc = 'exact file match selection' });
-            vim.keymap.set('n', '<leader>bb', f.buffers, { silent = true, desc = 'buffers' })
-            vim.keymap.set('n', '<leader>bl', f.blines, { silent = true, desc = 'blines' })
-            vim.keymap.set('n', '<leader>fo', f.oldfiles, { silent = true, desc = 'oldfiles' })
-            vim.keymap.set('n', '<leader>lg', f.live_grep, { silent = true, desc = 'livegrep' })
-            vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true, desc = 'rg <cword>' })
-            vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = 'rg selection' })
-            vim.keymap.set('n', '<leader>z', ':FzfLua ', { desc = 'cmd :FzfLua '});
-            vim.api.nvim_create_user_command('Rg', function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
-            vim.keymap.set('n', '<leader>fy', function() require('fzf_util').yanky() end, { silent = true, desc = 'yank ring history' })
-            vim.keymap.set('n', '<leader>fs', function() require('fzf_util').persistence_session() end, { silent = true, desc = 'sessions' })
-            vim.keymap.set('n', '<leader>fh', f.help_tags, { silent = true, desc = 'help tags' })
-        end
-    },
-    -- { 'nvim-lua/plenary.nvim' },
-    require('null_ls_spec'),
-    -- { 'rafamadriz/friendly-snippets', event = 'InsertCharPre' },
     {
         'L3MON4D3/LuaSnip',
-        -- version = 'v2.*',
+        version = 'v2.*',
         dependencies = { 'rafamadriz/friendly-snippets' },
         -- build = "make install_jsregexp",
         event = 'InsertCharPre',
@@ -518,132 +474,6 @@ local spec = {
             -- require('./snippets/javascript');
         end
     },
-    {
-        'hrsh7th/nvim-cmp',
-        event = 'InsertEnter',
-        dependencies = {
-            'saadparwaiz1/cmp_luasnip',
-            'hrsh7th/cmp-buffer',
-            'hrsh7th/cmp-nvim-lsp',
-            'hrsh7th/cmp-path'
-        },
-        config = function()
-            local cmp = require('cmp')
-            cmp.setup({
-                snippet = {
-                    expand = function(args)
-                        require'luasnip'.lsp_expand(args.body)
-                    end,
-                },
-                mapping = {
-                    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-                    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                    ['<C-e>'] = cmp.mapping(cmp.mapping.disable),
-                    ['<C-E>'] = cmp.mapping(cmp.mapping.disable),
-                    ['<C-y>'] = cmp.mapping(cmp.mapping.disable),
-                    ['<C-n>'] = cmp.mapping.select_next_item(),
-                    ['<C-p>'] = cmp.mapping.select_prev_item(),
-                    ['<CR>'] = cmp.mapping.confirm({
-                        behavior = cmp.ConfirmBehavior.Replace,
-                        select = true,
-                    }),
-                },
-                completion = {
-                    keyword_length = 2
-                },
-                sources = {
-                    {
-                        name = 'buffer' ,
-                        option = {
-                            get_bufnrs = function()
-                                return vim.api.nvim_list_bufs()
-                            end
-                        }
-                    },
-                    { name = 'path' },
-                    { name = 'nvim_lsp' },
-                    { name = 'luasnip' }
-                },
-                formatting = {
-                    format = function(entry, vim_item)
-                        vim_item.menu = ({
-                            buffer = '[Buffer]',
-                            nvim_lsp = '[LSP]',
-                            path = '[Path]',
-                            luasnip = '[LuaSnip]',
-                            ["vim-dadbod-completion"] = '[DB]',
-                        })[entry.source.name]
-                        return vim_item
-                    end
-                }
-            })
-
-            vim.api.nvim_create_autocmd('FileType', {
-                pattern = { 'sql', 'mysql', 'plsql' },
-                callback = function()
-                    cmp.setup.buffer({ 
-                        sources = {
-                            { name = 'vim-dadbod-completion' },
-                            { name = 'buffer' }
-                        }
-                    })
-                end
-            })
-        end
-    },
-    { 'williamboman/mason.nvim', config = true, cmd = 'Mason' },
-    {
-        'neovim/nvim-lspconfig',
-        event = 'BufReadPre',
-        dependencies = { 
-            'hrsh7th/nvim-cmp', 
-            'williamboman/mason.nvim',
-            'williamboman/mason-lspconfig.nvim' 
-        },
-        config = function()
-            require("mason-lspconfig").setup()
-
-            local lspconfig = require('lspconfig')
-
-            vim.diagnostic.config({ virtual_text = true, signs = true });
-
-            local capabilities = vim.lsp.protocol.make_client_capabilities()
-            capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-            capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-            local on_attach = function(client)
-                client.server_capabilities.documentFormattingProvider = false
-            end
-
-            lspconfig.denols.setup ({
-                root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'),
-                init_options = { formatting = false },
-                capabilities = capabilities,
-                on_attach = on_attach
-            })
-
-            lspconfig.tailwindcss.setup({
-                capabilities = capabilities,
-                on_attach = on_attach
-            })
-
-            local read_exec_path = function(exec_name)
-                local handle = io.popen("which " .. exec_name)
-                local result = handle:read("*a"):gsub("\n", "")
-                handle:close()
-                return result
-            end
-
-            lspconfig.pyright.setup({
-                settings = {
-                    python = {
-                        pythonPath = read_exec_path("python")
-                    }
-                }
-            })
-        end
-    },
-
     {
         "folke/trouble.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -718,7 +548,7 @@ local spec = {
                     lint_events = { 'BufWrite', 'CursorHold' }
                 },
                 matchup = { enable = true },
-                ensure_installed = { 'css', 'html', 'javascript', 'json', 'lua', 'python', 'regex', 'scss', 'vue', 'ruby', 'vim', 'typescript', 'bash'}
+                ensure_installed = { 'css', 'html', 'javascript', 'json', 'lua', 'python', 'regex', 'scss', 'vue', 'ruby', 'vim', 'vimdoc', 'typescript', 'bash'}
             })
         end
         -- " :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript vim
@@ -759,7 +589,7 @@ local spec = {
             presets.operators["d"] = nil
             presets.operators["c"] = nil
             require('which-key').setup({
-               triggers_blacklist = { c = {"w", "%"} }
+               -- triggers_blacklist = { c = {"w", "%"} }
             })
         end
     },
@@ -774,6 +604,48 @@ local spec = {
             vim.keymap.set('n', '<leader>qd', function() l.stop({ last = true }) end, { desc = 'stop persist session' } )
         end
     },
+    {
+        'stevearc/oil.nvim',
+        opts = {
+            view_options = {
+                show_hidden = true
+            }
+        },
+        dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
+        config = function()
+            require('oil').setup()
+            vim.keymap.set("n", "-", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+        end
+    },
+    {
+        "roobert/search-replace.nvim",
+        config = function()
+            require("search-replace").setup()
+            local opts = {}
+            vim.keymap.set("v", "<C-r>", "<CMD>SearchReplaceSingleBufferVisualSelection<CR>", opts)
+            vim.keymap.set("v", "<C-s>", "<CMD>SearchReplaceWithinVisualSelection<CR>", opts)
+            vim.keymap.set("v", "<C-b>", "<CMD>SearchReplaceWithinVisualSelectionCWord<CR>", opts)
+
+            vim.keymap.set("n", "<leader>rs", "<CMD>SearchReplaceSingleBufferSelections<CR>", opts)
+            vim.keymap.set("n", "<leader>ro", "<CMD>SearchReplaceSingleBufferOpen<CR>", opts)
+            vim.keymap.set("n", "<leader>rw", "<CMD>SearchReplaceSingleBufferCWord<CR>", opts)
+            vim.keymap.set("n", "<leader>rW", "<CMD>SearchReplaceSingleBufferCWORD<CR>", opts)
+            vim.keymap.set("n", "<leader>re", "<CMD>SearchReplaceSingleBufferCExpr<CR>", opts)
+            vim.keymap.set("n", "<leader>rf", "<CMD>SearchReplaceSingleBufferCFile<CR>", opts)
+
+            vim.keymap.set("n", "<leader>rbs", "<CMD>SearchReplaceMultiBufferSelections<CR>", opts)
+            vim.keymap.set("n", "<leader>rbo", "<CMD>SearchReplaceMultiBufferOpen<CR>", opts)
+            vim.keymap.set("n", "<leader>rbw", "<CMD>SearchReplaceMultiBufferCWord<CR>", opts)
+            vim.keymap.set("n", "<leader>rbW", "<CMD>SearchReplaceMultiBufferCWORD<CR>", opts)
+            vim.keymap.set("n", "<leader>rbe", "<CMD>SearchReplaceMultiBufferCExpr<CR>", opts)
+            vim.keymap.set("n", "<leader>rbf", "<CMD>SearchReplaceMultiBufferCFile<CR>", opts)
+
+            -- show the effects of a search / replace in a live preview window
+            vim.o.inccommand = "split"
+        end
+    },
+    { 'LunarVim/bigfile.nvim' },
+
     -- {
     --     "keaising/im-select.nvim",
     --     config = function()

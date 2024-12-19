@@ -74,7 +74,7 @@ function _G.lsp_progress()
 end
 
 function _G.lsp_error()
-    if not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+    if not vim.tbl_isempty(vim.lsp.get_clients()) then
         local s = ""
         local errors = vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
         if #errors > 0 then

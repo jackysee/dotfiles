@@ -7,7 +7,7 @@ export LANGUAGE=en_US.UTF-8
 export PAGER=less
 export EDITOR=nvim
 
-export LIBGL_ALWAYS_INDIRECT=1
+# export LIBGL_ALWAYS_INDIRECT=1
 export GDK_SCALE=0.5
 export GDK_DPI_SCALE=1
 
@@ -30,8 +30,6 @@ export DefaultIMModule=fcitx
 
 export KEYTIMEOUT=25
 
-export WSL_HOST=$(tail -1 /etc/resolv.conf | cut -d' ' -f2)
-export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export ANDROID_HOME=/opt/android-sdk
 export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
@@ -145,6 +143,7 @@ zinit light BurntSushi/ripgrep
 
 # zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"*linux64*tar*"
 zinit ice from"gh-r" as"program" ver"nightly" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
+# zinit ice from"gh-r" as"program" ver"v0.10.2" mv"nvim* -> nvim" pick"nvim/bin/nvim" bpick"${BPICK}"
 zinit light neovim/neovim
 
 
@@ -342,6 +341,30 @@ fif() {
   if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
   rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
 }
+
+adb() {
+  if [[ $ADB_SERVER_SOCKET == *"localhost"* ]] || [[ -z $ADB_SERVER_SOCKET ]]; then 
+      # wslhost="$(/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -Command '(Get-NetIPConfiguration | Where-Object { $_.IPv4DefaultGateway -ne $null -and $_.NetAdapter.Status -ne "Disconnected"}).IPv4Address.IPAddress' | tr -d '\r')"
+      wslhost="$(ip route show | grep -i default | awk '{ print $3 }')"
+      export ADB_SERVER_SOCKET=tcp:$wslhost:5037
+      echo "setting ADB_SERVER_SOCKET=$ADB_SERVER_SOCKET"
+  fi
+  /usr/sbin/adb "$*" && return
+}
+
+rgv() {
+# 1. Search for text in files using Ripgrep
+# 2. Interactively narrow down the list using fzf
+# 3. Open the file in Vim
+    rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+      fzf --ansi \
+          --color "hl:-1:underline,hl+:-1:underline:reverse" \
+          --delimiter : \
+          --preview 'bat --color=always {1} --highlight-line {2}' \
+          --preview-window 'right,60%,~3' \
+          --bind 'enter:become(nvim {1} +{2})'
+}
+
 
 # Load local file if it exists (this isn't commited to the dotfiles repo)
 if [[ -f ~/.zshrc.local ]]; then
