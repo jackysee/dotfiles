@@ -494,7 +494,13 @@ local spec = {
             vim.g.db_ui_save_location = '~/.config/db_ui'
         end
     },
-    { 'tpope/vim-commentary', event='BufReadPost' },
+    -- { 'tpope/vim-commentary', event='BufReadPost' },
+    { 
+        'numToStr/Comment.nvim', 
+        -- dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+        opts = {}
+    },
+
     { 'windwp/nvim-autopairs', event='InsertCharPre' },
     -- { 'Raimondi/delimitMate', event = 'InsertCharPre' },
     {
@@ -531,20 +537,10 @@ local spec = {
     },
     -- { 'terryma/vim-expand-region' },
     { 'kevinhwang91/nvim-bqf', ft = 'qf' },
-
     {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
         event = 'BufReadPre',
-        -- enabled = false,
-        dependencies = { 
-            { 
-                'JoosepAlviste/nvim-ts-context-commentstring',
-                config = function() 
-                    require('ts_context_commentstring').setup();
-                end
-            }
-        },
         config = function()
             require('nvim-treesitter.configs').setup({
                 -- context_commentstring = { enable = true, enable_autocmd = false },
