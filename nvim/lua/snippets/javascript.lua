@@ -20,4 +20,4 @@ local javascript = {
     })
 }
 
-ls.snippets = {javascript = javascript}
+ls.add_snippets("javascript", javascript);

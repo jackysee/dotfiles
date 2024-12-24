@@ -471,7 +471,7 @@ local spec = {
             luasnip.filetype_extend('typescript', { 'javascript'})
             require('luasnip/loaders/from_vscode').lazy_load();
             require('luasnip/loaders/from_vscode').lazy_load({ paths = { './snippets' } });
-            -- require('./snippets/javascript');
+            require('snippets/javascript');
         end
     },
     {
