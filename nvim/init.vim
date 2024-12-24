@@ -536,12 +536,21 @@ local spec = {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
         event = 'BufReadPre',
-        dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+        -- enabled = false,
+        dependencies = { 
+            { 
+                'JoosepAlviste/nvim-ts-context-commentstring',
+                config = function() 
+                    require('ts_context_commentstring').setup();
+                end
+            }
+        },
         config = function()
             require('nvim-treesitter.configs').setup({
                 -- context_commentstring = { enable = true, enable_autocmd = false },
                 -- context_commentstring = { enable = true },
                 highlight = { enable = true },
+                indent = { enable = true },
                 query_linter = {
                     enable = true,
                     use_virtual_text = true,
