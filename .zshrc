@@ -187,13 +187,13 @@ gdiff() {
         # DIFF="git show --color=always $@ $(git rev-parse --show-toplevel)/{-1} | diff-so-fancy | less --tabs=4 -Rc"
         DIFF="git show --color=always $@ $(git rev-parse --show-toplevel)/{-1} | $_diff_cmd"
         git show $@ --name-only --pretty="format:" | \
-        fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+        fzf --ansi --no-sort --no-border --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
     else
         # DIFF="git diff --color=always {-1} | diff-so-fancy | less --tabs=4 -Rc"
         DIFF="git diff --color=always {-1} | $_diff_cmd"
         git diff --name-only --pretty="format:" |  \
-        fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+        fzf --ansi --no-sort --no-border --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF"  \
             --bind "ctrl-m:execute:$DIFF"
     fi
@@ -205,7 +205,7 @@ _gshowdiff="$_ggrephash | xargs -I % sh -c \
 _gshowdifffile="git show % --color=always \$(git rev-parse --show-toplevel)/\{1} | $_diff_cmd"
 _gfzfdiff="$_ggrephash | xargs -I % sh -c \
     'git show % --name-only --pretty=\"format:\" |
-    fzf --ansi --no-sort --reverse --no-select-1 \
+    fzf --ansi --no-sort --no-border --reverse --no-select-1 \
         --header=\"hash %\" --preview \"$_gshowdifffile\" \
         --bind \"ctrl-m:execute:$_gshowdifffile\"'"
 
@@ -213,7 +213,7 @@ _gfzfdiff="$_ggrephash | xargs -I % sh -c \
 gshow() {
   git log --graph --color=always \
       --format="%C(auto)%h%d %s %C(black)%C(bold)%cr %C(auto)%an" "$@" $1 |
-  fzf --ansi --no-sort --reverse --tiebreak=index \
+  fzf --ansi --no-sort --no-border --reverse --tiebreak=index \
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
       --preview=${_gshowdiff/@/$1} \
@@ -227,13 +227,13 @@ hgdiff() {
         # DIFF="hg diff -c $@ $(hg root)/{-1} --color=always | diff-so-fancy | less -R"
         DIFF="hg diff -c $@ $(hg root)/{-1} --color=always | $_diff_cmd"
         hg log -r $@ --template "{files % '{file}\n'}" | \
-        fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+        fzf --ansi --no-sort --no-border --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
     else
         # DIFF="hg diff $(hg root)/{-1} --color=always | diff-so-fancy | less -R"
         DIFF="hg diff $(hg root)/{-1} --color=always | $_diff_cmd"
         hg status | \
-        fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+        fzf --ansi --no-sort --no-border --reverse --tiebreak=index --no-select-1 \
             --preview="$DIFF" --bind "ctrl-m:execute:$DIFF"
     fi
 }
@@ -247,13 +247,13 @@ _hgshowdiff="$_hggrepver | xargs -I % sh -c \
 _hgshowdifffile="hg diff -c @ \$(hg root)/\{1} --color=always | $_diff_cmd"
 _hglogfiles='hg log -r @ --template "{join(files, \"\n\")}"'
 _hgfzfdiff="$_hggrepver | xargs -I @ sh -c '$_hglogfiles |
-    fzf --ansi --no-sort --reverse --tiebreak=index --no-select-1 \
+    fzf --ansi --no-sort --reverse --no-border --tiebreak=index --no-select-1 \
         --preview \"$_hgshowdifffile\" --header=\"Revision @\" \
         --bind \"ctrl-m:execute:$_hgshowdifffile\"'"
 
 hgshow() {
   hg log2 $1 --color=always |
-  fzf --ansi --no-sort --reverse --tiebreak=index \
+  fzf --ansi --no-sort --reverse  --no-border --tiebreak=index \
       --preview="${_hgshowdiff/@/$1}" \
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
