@@ -111,7 +111,7 @@ zinit light-mode lucid wait for \
     dominik-schwabe/zsh-fnm \
     OMZP::rbenv
 
-zinit ice lucid as"command" from"gh-r" bpick"(*x86_64*linux*musl*)" mv"lsd* -> lsd" pick"lsd/lsd"
+zinit ice lucid as"command" from"gh-r" bpick"${BPICK}" mv"lsd* -> lsd" pick"lsd/lsd"
 zinit light lsd-rs/lsd
 
 zinit ice atclone"./install --xdg --no-update-rc --completion --key-bindings" atpull"%atclone" as"program" pick="bin/fzf" multisrc"shell/{key-bindings,completion}.zsh"
