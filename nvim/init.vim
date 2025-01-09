@@ -58,7 +58,7 @@ endif
 "         \ }
 " endif
 
-set list listchars=tab:»-,trail:.,extends:>,precedes:<,nbsp:+
+set list listchars=tab:⍿\ ,trail:.,extends:>,precedes:<,nbsp:+
 
 set undofile
 let &undodir= s:path . '/undo'
@@ -268,7 +268,7 @@ augroup END
 au BufRead,BufNewFile *.test.js  setlocal filetype=javascript.jest
 au BufRead,BufNewFile *.spec.js  setlocal filetype=javascript.jest
 
-autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
+" autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
 
 " plugins managed by lazy.nvim
 lua << EOF
@@ -279,64 +279,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-local fzf_spec = function()
-    if vim.fn.isdirectory(vim.env.HOME .. '/.zplugin/plugins/junegunn---fzf') then
-        return {
-            name = 'junegunn/fzf',
-            dir = '~/.zplugin/plugins/junegunn---fzf',
-            event = 'BufWinEnter'
-        }
-    else
-        return { 'junegunn/fzf', event = 'BufWinEnter' }
-    end
-end
-
--- local use_colorscheme = 'nightfox'
--- local use_colorscheme = 'flexoki'
--- local use_colorscheme = 'catppuccin-macchiato'
-local use_colorscheme = 'none'
-local colorscheme = function(repo, scheme, cb, dependencies)
-    local load = use_colorscheme == scheme
-    local event = 'VeryLazy'
-    if load == true then event = nil end
-    return {
-        repo,
-        dependencies = dependencies,
-        event = event,
-        config = function()
-            if load then
-                if cb then cb() end
-                vim.cmd('colorscheme '..scheme)
-                vim.cmd('set termguicolors')
-            end
-        end
-    }
-end
-
 local spec = {
     { import = "config.plugins" },
-    colorscheme('romainl/Apprentice', 'Apprentice'),
-    colorscheme('haishanh/night-owl.vim', 'night-owl'),
-    colorscheme('folke/tokyonight.nvim', 'tokyonight'),
-    colorscheme('EdenEast/nightfox.nvim', 'nightfox'),
-    colorscheme('whatyouhide/vim-gotham', 'gotham'),
-    colorscheme('JoosepAlviste/palenightfall.nvim', 'palenightfall'),
-    colorscheme('sainnhe/gruvbox-material', 'gruvbox-material', function()
-        vim.g.gruvbox_material_background = 'hard'
-        vim.g.gruvbox_material_better_performance = 1
-    end),
-    colorscheme('sainnhe/edge', 'edge'),
-    colorscheme('stevedylandev/flexoki-nvim', 'flexoki'),
-    colorscheme('catppuccin/nvim', 'catppuccin-macchiato'),
-    {
-        "mcchrish/zenbones.nvim",
-        dependencies = "rktjmp/lush.nvim",
-        event = "VeryLazy",
-        config = function()
-            vim.cmd('colorscheme rosebones')
-            vim.cmd('set termguicolors')
-        end
-    },
     -- {
     --     'mhinz/vim-startify',
     --     event = 'VimEnter',
@@ -501,7 +445,7 @@ local spec = {
         opts = {}
     },
 
-    { 'windwp/nvim-autopairs', event='InsertCharPre' },
+    { 'windwp/nvim-autopairs', event='InsertEnter', config = true },
     -- { 'Raimondi/delimitMate', event = 'InsertCharPre' },
     {
         'andymass/vim-matchup',
@@ -553,8 +497,15 @@ local spec = {
                     lint_events = { 'BufWrite', 'CursorHold' }
                 },
                 matchup = { enable = true },
-                ensure_installed = { 'css', 'html', 'javascript', 'json', 'lua', 'python', 'regex', 'scss', 'vue', 'ruby', 'vim', 'vimdoc', 'typescript', 'bash'}
+                ensure_installed = { 'css', 'html', 'javascript', 'json', 'lua', 'python', 'regex', 'scss', 'vue', 'ruby', 'vim', 'vimdoc', 'typescript', 'bash', 'jsp'}
             })
+            local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+            parser_config.jsp = {
+                install_info = {
+                    url = "https://github.com/merico-dev/tree-sitter-jsp.git", -- local path or git repo
+                    files = { "src/parser.c", "src/scanner.cc" },
+                },
+            }
         end
         -- " :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript vim
     },
@@ -582,7 +533,13 @@ local spec = {
         }
     },
     -- { 'leafOfTree/vim-vue-plugin', ft = { 'vue' } },
-    { 'mattn/emmet-vim' , ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' }},
+    { 
+        'mattn/emmet-vim' , 
+        ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' },
+        init = function()
+            vim.g.user_emmet_leader_key = '<C-I>'
+        end
+    },
     { 'elmcast/elm-vim', ft = 'elm' },
     { 'alunny/pegjs-vim', ft= 'pegjs' },
     { 
@@ -594,6 +551,15 @@ local spec = {
             presets.operators["d"] = nil
             presets.operators["c"] = nil
             require('which-key').setup({
+                preset = "helix",
+                plugins = {
+                    presets = {
+                        operators = false,
+                        motions = false,
+                        text_objects = false,
+                        windows = false
+                    }
+                }
                -- triggers_blacklist = { c = {"w", "%"} }
             })
         end
@@ -649,8 +615,13 @@ local spec = {
             vim.o.inccommand = "split"
         end
     },
-    { 'LunarVim/bigfile.nvim' },
-
+    {
+        'folke/snacks.nvim',
+        opts = { 
+            bigfile = {},
+            indent = {},
+        }
+    }
     -- {
     --     "keaising/im-select.nvim",
     --     config = function()

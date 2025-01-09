@@ -11,7 +11,10 @@ return {
           --   vim.api.nvim_buf_set_keymap(bufnr, ...)
           -- end
           vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-          -- local opts = { noremap=true, silent=true }
+
+          local opts = { buffer, bufnr, noremap=true, silent= true }
+          vim.keymap.set('n', '<leader>oi', function() require('jdtls').organize_imports() end, { buffer = bufnr, silent = true, noremap = true, desc = 'organize imports'});
+          vim.keymap.set('n', '<leader>ca', require('fzf-lua').lsp_code_actions, { buffer = bufnr, silent = true, noremap = true, desc = 'organize imports'})
           -- buf_set_keymap("n", "gd", "Telescope lsp_definitions", opts)
           -- buf_set_keymap("n", "gr", "Telescope lsp_references", opts)
         end
@@ -38,6 +41,11 @@ return {
                     '-Declipse.application=org.eclipse.jdt.ls.core.id1',
                     '-Dosgi.bundles.defaultStartLevel=4',
                     '-Xmx8g',
+                    -- '-Xms100m',
+                    -- '-XX:+UseParallelGC',
+                    -- '-XX:GCTimeRatio=4',
+                    -- '-XX:AdaptiveSizePolicyWeight=90',
+                    '-Dsun.zip.disableMemoryMapping=true',
                     '-Declipse.product=org.eclipse.jdt.ls.core.product',
                     '-Dlog.protocol=true',
                     '-Dlog.level=ALL',

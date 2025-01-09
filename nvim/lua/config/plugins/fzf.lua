@@ -102,8 +102,10 @@ return {
             f.setup({
                 winopts = { height=0.9, width=0.9 },
                 files = { actions = { ['ctrl-x'] = f.actions.file_split } },
-                global_git_icons = false,
-                global_file_icons = false
+                defaults = {
+                    git_icons = false,
+                    file_icons = false
+                }
             })
             vim.keymap.set('n', '<leader>ff', f.files, { silent = true, desc = 'fzf files' })
             vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true, desc = 'exact file match <cword>'});

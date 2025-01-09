@@ -4,8 +4,8 @@ return {
         'neovim/nvim-lspconfig',
         event = 'BufReadPre',
         dependencies = { 
-            'hrsh7th/nvim-cmp', 
-            -- 'saghen/blink.cmp',
+            -- 'hrsh7th/nvim-cmp', 
+            'saghen/blink.cmp',
             'williamboman/mason.nvim',
             'williamboman/mason-lspconfig.nvim' 
         },
@@ -16,14 +16,18 @@ return {
 
             local lspconfig = require('lspconfig')
             local capabilities = vim.lsp.protocol.make_client_capabilities()
-            capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
-            capabilities.textDocument.completion.completionItem.snippetSupport = true
-            -- local capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
-            -- local capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
-            -- for server, config in pairs(opts.servers) do
-            --     config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
-            --     lspconfig[server].setup(config)
-            -- end
+
+            if pcall(require, 'blink.cmp') then
+                capabilities = require('blink.cmp').get_lsp_capabilities(capabilities)
+                -- for server, config in pairs(opts.servers) do
+                --     config.capabilities = require('blink.cmp').get_lsp_capabilities(config.capabilities)
+                --     lspconfig[server].setup(config)
+                -- end
+            elseif pcall(require, 'cmp_nvim_lsp') then
+                capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
+                capabilities.textDocument.completion.completionItem.snippetSupport = true
+            end
+
 
             local on_attach = function(client)
                 client.server_capabilities.documentFormattingProvider = false
@@ -57,5 +61,12 @@ return {
             })
         end
     },
+    {
+        "mhanberg/output-panel.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("output_panel").setup()
+        end
+    }
 
 }

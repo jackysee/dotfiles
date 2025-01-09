@@ -66,7 +66,7 @@ fi
 export RIPGREP_CONFIG_PATH="$HOME/.ripgreprc"
 
 # export FZF_DEFAULT_COMMAND="rg --files "
-export FZF_DEFAULT_COMMAND="([ ! -f ./.ignore ] && [ -d ./.hg ] && ag -l --hidden --ignore .hg) || rg --files "
+export FZF_DEFAULT_COMMAND="([ ! -f ./.ignore ] && [ -d ./.hg ] && ag -l --hidden --ignore .hg) || rg --files --ignore-files ~/.ignore"
 export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
 export FZF_DEFAULT_OPTS='
     --border --exit-0
