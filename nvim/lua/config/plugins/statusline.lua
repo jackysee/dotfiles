@@ -48,9 +48,8 @@ local function lsp_error()
 end
 
 local function pos()
-    return '%l|%L│%2v|%-2{virtcol("$") - 1}'
+    return '%l|%L %2v|%-2{virtcol("$") - 1}'
 end
-
 
 local function filename()
     local filename = '[No Name]'
@@ -69,9 +68,9 @@ local function filename()
         filename = '!' .. filename
     end
     if vim.bo.modified then
-        filename = filename .. '+'
+        filename = filename .. ' [+]'
     elseif not vim.bo.modifiable then
-        filename = filename .. '-'
+        filename = filename .. ' [-]'
     end
     return filename
 end
@@ -83,6 +82,7 @@ end
 
 return {
     'nvim-lualine/lualine.nvim',
+    enabled = false,
     config = function()
 
         -- local theme = require('lualine.themes.palenight')
@@ -103,6 +103,7 @@ return {
             },
             sections = {
                 lualine_a = { { 'mode', fmt = firstLetter }},
+                -- lualine_a = { },
                 lualine_b = { vcs, },
                 lualine_c = { filename },
                 lualine_x = { 'MatchupStatusOffscreen' },

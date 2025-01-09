@@ -268,7 +268,7 @@ augroup END
 au BufRead,BufNewFile *.test.js  setlocal filetype=javascript.jest
 au BufRead,BufNewFile *.spec.js  setlocal filetype=javascript.jest
 
-" autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
+autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
 
 " plugins managed by lazy.nvim
 lua << EOF
@@ -343,22 +343,6 @@ local spec = {
         },
         config = true
     },
-    -- {
-    --     'svermeulen/vim-yoink',
-    --     event = 'BufReadPost',
-    --     keys = {
-    --         {'p', '<Plug>(YoinkPaste_p)', mode = {'n', 'x'}},
-    --         {'P', '<Plug>(YoinkPaste_P)', mode = {'n', 'x'}},
-    --         {'gp', '<Plug>(YoinkPaste_gp)', mode = {'n', 'x'}},
-    --         {'gP', '<Plug>(YoinkPaste_gP)', mode = {'n', 'x'}},
-    --         {'<c-n>', '<Plug>(YoinkPostPasteSwapBack)'},
-    --         {'<c-p>', '<Plug>(YoinkPostPasteSwapForward)'}
-    --     },
-    --     config = function()
-    --         vim.cmd [[ au TextYankPost * silent! lua vim.highlight.on_yank() ]]
-    --     end
-    --     -- config = true
-    -- },
     { 'tpope/vim-repeat', event='BufReadPost' },
     {
         'tpope/vim-surround',
@@ -395,30 +379,6 @@ local spec = {
         },
     },
     {
-        'L3MON4D3/LuaSnip',
-        version = 'v2.*',
-        dependencies = { 'rafamadriz/friendly-snippets' },
-        -- build = "make install_jsregexp",
-        event = 'InsertCharPre',
-        config = function()
-            local luasnip = require('luasnip')
-            vim.cmd [[ imap <silent><expr> <C-e> luasnip#expandable() ? '<Plug>luasnip-expand-or-jump' : '<C-e>' ]]
-            vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Plug>luasnip-expand-or-jump' ]]
-            vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
-
-            luasnip.config.set_config {
-                history = true,
-                -- updateevents = 'TextChanged,TextChangedI',
-                store_selection_keys = '<Tab>'
-            }
-            luasnip.filetype_extend('vue', {'html', 'javascript', 'css'})
-            luasnip.filetype_extend('typescript', { 'javascript'})
-            require('luasnip/loaders/from_vscode').lazy_load();
-            require('luasnip/loaders/from_vscode').lazy_load({ paths = { './snippets' } });
-            require('snippets/javascript');
-        end
-    },
-    {
         "folke/trouble.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
     },
@@ -430,12 +390,17 @@ local spec = {
         'kristijanhusak/vim-dadbod-ui',
         cmd = 'DBUI',
         dependencies = { 
-            'tpope/vim-dadbod', 
-            'kristijanhusak/vim-dadbod-completion' 
+            { 'tpope/vim-dadbod', lazy = true },
+            {
+                'kristijanhusak/vim-dadbod-completion',
+                ft = { 'sql', 'mysql', 'plsql'},
+                lazy = true 
+            } 
         },
         config = function()
             vim.g.db_ui_debug = 1
             vim.g.db_ui_save_location = '~/.config/db_ui'
+            vim.g.db_ui_use_nerd_fonts = 1
         end
     },
     -- { 'tpope/vim-commentary', event='BufReadPost' },
@@ -481,6 +446,7 @@ local spec = {
     },
     -- { 'terryma/vim-expand-region' },
     { 'kevinhwang91/nvim-bqf', ft = 'qf' },
+    { 'stevearc/quicker.nvim', event = 'FileType qf', opts = {} },
     {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',

@@ -53,7 +53,7 @@ local blinkConfig = {
             },
             snippets = { preset = "luasnip" },
             sources = {
-                default = { 'lsp', 'path', 'snippets', 'buffer'--[[ , 'ripgrep' ]] },
+                default = { 'lsp', 'path', 'snippets', 'buffer', 'dadbod'--[[ , 'ripgrep' ]] },
                 cmdline = function()
                     local type = vim.fn.getcmdtype()
                     if type == ':' or type == '@' then return { 'cmdline' } end
@@ -79,6 +79,10 @@ local blinkConfig = {
                             end
                             return items
                         end
+                    },
+                    dadbod = {
+                        name = "dadbod",
+                        module = "vim_dadbod_completion.blink"
                     }
                 },
                 -- min_keyword_length = function() return 0 end

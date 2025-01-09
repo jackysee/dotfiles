@@ -41,7 +41,7 @@ function! ChangedStatus() abort
 endfunction
 
 function! VcsInfoStatus() abort
-    return FugitiveStatus(). LawrenciumStatus(). ChangedStatus()
+    return FugitiveStatus(). LawrenciumStatus()
 endfunction
 
 function! s:is_tmp_file() abort
@@ -128,12 +128,23 @@ function! FilenameStatus()
 endfunction
 
 function! LineInfoStatus()
-    return '%P %-8(%3l:%c%)'
+    " return '%P %-8(%3l:%c%)'
+    return '%l|%L %2v|%-2{virtcol("$") - 1}'
+endfunction
+
+
+function! Matchup() abort
+    if !exists('g:loaded_matchup')
+        return ''
+    endif
+    let l:status = MatchupStatusOffscreen()
+    return l:status
+    " return l:status == '' ? '': "\ue725".l:status
 endfunction
 
 function! AddBracket(s)
     if exists('a:s')
-        return (a:s == '')? '': ' ['.a:s.'] '
+        return (a:s == '')? '': ' ['.a:s.']'
     endif
     return ''
 endfunction
@@ -145,15 +156,50 @@ function! AddSpace(s)
     return ''
 endfunction
 
+function! AddHl(hl, s, padLeft = 1, padRight = 1)
+    if exists('a:s')
+        return (a:s == '')? '': '%#'.a:hl.'#'. (a:padLeft? ' ': '') . a:s . (a:padRight? ' ': '') . '%#StatusLine#'
+    endif
+endfunction
+
+highlight StatusLineAccentBold guifg=#eeffff guibg=#515559 gui=bold
+highlight StatusLineAccent guifg=#eeffff guibg=#515559
+" highlight StatusLineNormal guifg=#263238 guibg=#82aaff gui=bold 
+" highlight StatusLineInsert guifg=#263238 guibg=#c3e88d gui=bold 
+" highlight StatusLineVisual guifg=#263238 guibg=#c792ea gui=bold 
+" highlight StatusLineReplace guifg=#263238 guibg=#f07178 gui=bold 
+" highlight StatusLineOther guifg=#eeffff guibg=#2e3c43 gui=bold 
+" highlight StatusLine guifg=#eeffff guibg=#2e3c43
+" gray1  = '#314549',
+" gray2  = '#2E3C43',
+" gray3  = '#515559',
+
+" function! ModeHl()
+"     let l:mode = mode()
+"     if l:mode == 'n' | return '%#StatusLineNormal#' | endif
+"     if l:mode == 'v' | return '%#StatusLineVisual#' | endif
+"     if l:mode == 'v' | return '%#StatusLineVisual#' | endif
+"     if l:mode == 'CTRL_V' | return '%#StatusLineVisual#' | endif
+"     if l:mode == 's' | return '%#StatusLineVisual#' | endif
+"     if l:mode == 'S' | return '%#StatusLineVisual#' | endif
+"     if l:mode == 'i' | return '%#StatusLineInsert#' | endif
+"     if l:mode == 'R' | return '%#StatusLineReplace#' | endif
+"     if l:mode == 'c' | return '%#StatusLineOther#' | endif
+"     return '%#StatusLineOther#'
+" endfunction
+
 function! Statusline()
-  let vcs = "%{AddBracket(VcsInfoStatus())}"
-  let file = '%{FilenameStatus()}'
-  let ft  = "%{&filetype} "
+  let hlStatusLine = '%#StatusLine#'
+  " let hlMode = "%{%ModeHl()%}"
+  let vcs = "%{%AddHl('StatusLineAccentBold',VcsInfoStatus(), 1, 1)%}"
+  let change = "%{%AddHl('StatusLineAccent',ChangedStatus(), 0, 1)%}"
+  let file = '%{AddSpace(FilenameStatus())}'
+  let ft  = " %{&filetype} "
   let sep = ' %= '
- let lsp = '%{AddSpace(LspStatus())}'
-  
-  let pos = LineInfoStatus()
-  return vcs.file.sep.lsp.ft.pos
+  let matchup = ' %{%Matchup()%} '.hlStatusLine
+  let lsp = '%{AddSpace(LspStatus())}'
+  let pos = '%#StatusLineAccent# '.LineInfoStatus()
+  return vcs.change.file.sep.matchup.lsp.ft.pos
 endfunction
 
 function! RefreshStatusline()
