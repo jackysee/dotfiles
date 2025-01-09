@@ -58,7 +58,7 @@ endif
 "         \ }
 " endif
 
-set list listchars=tab:⍿\ ,trail:.,extends:>,precedes:<,nbsp:+
+set list listchars=tab:»\ ,trail:.,extends:>,precedes:<,nbsp:+
 
 set undofile
 let &undodir= s:path . '/undo'
@@ -619,7 +619,7 @@ local spec = {
         'folke/snacks.nvim',
         opts = { 
             bigfile = {},
-            indent = {},
+            -- indent = {},
         }
     }
     -- {
