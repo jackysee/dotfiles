@@ -346,89 +346,120 @@ local spec = {
     },
     { "tpope/vim-eunuch", event = "CmdlineEnter" },
     {
-        "ggandor/leap.nvim",
-        event="BufReadPost",
+        "folke/flash.nvim",
+        event = "VeryLazy",
+        opts = {
+            modes = { search = { enabled = true }}
+        },
+        keys = {
+            { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+            { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+            { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+            { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+            { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+        },
+    },
+    -- {
+    --     "nvim-telescope/telescope-fzf-native.nvim",
+    --     lazy = true,
+    --     build = vim.fn.executable("cmake") == 1 and "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build" or "make"
+    -- },
+    -- {
+    --     "nvim-telescope/telescope.nvim",
+    --     event = "BufWinEnter",
+    --     dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope-fzf-native.nvim"},
+    --     config = function()
+    --         local t = require("telescope");
+    --         local actions = require('telescope.actions')
+    --         local builtin = require('telescope.builtin')
+    --         t.setup({
+    --             defaults = {
+    --                 layout_config = {
+    --                     prompt_position = "top",
+    --                     width = 0.92,
+    --                 },
+    --                 layout_strategy = "flex",
+    --                 -- border = false,
+    --                 path_display = {"truncate"},
+    --                 sorting_strategy = "ascending",
+    --                 mappings = {
+    --                     i =  {
+    --                         ["<esc>"] = actions.close,
+    --                         ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist
+    --                     }
+    --                 }
+    --             },
+    --             extensions = {
+    --                fzf = {
+    --                    fuzzy = true,                    -- false will only do exact matching
+    --                    override_generic_sorter = true, -- override the generic sorter
+    --                    override_file_sorter = true,     -- override the file sorter
+    --                    case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+    --                    -- the default case_mode is "smart_case"
+    --                }
+    --             }
+    --         })
+    --         t.load_extension("fzf")
+    --         t.load_extension("yank_history")
+    --         local findFiles = function(txt)
+    --             builtin.find_files({
+    --                 find_command = { "rg", "--files" },
+    --                 search_file = txt
+    --             })
+    --         end
+    --         local grep = function(txt)
+    --             builtin.grep_string({ search = txt, use_regex = true })
+    --         end
+    --         local vtext = require("util").vtext;
+    --         vim.keymap.set("n", "<leader>f", function() findFiles(nil) end)
+    --         vim.keymap.set("n", "<leader>F", function() findFiles(vim.fn.expand("<cword>")) end)
+    --         vim.keymap.set("n", "<leader>o", function() builtin.oldfiles() end)
+    --         vim.keymap.set("n", "<leader>b", function() builtin.buffers() end)
+    --         vim.keymap.set("n", "<leader>lg", function() builtin.live_grep({}) end)
+    --         vim.keymap.set("n", "<leader>rg", function() grep(vim.fn.expand("<cword>")) end)
+    --         vim.keymap.set("v", "<leader>rg", function() grep(vtext()) end)
+    --         vim.keymap.set("v", "<leader>F", function() findFiles(vtext()) end)
+    --         vim.keymap.set("n", "<leader>y", ":FzfLua yank_history");
+    --         vim.api.nvim_create_user_command("Rg", function(opts) grep(opts.args) end, { nargs = "*"})
+    --     end
+    -- },
+    -- { "nvim-lua/plenary.nvim" },
+    {
+        'ibhagwan/fzf-lua',
+        event = 'BufWinEnter',
+        dependencies = { 'nvim-tree/nvim-web-devicons', 'junegunn/fzf' },
         config = function()
-            require("leap").set_default_keymaps()
-        end
-    },
-    {
-        "ggandor/flit.nvim",
-        event="BufReadPost",
-        dependencies = { "ggandor/leap.nvim" },
-        config = true
-    },
-    {
-        "ggandor/leap-spooky.nvim",
-        event="BufReadPost",
-        dependencies = { "ggandor/leap.nvim" },
-        config = true
-    },
-    {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        lazy = true,
-        build = vim.fn.executable("cmake") == 1 and "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build" or "make"
-    },
-    {
-        "nvim-telescope/telescope.nvim",
-        event = "BufWinEnter",
-        dependencies = {"nvim-lua/plenary.nvim", "nvim-telescope/telescope-fzf-native.nvim"},
-        config = function()
-            local t = require("telescope");
-            local actions = require('telescope.actions')
-            local builtin = require('telescope.builtin')
-            t.setup({
+            vim.env.FZF_DEFAULT_OPTS = ' --reverse' 
+            local f = require('fzf-lua');
+            local files = function(txt)
+                -- f.files({ fzf_opts = { ['--query'] = vim.fn.shellescape(txt) } })
+                f.files({ fzf_opts = { ['--query'] = txt } })
+            end
+            f.setup({
+                winopts = { height=0.9, width=0.9 },
+                files = { actions = { ['ctrl-x'] = f.actions.file_split } },
                 defaults = {
-                    layout_config = {
-                        prompt_position = "top",
-                        width = 0.92,
-                    },
-                    layout_strategy = "flex",
-                    -- border = false,
-                    path_display = {"truncate"},
-                    sorting_strategy = "ascending",
-                    mappings = {
-                        i =  {
-                            ["<esc>"] = actions.close,
-                            ["<C-q>"] = actions.smart_send_to_qflist + actions.open_qflist
-                        }
-                    }
-                },
-                extensions = {
-                   fzf = {
-                       fuzzy = true,                    -- false will only do exact matching
-                       override_generic_sorter = true, -- override the generic sorter
-                       override_file_sorter = true,     -- override the file sorter
-                       case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
-                       -- the default case_mode is "smart_case"
-                   }
+                    git_icons = false,
+                    file_icons = false
                 }
             })
-            t.load_extension("fzf")
-            t.load_extension("yank_history")
-            local findFiles = function(txt)
-                builtin.find_files({
-                    find_command = { "rg", "--files" },
-                    search_file = txt
-                })
-            end
-            local grep = function(txt)
-                builtin.grep_string({ search = txt, use_regex = true })
-            end
-            local vtext = require("util").vtext;
-            vim.keymap.set("n", "<leader>f", function() findFiles(nil) end)
-            vim.keymap.set("n", "<leader>F", function() findFiles(vim.fn.expand("<cword>")) end)
-            vim.keymap.set("n", "<leader>o", function() builtin.oldfiles() end)
-            vim.keymap.set("n", "<leader>b", function() builtin.buffers() end)
-            vim.keymap.set("n", "<leader>lg", function() builtin.live_grep({}) end)
-            vim.keymap.set("n", "<leader>rg", function() grep(vim.fn.expand("<cword>")) end)
-            vim.keymap.set("v", "<leader>rg", function() grep(vtext()) end)
-            vim.keymap.set("v", "<leader>F", function() findFiles(vtext()) end)
-            vim.keymap.set("n", "<leader>y", ":FzfLua yank_history");
-            vim.api.nvim_create_user_command("Rg", function(opts) grep(opts.args) end, { nargs = "*"})
+            vim.keymap.set('n', '<leader>ff', f.files, { silent = true, desc = 'fzf files' })
+            vim.keymap.set('n', '<leader>F', function() files("'"..vim.fn.expand('<cword>')) end, { silent = true, desc = 'exact file match <cword>'});
+            vim.keymap.set('v', '<leader>F', function() files("'"..f.utils.get_visual_selection()) end, { silent = true, desc = 'exact file match selection' });
+            vim.keymap.set('n', '<leader>bb', f.buffers, { silent = true, desc = 'buffers' })
+            vim.keymap.set('n', '<leader>bl', f.blines, { silent = true, desc = 'blines' })
+            vim.keymap.set('n', '<leader>fo', f.oldfiles, { silent = true, desc = 'oldfiles' })
+            vim.keymap.set('n', '<leader>lg', f.live_grep_glob, { silent = true, desc = 'livegrep' })
+            vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true, desc = 'rg <cword>' })
+            vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = 'rg selection' })
+            vim.keymap.set('n', '<leader>z', ':FzfLua ', { desc = 'cmd :FzfLua '});
+            vim.api.nvim_create_user_command('Rg', function(opts) f.grep_project({ search = opts.args }) end, { nargs = '*'})
+            vim.keymap.set('n', '<leader>fy', function() yanky() end, { silent = true, desc = 'yank ring history' })
+            vim.keymap.set('n', '<leader>fs', function() persistence_session() end, { silent = true, desc = 'sessions' })
+            vim.keymap.set('n', '<leader>fh', f.help_tags, { silent = true, desc = 'help tags' })
+            vim.keymap.set('n', '<leader>fr', f.registers, { silent = true, desc = 'registers' })
         end
     },
-    { "nvim-lua/plenary.nvim" },
     require('null_ls_spec'),
     {
         "L3MON4D3/LuaSnip",
@@ -547,14 +578,19 @@ local spec = {
         end
     },
 
-    { "tpope/vim-commentary", event = "BufReadPost" },
-    { "Raimondi/delimitMate", event = "BufReadPost" },
+    -- { "tpope/vim-commentary", event = "BufReadPost" },
+    { 
+        'numToStr/Comment.nvim', 
+        -- dependencies = { 'JoosepAlviste/nvim-ts-context-commentstring' },
+        opts = {}
+    },
+    -- { "Raimondi/delimitMate", event = "BufReadPost" },
+    { 'windwp/nvim-autopairs', event='InsertEnter', config = true },
     { "wellle/targets.vim", event = "BufReadPost" },
     {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
         event = "BufReadPost",
-        dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
         config = function()
             require("nvim-treesitter.configs").setup({
                 -- context_commentstring = { enable = true, enable_autocmd = false },
@@ -568,10 +604,39 @@ local spec = {
                 matchup = { enable = true },
                 ensure_installed = { "css", "html", "javascript", "json", "lua", "python", "regex", "scss", "vue", "ruby", "vim", "typescript", "bash"}
             })
+            local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+            parser_config.jsp = {
+                install_info = {
+                    url = "https://github.com/merico-dev/tree-sitter-jsp.git", -- local path or git repo
+                    files = { "src/parser.c", "src/scanner.cc" },
+                },
+            }
         end
         -- " :TSInstall bash css elm html java javascript json lua php python regex scss yaml toml tsx vue ruby rust typescript vim
     },
-    { "mattn/emmet-vim" , ft = {"javascript", "javascript.jsx", "vue", "html", "css", "scss", "sass" }}
+    { "mattn/emmet-vim" , ft = {"javascript", "javascript.jsx", "vue", "html", "css", "scss", "sass" }},
+    { 
+        'folke/which-key.nvim', 
+        event = 'VeryLazy',
+        config = function()
+            local presets = require("which-key.plugins.presets")
+            presets.operators["v"] = nil
+            presets.operators["d"] = nil
+            presets.operators["c"] = nil
+            require('which-key').setup({
+                preset = "helix",
+                plugins = {
+                    presets = {
+                        operators = false,
+                        motions = false,
+                        text_objects = false,
+                        windows = false
+                    }
+                }
+               -- triggers_blacklist = { c = {"w", "%"} }
+            })
+        end
+    },
 }
 
 require("lazy").setup(spec, {
@@ -585,7 +650,7 @@ require("lazy").setup(spec, {
 vim.deprecate = function() end
 
 if vim.g.neovide then
-    vim.g.neovide_cursor_animation_length = 0
+    -- vim.g.neovide_cursor_animation_length = 0
     vim.o.guifont = "Consolas:h11"
 end
 
