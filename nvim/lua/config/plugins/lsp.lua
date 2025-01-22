@@ -45,6 +45,12 @@ return {
                 on_attach = on_attach
             })
 
+            -- lspconfig.emmet_language_server.setup({
+            --     filetypes = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' },
+            --     capabilities = capabilities,
+            --     on_attach = on_attach
+            -- })
+
             local read_exec_path = function(exec_name)
                 local handle = io.popen("which " .. exec_name)
                 local result = handle:read("*a"):gsub("\n", "")

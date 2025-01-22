@@ -268,7 +268,10 @@ augroup END
 au BufRead,BufNewFile *.test.js  setlocal filetype=javascript.jest
 au BufRead,BufNewFile *.spec.js  setlocal filetype=javascript.jest
 
-autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
+" autocmd User VeryLazy execute 'source ' . s:path  . '/statusline.vim'
+" autocmd User VeryLazy execute 'lua require("statusline").setup()'
+lua require("statusline").setup()
+
 
 " plugins managed by lazy.nvim
 lua << EOF
@@ -381,6 +384,8 @@ local spec = {
     {
         "folke/trouble.nvim",
         dependencies = { "nvim-tree/nvim-web-devicons" },
+        opts = {},
+        cmd = "Trouble"
     },
 
     -- { 'b0o/SchemaStore.nvim', lazy = true },
@@ -578,7 +583,7 @@ local spec = {
             vim.keymap.set("n", "<leader>rbf", "<CMD>SearchReplaceMultiBufferCFile<CR>", opts)
 
             -- show the effects of a search / replace in a live preview window
-            vim.o.inccommand = "split"
+            -- vim.o.inccommand = "split"
         end
     },
     {

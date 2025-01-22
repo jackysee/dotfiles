@@ -62,6 +62,14 @@
             "</template>"
         ]
     },
+    "vue style scoped scss": {
+        "prefix": "vsc",
+        "body" :[
+            "<style scoped lang=\"scss\">",
+            "$1",
+            "</style>"
+        ]
+    },
     "histoire story": {
         "prefix":"vst",
         "body": [

@@ -9,7 +9,7 @@ return {
             null_ls.setup {
                 debug = true,
                 sources = {
-                    null_ls.builtins.formatting.prettier.with({
+                    null_ls.builtins.formatting.prettierd.with({
                         filetypes = { "javascript", "typescript", "vue", "html", "css" },
                         condition = function()
                             return require("null-ls.utils").root_pattern(
@@ -56,7 +56,6 @@ return {
                             group = augroup,
                             buffer = bufnr,
                             callback = function()
-                                print('buf wirite pre')
                                 -- vim.lsp.buf.format({ bufnr = bufnr })
                                 vim.lsp.buf.format({ async = false })
                             end,

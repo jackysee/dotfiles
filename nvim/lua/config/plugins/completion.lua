@@ -14,8 +14,10 @@ local blinkConfig = {
                 -- ['<C-e>'] = { 'hide', 'fallback' },
                 ['<C-e>'] = { 'fallback' },
                 ['<C-y>'] = { 'select_and_accept', 'fallback' },
-                ['<Tab>'] = { 'snippet_forward', 'fallback' },
-                ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+                -- ['<Tab>'] = { 'snippet_forward', 'fallback' },
+                -- ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+                ['<Tab>'] = {},
+                ['<S-Tab>'] = {},
                 ['<Up>'] = { 'select_prev', 'fallback' },
                 ['<Down>'] = { 'select_next', 'fallback' },
                 ['<C-p>'] = { 'select_prev', 'fallback' },
@@ -45,6 +47,7 @@ local blinkConfig = {
                         }
                     }
                 },
+                list = { selection = { preselect = false, auto_insert = true } },
                 documentation = { 
                     auto_show = true, 
                     auto_show_delay_ms = 250
@@ -65,7 +68,18 @@ local blinkConfig = {
                         score_offset = 0, -- Boost/penalize the score of the items
                     },
                     path = { min_keyword_length = 1, },
-                    buffer = { min_keyword_length = 3, max_items = 5 },
+                    buffer = { 
+                        min_keyword_length = 3,
+                        max_items = 8,
+                        opts = {
+                            get_bufnrs = function()
+                                return vim
+                                  .iter(vim.api.nvim_list_bufs())
+                                  :filter(function(buf) return vim.bo[buf].buftype ~= 'nofile' end)
+                                  :totable()
+                            end
+                        }
+                    },
                     snippets = { min_keyword_length = 2 },
                     ripgrep = {
                         module = "blink-ripgrep",
@@ -174,3 +188,4 @@ local cmpConfig = {
 }
 
 return blinkConfig
+-- return cmpConfig

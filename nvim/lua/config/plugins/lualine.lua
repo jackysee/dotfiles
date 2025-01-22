@@ -79,22 +79,11 @@ local function firstLetter(str)
     return str:sub(1,1)
 end
 
-
-return {
+local M = {
     'nvim-lualine/lualine.nvim',
     enabled = false,
     config = function()
-
-        -- local theme = require('lualine.themes.palenight')
-        -- theme.normal.y = { bg = theme.normal.c.bg }
-        -- theme.insert.y = { bg = theme.normal.c.bg }
-        -- theme.visual.y = { bg = theme.normal.c.bg }
-        -- theme.replace.y = { bg = theme.normal.c.bg }
-        -- theme.command.y = { bg = theme.normal.c.bg }
-        -- theme.inactive.y = { bg = theme.normal.c.bg }
-
         require('lualine').setup({
-
             options = {
                 -- theme = theme,
                 theme  = 'material',
@@ -118,3 +107,5 @@ return {
         })
     end
 }
+
+return M

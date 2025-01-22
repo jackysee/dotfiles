@@ -113,6 +113,15 @@ return {
             vim.keymap.set('n', '<leader>bb', f.buffers, { silent = true, desc = 'buffers' })
             vim.keymap.set('n', '<leader>bl', f.blines, { silent = true, desc = 'blines' })
             vim.keymap.set('n', '<leader>fo', f.oldfiles, { silent = true, desc = 'oldfiles' })
+            vim.keymap.set('n', '<leader>fm', 
+                function() 
+                    f.oldfiles({ 
+                        cwd = vim.loop.cmd,
+                        cwd_header = true,
+                        cwd_only = true
+                    }) 
+                end, 
+                { silent = true, desc = 'oldfiles' })
             vim.keymap.set('n', '<leader>lg', f.live_grep_glob, { silent = true, desc = 'livegrep' })
             vim.keymap.set('n', '<leader>rg', f.grep_cword, { silent = true, desc = 'rg <cword>' })
             vim.keymap.set('v', '<leader>rg', f.grep_visual, { silent = true, desc = 'rg selection' })

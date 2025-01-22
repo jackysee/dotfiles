@@ -156,14 +156,17 @@ function! AddSpace(s)
     return ''
 endfunction
 
-function! AddHl(hl, s, padLeft = 1, padRight = 1)
+function! AddHl(hl, s)
     if exists('a:s')
-        return (a:s == '')? '': '%#'.a:hl.'#'. (a:padLeft? ' ': '') . a:s . (a:padRight? ' ': '') . '%#StatusLine#'
+        return (a:s == '')? '': '%#'.a:hl.'#'. a:s . '%#StatusLine#'
     endif
 endfunction
 
-highlight StatusLineAccentBold guifg=#eeffff guibg=#515559 gui=bold
-highlight StatusLineAccent guifg=#eeffff guibg=#515559
+highlight StatusLine guifg=#eeffff guibg=#2e3c43 
+highlight StatusLineBold guifg=#eeffff guibg=#2e3c43 gui=bold
+" highlight StatusLineAccentBold guifg=#eeffff guibg=#515559 gui=bold
+" highlight StatusLineAccent guifg=#eeffff guibg=#515559
+" highlight StatusLineSecond guifg=#eeffff guibg=#2E3C43
 " highlight StatusLineNormal guifg=#263238 guibg=#82aaff gui=bold 
 " highlight StatusLineInsert guifg=#263238 guibg=#c3e88d gui=bold 
 " highlight StatusLineVisual guifg=#263238 guibg=#c792ea gui=bold 
@@ -190,16 +193,16 @@ highlight StatusLineAccent guifg=#eeffff guibg=#515559
 
 function! Statusline()
   let hlStatusLine = '%#StatusLine#'
-  " let hlMode = "%{%ModeHl()%}"
-  let vcs = "%{%AddHl('StatusLineAccentBold',VcsInfoStatus(), 1, 1)%}"
-  let change = "%{%AddHl('StatusLineAccent',ChangedStatus(), 0, 1)%}"
+  let vcs = "AddHl('StatusLineBold',VcsInfoStatus())"
+  let change = "AddHl('StatusLine',ChangedStatus())"
+  let head = "%{%AddBracket(".vcs.".".change.")%}"
   let file = '%{AddSpace(FilenameStatus())}'
   let ft  = " %{&filetype} "
   let sep = ' %= '
   let matchup = ' %{%Matchup()%} '.hlStatusLine
   let lsp = '%{AddSpace(LspStatus())}'
-  let pos = '%#StatusLineAccent# '.LineInfoStatus()
-  return vcs.change.file.sep.matchup.lsp.ft.pos
+  let pos = "%{%AddHl('StatusLineSecond',LineInfoStatus())%}"
+  return head.file.sep.matchup.lsp.ft.pos
 endfunction
 
 function! RefreshStatusline()
