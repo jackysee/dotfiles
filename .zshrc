@@ -376,10 +376,10 @@ fi
 alias luamake=/home/jackys/server/lua-language-server/3rd/luamake/luamake
 
 # fnm
-if [[ $(uname -s) =~ Darwin ]]; then
-    export PATH="/Users/jackysee/Library/Application Support/fnm:$PATH"
-    eval "`fnm env`"
-fi
+# if [[ $(uname -s) =~ Darwin ]]; then
+#     export PATH="/Users/jacky/Library/Application Support/fnm:$PATH"
+#     eval "`fnm env`"
+# fi
 
 # pyenv
 if type pyenv > /dev/null; then
