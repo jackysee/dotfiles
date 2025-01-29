@@ -84,8 +84,12 @@
             "</template>"
         ]
     },
-    "message $t": {
+    "message {{$t}}": {
         "prefix":"tt",
         "body":"{{\\$t('$0')}}"
+    },
+    "message $t": {
+        "prefix":"tm",
+        "body":"\\$t('$0')"
     }
 }

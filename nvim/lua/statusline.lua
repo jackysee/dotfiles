@@ -85,6 +85,16 @@ local function filetype()
     return vim.bo.ft
 end
 
+local function is_empty(str)
+    return str == nil or string.len(str) == 0
+end
+local function fileIcon()
+    if is_empty(vim.api.nvim_buf_get_name(0)) or not vim.g.nvim_web_devicons then
+        return ""
+    end
+    return require("nvim-web-devicons").get_icon(vim.fn.expand("%"), nil, { default = true }) .. " "
+end
+
 local function matchup()
     if not vim.g.loaded_matchup then return '' end
     return vim.fn.MatchupStatusOffscreen()
@@ -128,7 +138,7 @@ StatusLine.getActive = function()
             hl('MyStatusLineBold', vcs()) ..
             change()
         ),
-        hl('MyStatusLine', filename()),
+        hl('MyStatusLine', fileIcon() .. filename()),
         '%=',
         matchup(),
         hl('MyStatusLine', lsp_progress()),
