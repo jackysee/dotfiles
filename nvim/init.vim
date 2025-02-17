@@ -261,7 +261,7 @@ command! -register CopyMatches call CopyMatches(<q-reg>)
 
 augroup auto_create_dir
     autocmd!
-    autocmd BufWritePre * call mkdir(expand('%:p:h'), 'p')
+    autocmd BufWritePre * if match(expand('%:p:h'), 'oil://') == -1 | call mkdir(expand('%:p:h'), 'p') | endif
 augroup END
 
 ".test.js filetype
@@ -297,13 +297,34 @@ local spec = {
     --         }
     --     end
     -- },
-    {
-        'goolord/alpha-nvim',
-        event = 'VimEnter',
+    -- {
+    --     'goolord/alpha-nvim',
+    --     event = 'VimEnter',
+    --     config = function()
+    --         local section = require('alpha.themes.startify').section
+    --         section.header.val = require('util').cowsay(require('alpha.fortune')())
+    --         require('alpha').setup(require('alpha.themes.startify').config)
+    --     end
+    -- },
+    { 
+        'echasnovski/mini.starter', 
+        version = '*',
         config = function()
-            local section = require('alpha.themes.startify').section
-            section.header.val = require('util').cowsay(require('alpha.fortune')())
-            require('alpha').setup(require('alpha.themes.startify').config)
+            local starter = require('mini.starter')
+            starter.setup({
+                evaluate_single = true,
+                header = vim.fn.join(require('util').cowsay(require('fortune')()), '\n'),
+                items = {
+                    starter.sections.recent_files(5, true),
+                    starter.sections.recent_files(5, false),
+                    starter.sections.builtin_actions(),
+                },
+                content_hooks = {
+                    starter.gen_hook.adding_bullet(),
+                    starter.gen_hook.indexing('all', { 'Builtin actions' }),
+                    starter.gen_hook.padding(3, 1),
+                },
+            })
         end
     },
     {
@@ -433,19 +454,29 @@ local spec = {
             vim.g.tmux_navigator_disable_when_zoomed = 1
         end
     },
-    {
-        'wellle/targets.vim', event='BufReadPost',
+    -- {
+    --     'wellle/targets.vim', event='BufReadPost',
+    --     config = function()
+    --         vim.api.nvim_create_autocmd('User' , {
+    --           -- group = 'mappings_control',
+    --           pattern = 'targets#mappings#user',
+    --           callback = function()
+    --             vim.cmd [[
+    --               call targets#mappings#extend({
+    --                 \ 'a': {'argument': [{'o': '[({[]', 'c': '[]})]', 's': ','}]},
+    --                 \ })
+    --             ]]
+    --           end,
+    --         })
+    --     end
+    -- },
+    { 
+        'echasnovski/mini.ai',
+        version = '*',
         config = function()
-            vim.api.nvim_create_autocmd('User' , {
-              -- group = 'mappings_control',
-              pattern = 'targets#mappings#user',
-              callback = function()
-                vim.cmd [[
-                  call targets#mappings#extend({
-                    \ 'a': {'argument': [{'o': '[({[]', 'c': '[]})]', 's': ','}]},
-                    \ })
-                ]]
-              end,
+            require('mini.ai').setup({
+                custom_textobjects = { t = false }
+
             })
         end
     },

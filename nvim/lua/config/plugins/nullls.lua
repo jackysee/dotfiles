@@ -1,6 +1,7 @@
 return {
     {
         -- "jose-elias-alvarez/null-ls.nvim",
+        enable = false,
         "nvimtools/none-ls.nvim",
         event = "BufReadPre",
         dependencies = { "nvim-lua/plenary.nvim", "nvimtools/none-ls-extras.nvim" },
