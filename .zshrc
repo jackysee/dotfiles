@@ -53,7 +53,7 @@ fi
 if [[ $(uname -s) =~ Darwin ]]; then
     BPICK="(*darwin*amd*)|(*macos*)|(*apple*darwin*)"
 else
-    BPICK="(*x86*linux*)|(*linux-x86*)|(*linux*amd*)|(*linux64*)"
+    BPICK="(*x86*linux*tar*)|(*linux-x86*tar*)|(*linux*amd*tar*)|(*linux64*tar*)"
 fi
 
 ## tpm

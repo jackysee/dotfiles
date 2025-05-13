@@ -107,6 +107,10 @@ nnoremap <leader>d "_d
 " reselect pasted selection
 nnoremap gy `[v`]
 
+" start and end of line
+nnoremap gh ^
+nnoremap gl $
+
 "; :
 nnoremap ; :
 nnoremap > ;
@@ -537,9 +541,13 @@ local spec = {
     -- { 'leafOfTree/vim-vue-plugin', ft = { 'vue' } },
     { 
         'mattn/emmet-vim' , 
+        -- enabled = false,
         ft = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' },
+        keys = {
+            {'<C-M>,', '<plug>(emmet-expand-abbr)', mode = {'n', 'i'}},
+        },
         init = function()
-            vim.g.user_emmet_leader_key = '<C-I>'
+            vim.g.emmet_install_only_plug = 1
         end
     },
     { 'elmcast/elm-vim', ft = 'elm' },

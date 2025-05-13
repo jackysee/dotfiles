@@ -40,10 +40,10 @@ return {
                 on_attach = on_attach
             })
 
-            lspconfig.tailwindcss.setup({
-                capabilities = capabilities,
-                on_attach = on_attach
-            })
+            -- lspconfig.tailwindcss.setup({
+            --     capabilities = capabilities,
+            --     on_attach = on_attach
+            -- })
 
             -- lspconfig.emmet_language_server.setup({
             --     filetypes = {'javascript', 'javascript.jsx', 'vue', 'html', 'css', 'scss', 'sass' },
@@ -71,7 +71,7 @@ return {
         "mhanberg/output-panel.nvim",
         event = "VeryLazy",
         config = function()
-            require("output_panel").setup()
+            require("output_panel").setup({})
         end
     }
 

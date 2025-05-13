@@ -57,17 +57,12 @@ local blinkConfig = {
             snippets = { preset = "luasnip" },
             sources = {
                 default = { 'lsp', 'path', 'snippets', 'buffer', 'dadbod'--[[ , 'ripgrep' ]] },
-                cmdline = function()
-                    local type = vim.fn.getcmdtype()
-                    if type == ':' or type == '@' then return { 'cmdline' } end
-                    return {}
-                end,
                 providers = {
                     lsp = {
                         min_keyword_length = 0, -- Number of characters to trigger porvider
                         score_offset = 0, -- Boost/penalize the score of the items
                     },
-                    path = { min_keyword_length = 1, },
+                    path = { min_keyword_length = 0, },
                     buffer = { 
                         min_keyword_length = 3,
                         max_items = 8,

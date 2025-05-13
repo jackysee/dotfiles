@@ -28,7 +28,8 @@ return {
                             )(vim.api.nvim_buf_get_name(0)) ~= nil
                         end
                     }),
-                    require('none-ls.diagnostics.eslint_d').with({
+                    -- require('none-ls.diagnostics.eslint_d').with({
+                    require('none-ls.diagnostics.eslint').with({
                         filetypes = { "javascript", "typescript", "vue", "html", "css" },
                         condition = function()
                             return require("null-ls.utils").root_pattern(

@@ -46,6 +46,8 @@ startserver() {
 ## require: PowerShell admin to install `Install-Module -Name BurntToast`
 alias toast='powershell.exe -command New-BurntToastNotification -Text '
 
+alias clip.exe='/mnt/c/Windows/System32/clip.exe'
+
 alias tmux='tmux -2'
 ta() {
     tmux attach -t ${1:-0}
@@ -65,3 +67,5 @@ alias javahome17='export JAVA_HOME=/usr/lib/jvm/java-17-openjdk'
 
 alias nv=nvim
 alias v=vim
+
+alias powershell.exe='/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe'
