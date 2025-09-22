@@ -11,6 +11,10 @@
         "prefix": "icvv",
         "body": "import $1 from 'common-vue3/$1';"
     },
+    "import @summer-vue/common" : {
+        "prefix": "isv",
+        "body": "import $1 from '@summer-vue/common/$1';"
+    },
     "import vue" : {
         "prefix": "iv",
         "body": "import { $1 } from 'vue';"
@@ -30,6 +34,10 @@
     "import message": {
         "prefix": "ims",
         "body": "import { getMessage as \\$t$1 } from '@/utils/message';"
+    },
+    "import dateUtil": {
+        "prefix": "idu",
+        "body": "import { $1 } from '@/utils/dateUtil';"
     },
     "vue sfc": {
         "prefix":"vvue",
@@ -66,6 +74,7 @@
         "prefix": "vsc",
         "body" :[
             "<style scoped lang=\"scss\">",
+            "@import 'style/vars';",
             "$1",
             "</style>"
         ]
