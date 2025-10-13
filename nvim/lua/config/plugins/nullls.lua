@@ -30,7 +30,7 @@ return {
                     }),
                     -- require('none-ls.diagnostics.eslint_d').with({
                     require('none-ls.diagnostics.eslint').with({
-                        filetypes = { "javascript", "typescript", "vue", "html", "css" },
+                        filetypes = { "javascript", "typescript", "vue", "html", "css", "typescriptreact" },
                         condition = function()
                             return require("null-ls.utils").root_pattern(
                             "eslint.config.js",
@@ -51,7 +51,7 @@ return {
                     -- print('onattach')
                     -- print(client.supports_method("textDocument/formatting"));
                     -- print(vim.pretty_print(vim.lsp.protocol.Methods));
-                    if client.supports_method("textDocument/formatting") then
+                    if client:supports_method("textDocument/formatting") then
                         -- print('onattach, support')
                         vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
                         vim.api.nvim_create_autocmd("BufWritePre", {

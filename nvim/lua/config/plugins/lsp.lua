@@ -14,7 +14,6 @@ return {
 
             vim.diagnostic.config({ virtual_text = true, signs = true });
 
-            local lspconfig = require('lspconfig')
             local capabilities = vim.lsp.protocol.make_client_capabilities()
 
             if pcall(require, 'blink.cmp') then
@@ -33,12 +32,31 @@ return {
                 client.server_capabilities.documentFormattingProvider = false
             end
 
-            lspconfig.denols.setup ({
-                root_dir = lspconfig.util.root_pattern('deno.json', 'deno.jsonc'),
+            vim.lsp.config('denols', {
+                root_dir = function(bufnr, on_dir) 
+                    if vim.fs.root(bufnr, {'deno.json', 'deno.jsonc'}) then 
+                        on_dir(vim.fn.getcwd()) 
+                    end
+                end,
                 init_options = { formatting = false },
                 capabilities = capabilities,
-                on_attach = on_attach
+                -- on_attach = on_attach
             })
+            -- vim.api.nvim_create_autocmd('LspAttach', {
+            --     callback = function(ev)
+            --         local client = vim.lsp.get_client_by_id(ev.data.client_id)
+            --         if client.name == 'denols' then
+            --             client.server_capabilities.documentFormattingProvider = false
+            --         end
+            --     end
+            -- })
+            vim.lsp.enable('denols');
+
+            -- lspconfig.denols.setup ({
+            --     init_options = { formatting = false },
+            --     capabilities = capabilities,
+            --     on_attach = on_attach
+            -- })
 
             -- lspconfig.tailwindcss.setup({
             --     capabilities = capabilities,
@@ -58,13 +76,21 @@ return {
                 return result
             end
 
-            lspconfig.pyright.setup({
+            vim.lsp.config('pyright', {
                 settings = {
                     python = {
                         pythonPath = read_exec_path("python")
                     }
                 }
             })
+            vim.lsp.enable('pyright')
+            -- lspconfig.pyright.setup({
+            --     settings = {
+            --         python = {
+            --             pythonPath = read_exec_path("python")
+            --         }
+            --     }
+            -- })
         end
     },
     {

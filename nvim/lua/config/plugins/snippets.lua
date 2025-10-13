@@ -22,6 +22,7 @@ return {
         }
         ls.filetype_extend('vue', {'html', 'javascript', 'css'})
         ls.filetype_extend('typescript', { 'javascript'})
+        ls.filetype_extend('typescriptreact', { 'javascript'})
         require('luasnip/loaders/from_vscode').lazy_load();
         require('luasnip/loaders/from_vscode').lazy_load({ paths = { './snippets' } });
         require('snippets/javascript');

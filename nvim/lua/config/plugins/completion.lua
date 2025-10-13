@@ -35,6 +35,10 @@ local blinkConfig = {
                 -- nerd_font_variant = 'mono'
             },
             completion = {
+                -- trigger = {
+                --     show_on_blocked_trigger_characters = {'.'},
+                --     show_on_x_blocked_trigger_characters = {}
+                -- },
                 menu = {
                     auto_show = function(ctx)
                         return ctx.mode ~= "cmdline" or 

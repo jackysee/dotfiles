@@ -39,3 +39,5 @@
 
 [diff-so-fancy]
     stripLeadingSymbols = false
+[rebase]
+	autoStash = true

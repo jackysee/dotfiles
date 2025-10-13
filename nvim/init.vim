@@ -22,6 +22,7 @@ set sidescrolloff=5
 set display+=lastline
 set lazyredraw
 set timeoutlen=300
+set updatetime=100
 " autocmd FileType * setlocal fo-=c fo-=r fo-=o
 if executable('rg')
     set grepprg=rg\ --vimgrep
@@ -166,8 +167,8 @@ nnoremap # #N
 
 
 "lsp
-nmap <leader>ck  <cmd>lua vim.diagnostic.goto_prev()<cr>
-nmap <leader>cj  <cmd>lua vim.diagnostic.goto_next()<cr>
+nmap <leader>ck  <cmd>lua vim.diagnostic.jump({ count=-1, float=true })<cr>
+nmap <leader>cj  <cmd>lua vim.diagnostic.jump({ count=1, float=true })<cr>
 nnoremap <leader>ca <cmd>lua vim.lsp.buf.code_action()<CR>
 nnoremap <leader>gD <cmd>lua vim.lsp.buf.declaration()<CR>
 nnoremap <leader>gd <cmd>lua vim.lsp.buf.definition()<CR>
@@ -396,7 +397,7 @@ local spec = {
         "folke/flash.nvim",
         event = "VeryLazy",
         opts = {
-            modes = { search = { enabled = true }}
+            modes = { search = { enabled = false }}
         },
         keys = {
             { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
