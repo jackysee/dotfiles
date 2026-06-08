@@ -58,6 +58,31 @@ endif
 "         \   'cache_enabled': 0,
 "         \ }
 " endif
+lua << EOF
+-- Automatically strip ^M immediately after pasting
+if vim.fn.has("wsl") == 1 then
+  vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+    pattern = "*",
+    callback = function()
+      local line_start = vim.fn.line("'[")
+      local line_end = vim.fn.line("']")
+      if line_start == 0 or line_end == 0 then return end
+      -- Fetch target text lines, scrub carriage returns, and update
+      local lines = vim.api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
+      local modified = false
+      for i, line in ipairs(lines) do
+        if line:find("\r") then
+          lines[i] = line:gsub("\r", "")
+          modified = true
+        end
+      end
+      if modified then
+        vim.api.nvim_buf_set_lines(0, line_start - 1, line_end, false, lines)
+      end
+    end,
+  })
+end
+EOF
 
 set list listchars=tab:»\ ,trail:.,extends:>,precedes:<,nbsp:+
 
@@ -98,6 +123,7 @@ set fileencodings=ucs-bom,utf-8,big5,gb2312,latin1
 
 nnoremap <silent> <leader>/ :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR>
 nnoremap <leader><leader> <c-^>
+nnoremap <leader>m :%s/\r//<CR>
 
 " paste on visual mode without chaning original register
 vnoremap <leader>p "_dP
@@ -238,23 +264,52 @@ fun! TrimWhitespace()
 endfun
 command! TrimWhitespace call TrimWhitespace()
 
-function! Scratch()
-    let scr_winnr = bufwinnr('scratch')
-    if winnr() == scr_winnr
-        return
-    endif
-    let bnr = bufexists('scratch')
-    if bnr > 0
-        split scratch
-    else
-        split
-        noswapfile hide enew
-        setlocal buftype=nofile bufhidden=hide nobuflisted
-        "lcd ~
-        file scratch
-    endif
-endfunction
-nnoremap <leader>j :call Scratch()<cr>
+lua << EOF
+local scratch_win = nil
+
+function _G.toggle_scratch()
+  -- Toggle OFF
+  if scratch_win and vim.api.nvim_win_is_valid(scratch_win) then
+    vim.api.nvim_win_close(scratch_win, true)
+    scratch_win = nil
+    return
+  end
+
+  local buf = vim.fn.bufadd(vim.fn.expand("~/.vim_scratch"))
+  vim.fn.bufload(buf);
+  vim.api.nvim_set_option_value('buflisted', false, { buf = buf })
+  vim.api.nvim_set_option_value('bufhidden', 'hide', { buf = buf })
+  vim.api.nvim_set_option_value('swapfile', false, { buf = buf })
+  vim.api.nvim_create_autocmd(
+    { "TextChanged", "TextChangedI", "BufLeave" },
+    { buffer = buf, command = "silent! update" }
+  )
+  vim.keymap.set('n', '<Esc>', function()
+    if scratch_win and vim.api.nvim_win_is_valid(scratch_win) then
+      vim.api.nvim_win_close(scratch_win, true)
+      scratch_win = nil
+    end
+  end, { buffer = buf, silent = true })
+  -- 3. Screen layout geometry calculations (Centered, 80% width, 60% height)
+  local width = math.floor(vim.o.columns * 0.9)
+  local height = math.floor(vim.o.lines * 0.8)
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = math.floor((vim.o.columns - width) / 2)
+  local opts = {
+    relative = 'editor',
+    row = row,
+    col = col,
+    width = width,
+    height = height,
+    style = 'minimal',
+    border = 'single'
+  }
+  scratch_win = vim.api.nvim_open_win(buf, true, opts)
+end
+
+-- Map leader + j directly to the global function handler
+vim.keymap.set('n', '<leader>j', '<cmd>lua toggle_scratch()<CR>', { silent = true })
+EOF
 
 function! CopyMatches(reg)
     let hits = []
@@ -630,7 +685,11 @@ local spec = {
         'folke/snacks.nvim',
         opts = { 
             bigfile = {},
-            -- indent = {},
+            indent = {
+                animate = { enabled = false },
+                chunk = { enabled = true, char = { arrow  = '─' } }
+
+            }
         }
     }
     -- {

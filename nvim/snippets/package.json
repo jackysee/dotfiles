@@ -40,6 +40,30 @@
       {
         "language": "jest",
         "path": "./jest/test.json"
+      },
+      {
+        "language": "jest",
+        "path": "./testing-library/wait.json"
+      },
+      {
+        "language": "jest",
+        "path": "./testing-library/debug.json"
+      },
+      {
+        "language": "jest",
+        "path": "./testing-library/import.json"
+      },
+      {
+        "language": "jest",
+        "path": "./testing-library/user-event.json"
+      },
+      {
+        "language": "jest",
+        "path": "./testing-library/queries.json"
+      },
+      {
+        "language": "jest",
+        "path": "./testing-library/regex.json"
       }
     ]
   }

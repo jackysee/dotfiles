@@ -1,0 +1,71 @@
+{
+  "userEvent.setup": {
+    "prefix": "es",
+    "body": ["userEvent.setup()$0"],
+    "description": "userEvent setup function"
+  },
+  "userEvent.beforeEach": {
+    "prefix": "bees",
+    "body": ["beforeEach(() => {", "\tuserEvent.setup()", "})$0"],
+    "description": "beforeEach userEvent setup function is called once before each spec"
+  },
+  "userEvent.click": {
+    "prefix": "ec",
+    "body": ["await userEvent.click(${1:element})$0"],
+    "description": "userEvent click"
+  },
+  "userEvent.dblClick": {
+    "prefix": "edc",
+    "body": ["await userEvent.dblClick(${1:element})$0"],
+    "description": "userEvent dblClick"
+  },
+  "userEvent.type": {
+    "prefix": "et",
+    "body": ["await userEvent.type(${1:element}, '${2:text}')$0"],
+    "description": "userEvent type in a field"
+  },
+  "userEvent.type+submit": {
+    "prefix": "ets",
+    "body": ["await userEvent.type(${1:element}, `${2:text}{enter}`)$0"],
+    "description": "userEvent type in a field and press enter to submit form"
+  },
+  "userEvent.clear": {
+    "prefix": "ecl",
+    "body": ["await userEvent.clear(${1:element})$0"],
+    "description": "userEvent to clear a field"
+  },
+  "userEvent.selectOptions": {
+    "prefix": "eso",
+    "body": [
+      "await userEvent.selectOptions(${1:listBoxElement}, ['value/label'])$0"
+    ],
+    "description": "userEvent to select options"
+  },
+  "userEvent.deselectOptions": {
+    "prefix": "edo",
+    "body": [
+      "await userEvent.deselectOptions(${1:listBoxElement}, ['value/label'])$0"
+    ],
+    "description": "userEvent to deselect options"
+  },
+  "userEvent.tab": {
+    "prefix": "etb",
+    "body": ["await userEvent.tab()$0"],
+    "description": "userEvent tab"
+  },
+  "userEvent.hover": {
+    "prefix": "eh",
+    "body": ["await userEvent.hover(${1:element})$0"],
+    "description": "userEvent hover"
+  },
+  "userEvent.unhover": {
+    "prefix": "euh",
+    "body": ["await userEvent.unhover(${1:element})$0"],
+    "description": "userEvent unhover"
+  },
+  "userEvent.paste": {
+    "prefix": "ep",
+    "body": ["await userEvent.paste(${1:element}, '${2:text}')$0"],
+    "description": "userEvent paste"
+  }
+}

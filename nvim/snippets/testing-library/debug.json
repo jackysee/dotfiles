@@ -1,0 +1,12 @@
+{
+  "screen.debug": {
+    "prefix": "sd",
+    "body": "screen.debug()$0",
+    "description": "screen debug"
+  },
+  "screen.log.testing-playground": {
+    "prefix": "sltp",
+    "body": "screen.logTestingPlaygroundURL()$0",
+    "description": "screen log testing playground url"
+  }
+}

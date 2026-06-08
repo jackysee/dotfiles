@@ -11,7 +11,7 @@ return {
                 debug = true,
                 sources = {
                     null_ls.builtins.formatting.prettierd.with({
-                        filetypes = { "javascript", "typescript", "vue", "html", "css" },
+                        filetypes = { "javascript", "typescript", "typescriptreact", "vue", "html", "css" },
                         condition = function()
                             return require("null-ls.utils").root_pattern(
                             ".prettierrc",
@@ -23,7 +23,8 @@ return {
                             ".prettierrc.cjs",
                             ".prettierrc.toml",
                             "prettier.config.js",
-                            "prettier.config.cjs"
+                            "prettier.config.cjs",
+                            "prettier.config.mjs"
                             --"package.json"
                             )(vim.api.nvim_buf_get_name(0)) ~= nil
                         end

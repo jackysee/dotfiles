@@ -1,0 +1,42 @@
+{
+  "regex.full": {
+    "prefix": "rf",
+    "body": ["/^${1:Text Match}$/$0"],
+    "description": "regex full string match"
+  },
+  "regex.full+ignore": {
+    "prefix": "rfi",
+    "body": ["/^${1:text match}$/i$0"],
+    "description": "regex full string match and ignore case"
+  },
+  "regex.substring": {
+    "prefix": "rs",
+    "body": ["/${1:ext Matc}/$0"],
+    "description": "regex substring match"
+  },
+  "regex.substring+ignore": {
+    "prefix": "rsi",
+    "body": ["/${1:ext matc}/i$0"],
+    "description": "regex substring match and ignore case"
+  },
+  "regex.start": {
+    "prefix": "rsw",
+    "body": ["/^${1:Text}/$0"],
+    "description": "regex start with string match"
+  },
+  "regex.start+ignore": {
+    "prefix": "rswi",
+    "body": ["/^${1:text}/i$0"],
+    "description": "regex start with string match and ignore case"
+  },
+  "regex.end": {
+    "prefix": "rew",
+    "body": ["/${1:Match}$/$0"],
+    "description": "regex end with string match"
+  },
+  "regex.end+ignore": {
+    "prefix": "rewi",
+    "body": ["/${1:match}$/i$0"],
+    "description": "regex end with string match and ignore case"
+  }
+}

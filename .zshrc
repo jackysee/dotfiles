@@ -72,7 +72,7 @@ export FZF_DEFAULT_OPTS='
     --border --exit-0
     --color fg:188,hl:103,fg+:222,bg+:234,hl+:104
     --color info:183,prompt:110,spinner:107,pointer:167,marker:215'
-export FZF_CTRL_T_OPTS="--preview 'bat {}' --bind '?:toggle-preview'"
+export FZF_CTRL_T_OPTS="--preview 'bat {}' --bind '?:toggle-preview,ctrl-b:preview-page-up,ctrl-f:preview-page-down'"
 
 # fnm
 export ZSH_FNM_ENV_EXTRA_ARGS="--use-on-cd"
@@ -216,6 +216,8 @@ gshow() {
   fzf --ansi --no-sort --no-border --reverse --tiebreak=index \
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
+      --bind "ctrl-b:preview-page-up" \
+      --bind "ctrl-f:preview-page-down" \
       --preview=${_gshowdiff/@/$1} \
       --bind "ctrl-m:execute:${_gshowdiff/@/$1}" \
       --bind "ctrl-d:execute:$_gfzfdiff"
@@ -252,18 +254,23 @@ _hgfzfdiff="$_hggrepver | xargs -I @ sh -c '$_hglogfiles |
         --bind \"ctrl-m:execute:$_hgshowdifffile\"'"
 
 hgshow() {
-  hg log2 $1 --color=always |
+  local log_cmd="hg log2 $1 --color=always"
+  eval "$log_cmd" |
   fzf --ansi --no-sort --reverse  --no-border --tiebreak=index \
       --preview="${_hgshowdiff/@/$1}" \
       --bind "ctrl-s:toggle-sort" \
       --bind "?:toggle-preview" \
+      --bind "ctrl-b:preview-page-up" \
+      --bind "ctrl-f:preview-page-down" \
       --bind "ctrl-m:execute: ${_hgshowdiff/@/$1}" \
-      --bind "ctrl-d:execute: $_hgfzfdiff"
+      --bind "ctrl-d:execute: $_hgfzfdiff" \
+      --bind "ctrl-r:reload($log_cmd)"
+
 }
 
 hgr() {
   local files
-  files=$(hg status | fzf -m --preview 'hg diff --color=always {2}' --bind '?:toggle-preview')
+  files=$(hg status | fzf -m --preview 'hg diff --color=always {2}' --bind '?:toggle-preview,ctrl-b:preview-page-up,ctrl-f:preview-page-down')
   if [ "$files" ]; then
     hg revert $(echo "$files" | awk '{print $2}')
   fi
@@ -271,7 +278,7 @@ hgr() {
 
 hgcom () {
   local files
-  files=$(hg status | fzf -m --reverse --preview 'hg diff --color=always {2}' --bind '?:toggle-preview')
+  files=$(hg status | fzf -m --reverse --preview 'hg diff --color=always {2}' --bind '?:toggle-preview,ctrl-b:preview-page-up,ctrl-f:preview-page-down')
   if [ "$files" ]; then
     hg ci $(echo "$files" | awk '{print $2}')
   fi
@@ -365,6 +372,46 @@ rgv() {
           --bind 'enter:become(nvim {1} +{2})'
 }
 
+ugmount() {
+    if ! mountpoint -q ~/ugdav; then
+        rclone mount \
+            --vfs-cache-mode writes \
+            --dir-cache-time 1h \
+            --daemon \
+            ug: ~/ugdav
+    fi
+}
+
+qnmount() {
+    if ! mountpoint -q ~/qndav; then
+        rclone mount \
+            --vfs-cache-mode writes \
+            --dir-cache-time 1h \
+            --daemon \
+            qn: ~/qndav
+    fi
+}
+
+tn() {
+    if [ -z "$1" ]; then
+        echo "Error: Please provide a session name."
+        echo "Usage: ts <session-name>"
+        return 1
+    fi
+
+    # Check if we are currently inside a tmux session
+    if [ -n "$TMUX" ]; then
+        # Inside tmux: Create the session in the background (-d) if it doesn't exist,
+        # then cleanly switch your current view to it.
+        command tmux new-session -d -s "$1" 2>/dev/null
+        command tmux switch-client -t "$1"
+    else
+        # Outside tmux: Just create or attach normally
+        command tmux new-session -A -s "$1"
+    fi
+}
+
+
 
 # Load local file if it exists (this isn't commited to the dotfiles repo)
 if [[ -f ~/.zshrc.local ]]; then
@@ -386,3 +433,10 @@ if type pyenv > /dev/null; then
     eval "$(pyenv init -)"
 fi
 
+
+# bun completions
+[ -s "/home/jacky/.bun/_bun" ] && source "/home/jacky/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

@@ -10,7 +10,9 @@ return {
             'williamboman/mason-lspconfig.nvim' 
         },
         config = function(_, opts)
-            require("mason-lspconfig").setup()
+            require("mason-lspconfig").setup({
+                automatic_enable = false
+            })
 
             vim.diagnostic.config({ virtual_text = true, signs = true });
 
@@ -58,6 +60,7 @@ return {
             --     on_attach = on_attach
             -- })
 
+            vim.lsp.enable('tailwindcss')
             -- lspconfig.tailwindcss.setup({
             --     capabilities = capabilities,
             --     on_attach = on_attach

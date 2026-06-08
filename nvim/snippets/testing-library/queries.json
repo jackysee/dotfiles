@@ -1,0 +1,267 @@
+{
+  "query.role": {
+    "prefix": "qr",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Role('${2:id}')$0"
+    ],
+    "description": "Role query"
+  },
+  "query.role.options": {
+    "prefix": "qro",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Role('${2:id}', {$3})$0"
+    ],
+    "description": "Role query with options"
+  },
+  "query.role.options.name": {
+    "prefix": "qron",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Role('${2:id}',\t{$3})$0"
+    ],
+    "description": "Role query with name on options"
+  },
+  "query.role.checkbox": {
+    "prefix": "qrc",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Role('checkbox')$0"
+    ],
+    "description": "Role checkbox"
+  },
+  "query.role.checkbox.checked": {
+    "prefix": "qrcc",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Role('checkbox', { checked: ${2|true,false|} })$0"
+    ],
+    "description": "Role checkbox checked"
+  },
+  "query.role.heading": {
+    "prefix": "qrh",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Role('heading')$0"
+    ],
+    "description": "Role heading"
+  },
+  "query.role.heading.level": {
+    "prefix": "qrhl",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Role('heading', { level: ${2|1,2,3,4,5,6|} })$0"
+    ],
+    "description": "Role heading level"
+  },
+
+  "query.label": {
+    "prefix": "ql",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}LabelText(${2})$0"
+    ],
+    "description": "LabelText query with options"
+  },
+  "query.label.full": {
+    "prefix": "qlf",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}LabelText('${2:Text Match}')$0"
+    ],
+    "description": "LabelText query with options"
+  },
+  "query.label.substring": {
+    "prefix": "qls",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}LabelText('${2:ext Matc}', {exact: false})$0"
+    ],
+    "description": "LabelText query substring match"
+  },
+  "query.label.query": {
+    "prefix": "qlq",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}LabelText('${2:Text Match}', {selector: '${3:query}'})$0"
+    ],
+    "description": "LabelText query with a specific query selector"
+  },
+  "query.label.substring+query": {
+    "prefix": "qlsq",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}LabelText('${2:ext Matc}', {exact: false, selector: '${3:query}'})$0"
+    ],
+    "description": "LabelText query substring match with a specific query selector"
+  },
+
+  "query.text": {
+    "prefix": "qt",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text($2)$0"
+    ],
+    "description": "Text query"
+  },
+  "query.text.full": {
+    "prefix": "qtf",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text('${2:Text Match}')$0"
+    ],
+    "description": "Text query full string match"
+  },
+  "query.text.ignore": {
+    "prefix": "qti",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text('${2:text match}', {ignore: false})$0"
+    ],
+    "description": "Text query full string ignore case"
+  },
+  "query.text.substring": {
+    "prefix": "qts",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text('${2:ext Matc}', {exact: false})$0"
+    ],
+    "description": "Text query substring match"
+  },
+  "query.text.substring+ignore": {
+    "prefix": "qtsi",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text('${2:ext matc}', {exact: false, ignore: false})$0"
+    ],
+    "description": "Text query substring match ignore case"
+  },
+  "query.text.startWith": {
+    "prefix": "qtsw",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text((content) => content.startsWith('${2:Text}'))$0"
+    ],
+    "description": "Text query start with match"
+  },
+  "query.text.element.startWith": {
+    "prefix": "qtesw",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text((content, element) => {",
+      "\tconst tag = element.tagName.toLowerCase() === '${2:div}'",
+      "\treturn tag && content.startsWith('${3:Text}')",
+      "})"
+    ],
+    "description": "Text query start with match on specific element"
+  },
+  "query.text.endWith": {
+    "prefix": "qtew",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text((content) => content.endsWith('${2:Match}'))$0"
+    ],
+    "description": "Text query end with match"
+  },
+  "query.text.element.endWith": {
+    "prefix": "qteew",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Text((content, element) => {",
+      "\tconst tag = element.tagName.toLowerCase() === '${2:div}'",
+      "\treturn tag && content.endsWith('${3:Match}')",
+      "})"
+    ],
+    "description": "Text query end with match on specific element"
+  },
+
+  "query.placeholder": {
+    "prefix": "qp",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}PlaceholderText($2)$0"
+    ],
+    "description": "PlaceholderText query"
+  },
+  "query.placeholder.full": {
+    "prefix": "qpf",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}PlaceholderText('${2:Text Match}')$0"
+    ],
+    "description": "PlaceholderText query full string match"
+  },
+  "query.placeholder.substring": {
+    "prefix": "qps",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}PlaceholderText('${2:ext Matc}', {exact: false})$0"
+    ],
+    "description": "PlaceholderText query substring match"
+  },
+
+  "query.displayValue": {
+    "prefix": "qd",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}DisplayValue($2)$0"
+    ],
+    "description": "DisplayValue query"
+  },
+  "query.displayValue.full": {
+    "prefix": "qdf",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}DisplayValue('${2:Text Match}')$0"
+    ],
+    "description": "DisplayValue query full string match"
+  },
+  "query.displayValue.substring": {
+    "prefix": "qds",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}DisplayValue('${2:ext Matc}', {exact: false})$0"
+    ],
+    "description": "DisplayValue query substring match"
+  },
+
+  "query.altText": {
+    "prefix": "qa",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}AltText($2)$0"
+    ],
+    "description": "AltText query"
+  },
+  "query.altText.full": {
+    "prefix": "qaf",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}AltText('${2:Text Match}')$0"
+    ],
+    "description": "AltText query full string match"
+  },
+  "query.altText.substring": {
+    "prefix": "qas",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}AltText('${2:ext Matc}', {exact: false})$0"
+    ],
+    "description": "AltText query substring match"
+  },
+
+  "query.Title": {
+    "prefix": "qtt",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Title($2)$0"
+    ],
+    "description": "Title query"
+  },
+  "query.Title.full": {
+    "prefix": "qttf",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Title('${2:Text Match}')$0"
+    ],
+    "description": "Title query full string match"
+  },
+  "query.Title.substring": {
+    "prefix": "qtts",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}Title('${2:ext Matc}', {exact: false})$0"
+    ],
+    "description": "Title query substring match"
+  },
+
+  "query.TestId": {
+    "prefix": "qid",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}TestId($2)$0"
+    ],
+    "description": "TestId query"
+  },
+  "query.TestId.full": {
+    "prefix": "qidf",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}TestId('${2:Text Match}')$0"
+    ],
+    "description": "TestId query full string match"
+  },
+  "query.TestId.substring": {
+    "prefix": "qids",
+    "body": [
+      "screen.${1|getBy,getAllBy,queryBy,queryAllBy,findBy,findByAll|}TestId('${2:ext Matc}', {exact: false})$0"
+    ],
+    "description": "TestId query substring match"
+  }
+}

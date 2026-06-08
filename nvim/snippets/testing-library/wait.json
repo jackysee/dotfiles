@@ -1,0 +1,12 @@
+{
+  "wait.for": {
+    "prefix": "wf",
+    "body": ["await waitFor(", "\t() => $1", ")$0"],
+    "description": "wait for"
+  },
+  "wait.for.removed": {
+    "prefix": "wfr",
+    "body": ["await waitForElementToBeRemoved(", "\t() => $1", ")$0"],
+    "description": "wait for element to be removed"
+  }
+}

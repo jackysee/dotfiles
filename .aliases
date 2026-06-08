@@ -70,3 +70,4 @@ alias nv=nvim
 alias v=vim
 
 alias powershell.exe='/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe'
+alias pwsh='powershell.exe -WorkingDirectory C:\\works\\'

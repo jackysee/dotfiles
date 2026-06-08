@@ -11,6 +11,7 @@ return {
         vim.keymap.set({"i"}, "<C-e>", function() ls.expand() end, {silent = true})
         vim.keymap.set({"i", "s"}, "<C-j>", function() ls.jump(1) end, {silent = true})
         vim.keymap.set({"i", "s"}, "<C-k>", function() ls.jump(-1) end, {silent = true})
+        vim.keymap.set({"i", "s"}, "<C-c>", function() ls.change_choice(1) end, {silent = true})
         -- vim.cmd [[ imap <silent><expr> <C-e> luasnip#expandable() ? '<Plug>luasnip-expand-or-jump' : '<C-e>' ]]
         -- vim.cmd [[ imap <silent><expr> <C-j> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Plug>luasnip-expand-or-jump' ]]
         -- vim.cmd [[ imap <silent><expr> <C-k> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<C-k>' ]]
@@ -21,8 +22,8 @@ return {
             store_selection_keys = '<Tab>'
         }
         ls.filetype_extend('vue', {'html', 'javascript', 'css'})
-        ls.filetype_extend('typescript', { 'javascript'})
-        ls.filetype_extend('typescriptreact', { 'javascript'})
+        ls.filetype_extend('typescript', { 'javascript', 'jest'})
+        ls.filetype_extend('typescriptreact', { 'javascript', 'jest'})
         require('luasnip/loaders/from_vscode').lazy_load();
         require('luasnip/loaders/from_vscode').lazy_load({ paths = { './snippets' } });
         require('snippets/javascript');
